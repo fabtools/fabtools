@@ -4,6 +4,13 @@ Fabric tools for managing Debian/Ubuntu packages
 from fabric.api import *
 
 
+def update_index():
+    """
+    Quietly update package index
+    """
+    sudo("aptitude -q -q update")
+
+
 def is_installed(pkg_name):
     """
     Check if .deb package is installed
@@ -13,25 +20,16 @@ def is_installed(pkg_name):
         return res.succeeded
 
 
-def install_package(pkg_name, update=False):
+def install(packages, update=False):
     """
-    Install .deb package
-    """
-    if update:
-        sudo("aptitude -q -q update")   # quietly update package list
-    options = "--assume-yes"
-    sudo('aptitude install %(options)s %(pkg_name)s' % locals())
-
-
-def install_packages(pkg_list, update=False):
-    """
-    Install several .deb packages
+    Install .deb package(s)
     """
     if update:
-        sudo("aptitude -q -q update")   # quietly update package list
-    pkg_names = ' '.join(pkg_list)
+        update_index
+    if not isinstance(packages, basestring):
+        packages = " ".join(packages)
     options = "--assume-yes"
-    sudo('aptitude install %(options)s %(pkg_names)s' % locals())
+    sudo('aptitude install %(options)s %(packages)s' % locals())
 
 
 def preseed_package(pkg_name, preseed):

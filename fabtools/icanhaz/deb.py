@@ -9,7 +9,7 @@ def package(pkg_name, update=False):
     I can haz deb package
     """
     if not is_installed(pkg_name):
-        install_package(pkg_name, update)
+        install(pkg_name, update)
 
 
 def packages(pkg_list, update=False):
@@ -17,4 +17,4 @@ def packages(pkg_list, update=False):
     I can haz several deb packages
     """
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg)]
-    install_packages(pkg_list, update)
+    install(pkg_list, update)
