@@ -10,4 +10,5 @@ def process(name, options=None):
     """
     add_process(name, options)
     reload_config()
-    start_process(name)
+    if process_status(name) == 'STOPPED':
+        start_process(name)
