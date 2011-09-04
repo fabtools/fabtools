@@ -5,4 +5,4 @@ import fabtools.postgres
 import fabtools.python
 import fabtools.service
 import fabtools.supervisor
-import fabtools.users
+import fabtools.user

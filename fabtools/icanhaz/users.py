@@ -1,12 +1,12 @@
 """
 Idempotent API for managing users
 """
-from fabtools.users import *
+from fabtools.user import *
 
 
 def user(name):
     """
     I can haz user
     """
-    if not user_exists(name):
-        create_user(name)
+    if not exists(name):
+        create(name)
