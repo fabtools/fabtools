@@ -2,6 +2,16 @@
 Idempotent API for managing PostgreSQL users and databases
 """
 from fabtools.postgres import *
+from fabtools.icanhaz.deb import package
+from fabtools.icanhaz.service import started
+
+
+def server(version='8.4'):
+    """
+    I can haz PostgreSQL server
+    """
+    package('postgresql-%s' % version)
+    started('postgresql-%s' % version)
 
 
 def user(name, passwd):
