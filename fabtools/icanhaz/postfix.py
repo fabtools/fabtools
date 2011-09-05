@@ -2,7 +2,7 @@
 Idempotent API for managing postfix email server
 """
 from fabric.api import *
-from fabtools.deb import *
+from fabtools.deb import is_installed, preseed_package, install
 from fabtools.icanhaz.service import started
 
 
@@ -18,7 +18,7 @@ def server(mailname):
             'postfix/mailname': ('string', mailname),
             'postfix/destinations': ('string', '%s, localhost.localdomain, localhost ' % mailname),
         })
-        install_package('postfix')
+        install('postfix')
 
     # Ensure the service is started
     started('postfix')
