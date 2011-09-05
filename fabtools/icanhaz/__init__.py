@@ -3,6 +3,7 @@ import fabtools.icanhaz.files
 import fabtools.icanhaz.nginx
 import fabtools.icanhaz.postfix
 import fabtools.icanhaz.postgres
+import fabtools.icanhaz.mysql
 import fabtools.icanhaz.python
 import fabtools.icanhaz.service
 import fabtools.icanhaz.supervisor
