@@ -27,15 +27,18 @@ def is_installed(pkg_name):
         return res.succeeded
 
 
-def install(packages, update=False):
+def install(packages, update=False, options=None):
     """
     Install .deb package(s)
     """
     if update:
         update_index()
+    if options is None:
+        options = []
     if not isinstance(packages, basestring):
         packages = " ".join(packages)
-    options = "--assume-yes"
+    options.append("--assume-yes")
+    options = " ".join(options)
     sudo('aptitude install %(options)s %(packages)s' % locals())
 
 
