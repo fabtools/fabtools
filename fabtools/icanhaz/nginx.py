@@ -3,13 +3,16 @@ Idempotent API for managing nginx sites
 """
 from fabric.api import *
 from fabtools.files import upload_template, is_link
+from fabtools.icanhaz.deb import package
+from fabtools.icanhaz.service import started
 
 
 def server():
     """
     I can haz nginx server
     """
-    sudo("/etc/init.d/nginx start")
+    package('nginx')
+    started('nginx')
 
 
 def site(server_name, options=None, enabled=True):
