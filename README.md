@@ -1,9 +1,9 @@
 Introduction
 ============
 
-`fabtools` includes useful functions to help you write [Fabric](http://fabfile.org/) files.
+`fabtools` includes useful functions to help you write your [Fabric](http://fabfile.org/) files.
 
-`fabtools` make it easier to manage system users, packages, databases, etc.
+`fabtools` makes it easier to manage system users, packages, databases, etc.
 
 `fabtools` includes a number of low-level actions, as well as a higher level interface called `icanhaz`.
 
