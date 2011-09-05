@@ -10,7 +10,6 @@ def user(name, passwd):
     """
     if not user_exists(name):
         create_user(name, passwd)
-        sudo('''psql -c "CREATE USER %(name)s WITH PASSWORD '%(passwd)s';"''' % locals(), user='postgres')
 
 
 def database(name, owner):
