@@ -11,6 +11,13 @@ def update_index():
     sudo("aptitude -q -q update")
 
 
+def upgrade():
+    """
+    Upgrade all packages
+    """
+    sudo("aptitude --assume-yes upgrade")
+
+
 def is_installed(pkg_name):
     """
     Check if .deb package is installed
