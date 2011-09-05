@@ -12,8 +12,9 @@ Using `icanhaz` allows you to use a more declarative style, similar to Chef or P
 Example
 =======
 
-Here is an example fabfile using fabtools.
+Here is an example fabfile using `fabtools`.
 
+    ```python
     from fabric.api import *
     from fabtools import icanhaz
     import fabtools
@@ -57,3 +58,4 @@ Here is an example fabfile using fabtools.
 
         # Ensure we have a cron task running daily
         fabtools.cron.add_daily('maintenance', 'myuser', 'my_script.py')
+    ```
