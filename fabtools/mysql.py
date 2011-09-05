@@ -3,10 +3,12 @@ Fabric tools for managing MySQL users and databases
 """
 from fabric.api import *
 
+
 def prompt_password(user='root'):
     mysql_password = prompt('Please enter MySQL %s password:' % user)
 
     return mysql_password
+
 
 def _query(user, password, query, use_sudo=True):
     func = use_sudo and sudo or run
@@ -16,6 +18,7 @@ def _query(user, password, query, use_sudo=True):
         'password': password,
         'query': query
     })
+
 
 def user_exists(name, **options):
     """
@@ -31,6 +34,7 @@ def user_exists(name, **options):
         })
 
         return bool(res)
+
 
 def create_user(name, passwd, **options):
     """

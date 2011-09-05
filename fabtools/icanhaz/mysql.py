@@ -30,6 +30,7 @@ def server(version='5.1'):
 
     started('mysql')
 
+
 def user(name, passwd, **options):
     """
     I can haz MySQL user
