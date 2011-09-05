@@ -25,7 +25,7 @@ def install(packages, update=False):
     Install .deb package(s)
     """
     if update:
-        update_index
+        update_index()
     if not isinstance(packages, basestring):
         packages = " ".join(packages)
     options = "--assume-yes"
