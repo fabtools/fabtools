@@ -24,4 +24,4 @@ def add_daily(name, user, command):
     """
     Add a cron task to run daily
     """
-    add_command(name, '@daily', user, command)
+    add_task(name, '@daily', user, command)
