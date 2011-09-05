@@ -17,4 +17,5 @@ def packages(pkg_list, update=False):
     I can haz several deb packages
     """
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg)]
-    install(pkg_list, update)
+    if pkg_list:
+        install(pkg_list, update)
