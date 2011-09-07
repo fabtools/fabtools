@@ -35,7 +35,7 @@ def is_installed(package, virtualenv=None):
     return (package in packages)
 
 
-def install(packages, installer=None, upgrade=False, use_sudo=False):
+def install(packages, upgrade=False, use_sudo=False):
     """
     Install Python packages
     """
