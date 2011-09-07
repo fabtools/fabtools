@@ -17,7 +17,7 @@ def install_pip():
     Install pip
     """
     with cd("/tmp"):
-        run("curl -q -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py")
+        run("curl --silent -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py")
         sudo("python get-pip.py")
 
 

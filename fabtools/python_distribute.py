@@ -18,7 +18,7 @@ def install_distribute():
     Install distribute
     """
     with cd("/tmp"):
-        run("curl -q -O http://python-distribute.org/distribute_setup.py")
+        run("curl --silent -O http://python-distribute.org/distribute_setup.py")
         sudo("python distribute_setup.py")
 
 
