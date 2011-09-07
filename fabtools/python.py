@@ -38,7 +38,7 @@ def is_installed(package, virtualenv=None):
     """
     options = []
     if virtualenv:
-        options.append('-E "%s"' % virtualenv)
+        options.append('--environment="%s"' % virtualenv)
     options = " ".join(options)
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = run("pip freeze %(options)s" % locals())
@@ -46,7 +46,7 @@ def is_installed(package, virtualenv=None):
     return (package in packages)
 
 
-def install(packages, upgrade=False, use_sudo=False):
+def install(packages, upgrade=False, virtualenv=None, use_mirrors=True, use_sudo=False):
     """
     Install Python packages
     """
@@ -54,7 +54,11 @@ def install(packages, upgrade=False, use_sudo=False):
     if not isinstance(packages, basestring):
         packages = " ".join(packages)
     options = []
+    if virtualenv:
+        options.append('--environment="%s"' % virtualenv)
+    if use_mirrors:
+        options.append('--use-mirrors')
     if upgrade:
-        options.append("-U")
+        options.append("--upgrade")
     options = " ".join(options)
-    func('PIP_USE_MIRRORS=true pip install %(options)s %(packages)s' % locals())
+    func('pip install %(options)s %(packages)s' % locals())

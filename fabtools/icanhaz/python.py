@@ -30,7 +30,7 @@ def package(pkg_name, virtualenv=None, use_sudo=False):
     """
     pip("1.0.2")
     if not is_installed(pkg_name):
-        install(pkg_name, virtualenv, use_sudo)
+        install(pkg_name, virtualenv=virtualenv, use_sudo=use_sudo)
 
 
 def packages(pkg_list, virtualenv=None, use_sudo=False):
@@ -40,4 +40,4 @@ def packages(pkg_list, virtualenv=None, use_sudo=False):
     pip("1.0.2")
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg)]
     if pkg_list:
-        install(pkg_list, virtualenv, use_sudo)
+        install(pkg_list, virtualenv=virtualenv, use_sudo=use_sudo)
