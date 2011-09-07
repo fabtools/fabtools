@@ -1,15 +1,26 @@
 """
 Fabric tools for managing Python packages using pip
 """
+from distutils.version import StrictVersion as V
 from fabric.api import *
+from fabric.utils import puts
 
 
-def is_pip_installed():
+def is_pip_installed(version=None):
     """
     Check if pip is installed
     """
     with settings(hide('running', 'warnings', 'stderr', 'stdout'), warn_only=True):
-        return run('pip --version').succeeded
+        res = run('pip --version')
+        if version is None:
+            return res.succeeded
+        else:
+            installed = res.split(' ')[1]
+            if V(installed) < V(version):
+                puts("pip %s found (version >= %s required)" % (installed, version))
+                return False
+            else:
+                return True
 
 
 def install_pip():
