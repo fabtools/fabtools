@@ -4,6 +4,23 @@ Fabric tools for managing Python packages using pip
 from fabric.api import *
 
 
+def is_pip_installed():
+    """
+    Check if pip is installed
+    """
+    with settings(hide('running', 'warnings', 'stderr', 'stdout'), warn_only=True):
+        return run('pip --version').succeeded
+
+
+def install_pip():
+    """
+    Install pip
+    """
+    with cd("/tmp"):
+        run("curl -q -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py")
+        sudo("python get-pip.py")
+
+
 def is_installed(package, virtualenv=None):
     """
     Check if a Python package is installed

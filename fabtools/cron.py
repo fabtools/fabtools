@@ -17,6 +17,7 @@ def add_task(name, timespec, user, command):
         upload_template('/etc/cron.d/%(name)s' % locals(),
             script.name,
             context={},
+            chown=True,
             use_sudo=True)
 
 
