@@ -3,12 +3,14 @@ Idempotent API for managing python packages
 """
 from fabtools.python import *
 from fabtools.python_distribute import is_distribute_installed, install_distribute
+from fabtools.icanhaz import deb
 
 
 def distribute():
     """
     I can haz distribute
     """
+    deb.package('curl')
     if not is_distribute_installed():
         install_distribute()
 
