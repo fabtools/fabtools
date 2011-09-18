@@ -5,90 +5,83 @@ from fabric.api import *
 
 
 def prompt_password(user='root'):
-    mysql_password = prompt('Please enter MySQL %s password:' % user)
+    """
+    Ask MySQL password interactively
+    """
+    return prompt('Please enter password for MySQL user "%s":' % user)
 
-    return mysql_password
 
-
-def _query(user, password, query, use_sudo=True):
+def _query(query, use_sudo=True, **kwargs):
+    """
+    Run a MySQL query
+    """
     func = use_sudo and sudo or run
 
-    return func('mysql -u %(user)s -p%(password)s -e "%(query)s"' % {
+    user = kwargs.get('mysql_user') or env.get('mysql_user')
+    password = kwargs.get('mysql_password') or env.get('mysql_password')
+    if user and not password:
+        password = prompt_password(user)
+
+    return func('mysql --batch --raw --skip-column-names --user=%(user)s --password=%(password)s --execute="%(query)s"' % {
         'user': user,
         'password': password,
         'query': query
     })
 
 
-def user_exists(name, **options):
+def user_exists(name, **kwargs):
     """
     Check if a MySQL user exists
     """
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        user = options.get('user', 'root')
-
-        password = prompt_password(user)
-
-        res = _query(user, password, 'use mysql; SELECT * FROM user WHERE User = \'%(name)s\';' % {
+        res = _query("use mysql; SELECT User FROM user WHERE User = '%(name)s';" % {
             'name': name
-        })
+        }, **kwargs)
+    return res.succeeded and (res == name)
 
-        return bool(res)
 
-
-def create_user(name, passwd, **options):
+def create_user(name, password, host='localhost', **kwargs):
     """
     Create a MySQL user
     """
-    host = options.get('host', 'localhost')
-    user = options.get('user', 'root')
-
-    mysql_password = prompt_password(user)
-
-    _query(user, mysql_password, "CREATE USER '%(name)s'@'%(host)s' IDENTIFIED BY '%(passwd)s';" % {
-        'name': name,
-        'passwd': passwd,
-        'host': host
-    })
+    with settings(hide('running')):
+        _query("CREATE USER '%(name)s'@'%(host)s' IDENTIFIED BY '%(password)s';" % {
+            'name': name,
+            'password': password,
+            'host': host
+        }, **kwargs)
+    puts("Created MySQL user '%s'." % name)
 
 
-def database_exists(name, **options):
+def database_exists(name, **kwargs):
     """
     Check if a MySQL database exists
     """
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        user = options.get('user', 'root')
-
-        password = prompt_password(user)
-
-        res = _query(user, password, 'use mysql; SELECT * FROM db WHERE Db = \'%(name)s\';' % {
+        res = _query("use mysql; SELECT Db FROM db WHERE Db = '%(name)s';" % {
             'name': name
-        })
+        }, **kwargs)
 
-    return bool(res)
+    return res.succeeded and (res == name)
 
 
-def create_database(name, **options):
+def create_database(name, owner=None, owner_host='localhost', charset='utf8', collate='utf8_general_ci', **kwargs):
     """
     Create a MySQL database
     """
-    user = options.get('user', 'root')
-    owner = options.get('owner', None)
-    owner_host = options.get('owner_host', 'localhost')
-    character = options.get('character', 'utf8')
-    collate = options.get('collate', 'utf8_general_ci')
+    with settings(hide('running')):
 
-    password = prompt_password(user)
-
-    _query(user, password, "create database %(name)s character set %(character)s collate %(collate)s;" % {
-        'name': name,
-        'character': character,
-        'collate': collate
-    })
-
-    if owner:
-        _query(user, password, "grant all privileges on %(name)s.* TO '%(owner)s'@'%(owner_host)s' with grant option;" % {
+        _query("CREATE DATABASE %(name)s CHARACTER SET %(charset)s COLLATE %(collate)s;" % {
             'name': name,
-            'owner': owner,
-            'owner_host': owner_host
-        })
+            'charset': charset,
+            'collate': collate
+        }, **kwargs)
+
+        if owner:
+            _query("GRANT ALL PRIVILEGES ON %(name)s.* TO '%(owner)s'@'%(owner_host)s' WITH GRANT OPTION;" % {
+                'name': name,
+                'owner': owner,
+                'owner_host': owner_host
+            }, **kwargs)
+
+    puts("Created MySQL database '%s'." % name)

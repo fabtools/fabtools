@@ -1,47 +1,42 @@
 """
 Idempotent API for managing MySQL users and databases
 """
-from fabric.utils import warn
-
 from fabtools.mysql import *
-from fabtools.deb import preseed_package
+from fabtools.deb import is_installed, preseed_package
 from fabtools.icanhaz.deb import package
 from fabtools.icanhaz.service import started
 
 
-def server(version='5.1'):
+def server(version='5.1', password=None):
     """
     I can haz MySQL server
     """
-    with settings(hide('warnings', 'stderr'), warn_only=True):
-        result = sudo('dpkg-query --show mysql-server')
+    if not is_installed("mysql-server-%s" % version):
+        if password is None:
+            password = prompt_password()
 
-    if result.failed is False:
-        warn('MySQL is already installed')
-    else:
-        mysql_password = prompt_password()
-
-        preseed_package('mysql-server', {
-            'mysql-server/root_password': ('password', mysql_password),
-            'mysql-server/root_password_again': ('password', mysql_password),
-        })
+        with settings(hide('running')):
+            preseed_package('mysql-server', {
+                'mysql-server/root_password': ('password', password),
+                'mysql-server/root_password_again': ('password', password),
+            })
 
         package('mysql-server-%s' % version)
 
     started('mysql')
 
 
-def user(name, passwd, **options):
+def user(name, password, **kwargs):
     """
     I can haz MySQL user
     """
-    if not user_exists(name, **options):
-        create_user(name, passwd, **options)
+    if not user_exists(name, **kwargs):
+        create_user(name, password, **kwargs)
 
 
-def database(name, **options):
+def database(name, **kwargs):
     """
     I can haz MySQL database
     """
-    if not database_exists(name, **options):
-        create_database(name, **options)
+    if not database_exists(name, **kwargs):
+        create_database(name, **kwargs)
