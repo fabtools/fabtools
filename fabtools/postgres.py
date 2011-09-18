@@ -13,11 +13,11 @@ def user_exists(name):
     return (res == "1")
 
 
-def create_user(name, passwd):
+def create_user(name, password):
     """
     Create a PostgreSQL user
     """
-    sudo('''psql -c "CREATE USER %(name)s WITH PASSWORD '%(passwd)s';"''' % locals(), user='postgres')
+    sudo('''psql -c "CREATE USER %(name)s WITH PASSWORD '%(password)s';"''' % locals(), user='postgres')
 
 
 def database_exists(name):

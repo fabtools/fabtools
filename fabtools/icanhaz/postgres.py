@@ -14,12 +14,12 @@ def server(version='8.4'):
     started('postgresql-%s' % version)
 
 
-def user(name, passwd):
+def user(name, password):
     """
     I can haz PostgreSQL user
     """
     if not user_exists(name):
-        create_user(name, passwd)
+        create_user(name, password)
 
 
 def database(name, owner):
