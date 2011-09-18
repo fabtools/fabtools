@@ -16,6 +16,9 @@ setup(
         "fabric>=1.2.0",
     ],
     setup_requires=[],
+    tests_require=[
+        "nose",
+    ],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
     zip_safe=False,

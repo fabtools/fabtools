@@ -59,3 +59,15 @@ def setup():
     # Ensure we have a cron task running daily
     fabtools.cron.add_daily('maintenance', 'myuser', 'my_script.py')
 ```
+
+Tests
+=====
+
+The tests use [Vagrant](http://vagrantup.com/) to launch a virtual machine,
+against which all the tests will be run.
+
+Launch the tests using the [nose](http://readthedocs.org/docs/nose/) test runner:
+
+```
+$ nosetests
+```
