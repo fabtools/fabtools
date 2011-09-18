@@ -1,4 +1,8 @@
 ^.*\.egg-info/
+^\.Python
+^bin/
+^include/
+^lib/
 
 syntax: glob
 *.pyc
