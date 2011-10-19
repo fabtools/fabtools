@@ -48,3 +48,13 @@ def upload_template(filename, template, context=None, use_sudo=False,
                     context=context, use_sudo=use_sudo)
     if chown:
         sudo('chown %s:%s "%s"' % (user, user, filename))
+
+
+def md5sum(filename, use_sudo=False):
+    """
+    Compute MD5 sum
+    """
+    func = use_sudo and sudo or run
+    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+        res = func('md5sum %(filename)s' % locals())
+    return res.split()[0]
