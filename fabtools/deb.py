@@ -15,7 +15,7 @@ def upgrade():
     """
     Upgrade all packages
     """
-    sudo("aptitude --assume-yes upgrade")
+    sudo("aptitude --assume-yes safe-upgrade")
 
 
 def is_installed(pkg_name):
