@@ -36,4 +36,4 @@ def downloaded_file(url, filename=None, md5=None, use_sudo=False):
             download = False
 
     if download:
-        func('wget --progress=dots %(url)s' % locals())
+        func('wget --progress=dot %(url)s' % locals())
