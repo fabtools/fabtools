@@ -52,3 +52,21 @@ def test_mysql():
     """
     with settings(host_string=HOST, user=USER, key_filename=KEYFILE):
         fabfile.mysql()
+
+
+def setup_postgres():
+    """
+    Clean up PostgreSQL install before tests
+    """
+    with settings(hide('running', 'stdout'), host_string=HOST, user=USER, key_filename=KEYFILE):
+        sudo("aptitude remove --assume-yes --purge postgresql")
+        sudo("rm -rf /var/lib/postgresql")
+
+
+@with_setup(setup_mysql)
+def test_postgresql():
+    """
+    Run the 'postgresql' task from the fabfile
+    """
+    with settings(host_string=HOST, user=USER, key_filename=KEYFILE):
+        fabfile.postgresql()

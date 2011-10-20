@@ -16,3 +16,16 @@ def mysql():
 
         icanhaz.mysql.database('mydb', owner='myuser')
         assert fabtools.mysql.database_exists('mydb')
+
+
+def postgresql():
+    """
+    Setup PostgreSQL server, user and database
+    """
+    icanhaz.postgres.server()
+
+    icanhaz.postgres.user('pguser', 'foo')
+    assert fabtools.postgres.user_exists('pguser')
+
+    icanhaz.postgres.database('pgdb', 'pguser')
+    assert fabtools.postgres.database_exists('pgdb')
