@@ -1,0 +1,10 @@
+*.egg/
+*.egg-info/
+.Python
+bin/
+build/
+include/
+lib/
+man/
+tests/.vagrant
+*.pyc
