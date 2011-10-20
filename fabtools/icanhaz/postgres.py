@@ -41,9 +41,10 @@ def user(name, password):
         create_user(name, password)
 
 
-def database(name, owner,postgis=False):
+def database(name, owner):
     """
     I can haz PostgreSQL database
     """
+    
     if not database_exists(name):
-        create_database(name, owner, postgis)
+        create_database(name, owner)
