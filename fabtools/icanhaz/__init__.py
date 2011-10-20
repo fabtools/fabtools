@@ -12,3 +12,4 @@ import fabtools.icanhaz.users
 from fabtools.icanhaz.files import directory
 from fabtools.icanhaz.files import downloaded_file
 from fabtools.icanhaz.users import user
+from fabtools.icanhaz.users import sudoer
