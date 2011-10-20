@@ -28,9 +28,11 @@ def database_exists(name):
         return sudo('''psql -d %(name)s -c ""''' % locals(), user='postgres').succeeded
 
 
-def create_database(name, owner, encoding='UTF8', locale='en_US.UTF-8'):
+def create_database(name, owner, template='template0', encoding='UTF8', locale='en_US.UTF-8'):
     """
     Create a PostgreSQL database
     """
-    sudo('''createdb --owner %(owner)s --template template0 --encoding=%(encoding)s\
+    sudo('''createdb --owner %(owner)s --template %(template)s --encoding=%(encoding)s\
  --lc-ctype=%(locale)s --lc-collate=%(locale)s %(name)s''' % locals(), user='postgres')
+ 
+ 

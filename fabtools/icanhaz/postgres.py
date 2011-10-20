@@ -41,10 +41,10 @@ def user(name, password):
         create_user(name, password)
 
 
-def database(name, owner):
+def database(name, owner, template='template0'):
     """
     I can haz PostgreSQL database
     """
     
     if not database_exists(name):
-        create_database(name, owner)
+        create_database(name, owner, template)
