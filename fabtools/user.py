@@ -26,8 +26,8 @@ def create(name, home=None, shell=None, uid=None, gid=None, groups=None):
     if home:
         options.append('--home-dir "%s"' % home)
     if shell:
-        options.append('-s "%s"' % (shell))
+        options.append('--shell "%s"' % (shell))
     if uid:
         options.append('--uid %s' % uid)
     options = " ".join(options)
-    sudo('adduser %(options)s %(name)s' % locals())
+    sudo('useradd %(options)s %(name)s' % locals())
