@@ -1,5 +1,4 @@
 import os.path
-import time
 
 try:
     import unittest2 as unittest
@@ -7,6 +6,7 @@ except ImportError:
     import unittest
 
 from fabric.api import *
+from fabric.state import connections
 
 from fabtools import icanhaz
 
@@ -29,11 +29,21 @@ class VagrantTestSuite(unittest.TestSuite):
         """
         Run the test suite on all the virtual machines
         """
+        # Clean up
+        with lcd(os.path.dirname(__file__)):
+            local('vagrant halt')
+            local('vagrant destroy')
+
         for base_box in self.base_boxes:
 
             # Start a virtual machine using this base box
             self.current_box = base_box
             self.start_box()
+
+            # Clear fabric connection cache
+            with self.settings():
+                if env.host_string in connections:
+                    del connections[env.host_string]
 
             # Make sure the vagrant user can sudo to any user
             with self.settings():
@@ -103,9 +113,6 @@ class VagrantTestCase(unittest.TestCase):
     """
     Test case with vagrant support
     """
-    def __init__(self, suite):
-        unittest.TestCase.__init__(self)
-        self._suite = suite
 
     def run(self, result=None):
         """
@@ -113,3 +120,16 @@ class VagrantTestCase(unittest.TestCase):
         """
         with self._suite.settings():
             unittest.TestCase.run(self, result)
+
+
+class VagrantFunctionTestCase(unittest.FunctionTestCase):
+    """
+    Function test case with vagrant support
+    """
+
+    def run(self, result=None):
+        """
+        Run the test case within a Fabric context manager
+        """
+        with self._suite.settings():
+            unittest.FunctionTestCase.run(self, result)

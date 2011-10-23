@@ -1,50 +1,32 @@
+import os.path
 try:
     import unittest2 as unittest
 except ImportError:
     import unittest
 
-from fabric.api import *
+from fabric.main import load_fabfile
 
-from vagrant import VagrantTestCase, VagrantTestSuite
-import fabfile
-
-
-class TestMySQL(VagrantTestCase):
-
-    def setUp(self):
-        """
-        Clean up MySQL install before tests
-        """
-        with self._suite.settings(hide('running', 'stdout')):
-            sudo("aptitude remove --assume-yes --purge mysql-server-5.1")
-
-    def runTest(self):
-        """
-        Run the 'mysql' task from the fabfile
-        """
-        fabfile.mysql()
+from vagrant import VagrantFunctionTestCase, VagrantTestSuite
 
 
-class TestPostgreSQL(VagrantTestCase):
-
-    def setUp(self):
-        """
-        Clean up PostgreSQL install before tests
-        """
-        with self._suite.settings(hide('running', 'stdout')):
-            sudo("aptitude remove --assume-yes --purge postgresql")
-
-    def runTest(self):
-        """
-        Run the 'postgresql' task from the fabfile
-        """
-        fabfile.postgresql()
+BASE_BOXES = [
+    'ubuntu_10_10',
+    'ubuntu_10_04',
+]
 
 
 def load_tests(loader, tests, patterns):
-    suite = VagrantTestSuite(['ubuntu_10_04', 'ubuntu_10_10'])
-    suite.addTest(TestMySQL(suite))
-    suite.addTest(TestPostgreSQL(suite))
+    """
+    Custom test loader
+    """
+    suite = VagrantTestSuite(BASE_BOXES)
+
+    # Add a test case for each fabric task
+    path = os.path.join(os.path.dirname(__file__), 'fabfile.py')
+    _, tasks, _ = load_fabfile(path)
+    for name, task in tasks.items():
+        suite.addTest(VagrantFunctionTestCase(task))
+
     return suite
 
 
