@@ -5,7 +5,6 @@ import os.path
 
 from fabtools.files import is_file
 from fabtools.postgres import *
-from fabtools.postgres import *
 from fabtools.icanhaz.deb import package
 from fabtools.icanhaz.service import started
 
