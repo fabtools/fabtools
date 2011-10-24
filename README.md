@@ -60,14 +60,42 @@ def setup():
     fabtools.cron.add_daily('maintenance', 'myuser', 'my_script.py')
 ```
 
+Supported targets
+=================
+
+`fabtools` currently supports the following target operating systems:
+
+* Ubuntu 10.04 LTS
+* Ubuntu 10.10
+
+Serious mode
+============
+
+If you're not a fan of cutesy names, here is a way to switch to "serious mode" for your fabfiles:
+
+```python
+from fabric.api import *
+from fabtools import icanhaz as require
+
+@task
+def serious_setup():
+    require.postgres.server()
+    require.postgres.user('myuser', 's3cr3tp4ssw0rd)
+    require.postgres.database('myappsdb', 'myuser')
+```
+
 Tests
 =====
 
-The tests use [Vagrant](http://vagrantup.com/) to launch a virtual machine,
+The tests use [Vagrant](http://vagrantup.com/) to launch virtual machines,
 against which all the tests will be run.
 
-Launch the tests using the [nose](http://readthedocs.org/docs/nose/) test runner:
+You can launch the tests using the Python 2.7 built-in [unittest](http://docs.python.org/library/unittest.html) runner:
 
 ```
-$ nosetests
+$ python -m unittest tests
 ```
+
+Note that you must have vagrant base boxes named `ubuntu_10_04` and `ubuntu_10_10`
+for the tests to work out of the box. You may edit the `BASE_BOXES` list in `tests/__init__.py`
+to match your local configuration if necessary.
