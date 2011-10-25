@@ -12,6 +12,8 @@ def is_pip_installed(version=None):
     """
     with settings(hide('running', 'warnings', 'stderr', 'stdout'), warn_only=True):
         res = run('pip --version')
+        if res.failed:
+            return False
         if version is None:
             return res.succeeded
         else:
