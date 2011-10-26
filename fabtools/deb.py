@@ -54,3 +54,11 @@ def preseed_package(pkg_name, preseed):
     for q_name, _ in preseed.items():
         q_type, q_answer = _
         sudo('echo "%(pkg_name)s %(q_name)s %(q_type)s %(q_answer)s" | debconf-set-selections' % locals())
+
+
+def distrib_codename():
+    """
+    Get the codename of the distrib
+    """
+    with settings(hide('running', 'stdout')):
+        return run('grep DISTRIB_CODENAME /etc/lsb-release').split('=')[1]

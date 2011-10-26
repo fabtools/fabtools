@@ -1,7 +1,23 @@
 """
 Idempotent API for managing Debian/Ubuntu packages
 """
+from fabtools.files import is_file
 from fabtools.deb import *
+
+
+def ppa(name):
+    """
+    I can haz PPA
+    """
+    assert name.startswith('ppa:')
+    user, repo = name[4:].split('/', 2)
+    distrib = distrib_codename()
+    source = '%(user)s-%(repo)s-%(distrib)s.list' % locals()
+
+    if not is_file(source):
+        package('python-software-properties')
+        sudo('add-apt-repository %s' % name)
+        update_index()
 
 
 def package(pkg_name, update=False):
