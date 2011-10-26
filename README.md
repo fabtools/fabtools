@@ -30,7 +30,7 @@ def setup():
     ])
 
     # Ensure those Python packages are installed
-    icanhaz.python.package('virtualenv')
+    icanhaz.python.package('pyramid')
 
     # Ensure we have an email server
     icanhaz.postfix.server('example.com')
