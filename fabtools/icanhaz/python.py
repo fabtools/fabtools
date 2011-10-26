@@ -30,13 +30,13 @@ def pip(version=None):
         install_pip()
 
 
-def package(pkg_name, virtualenv=None, use_sudo=False):
+def package(pkg_name, url=None, virtualenv=None, use_sudo=False):
     """
     I can haz python package
     """
     pip("1.0.2")
     if not is_installed(pkg_name):
-        install(pkg_name, virtualenv=virtualenv, use_sudo=use_sudo)
+        install(url or pkg_name, virtualenv=virtualenv, use_sudo=use_sudo)
 
 
 def packages(pkg_list, virtualenv=None, use_sudo=False):
