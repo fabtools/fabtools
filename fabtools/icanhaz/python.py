@@ -1,6 +1,9 @@
 """
 Idempotent API for managing python packages
 """
+import os.path
+
+from fabtools.files import is_file
 from fabtools.python import *
 from fabtools.python_distribute import is_distribute_installed, install_distribute
 from fabtools.icanhaz import deb
@@ -10,7 +13,10 @@ def distribute():
     """
     I can haz distribute
     """
-    deb.package('curl')
+    deb.packages([
+        'curl',
+        'python-dev',
+    ])
     if not is_distribute_installed():
         install_distribute()
 
@@ -41,3 +47,18 @@ def packages(pkg_list, virtualenv=None, use_sudo=False):
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg)]
     if pkg_list:
         install(pkg_list, virtualenv=virtualenv, use_sudo=use_sudo)
+
+
+def virtualenv(directory, no_site_packages=True, python=None):
+    """
+    I can haz python virtual environment
+    """
+    package('virtualenv', use_sudo=True)
+    if not is_file(os.path.join(directory, 'bin', 'python')):
+        options = []
+        if no_site_packages:
+            options.append('--no-site-packages')
+        if python:
+            options.append('--python=%s' % python)
+        options = ' '.join(options)
+        run('virtualenv %(options)s "%(directory)s"' % locals())

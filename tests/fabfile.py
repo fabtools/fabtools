@@ -37,6 +37,18 @@ def files():
         assert run('cat baz') == baz_contents, run('cat baz')
 
 
+def python():
+    """
+    Check Python package installation
+    """
+    icanhaz.python.virtualenv('/tmp/venv', python='python2.6')
+    assert fabtools.files.is_dir('/tmp/venv')
+    assert fabtools.files.is_file('/tmp/venv/bin/python')
+
+    icanhaz.python.package('fabric', virtualenv='/tmp/venv')
+    assert fabtools.files.is_dir('/tmp/venv/lib/python2.6/site-packages/fabric')
+
+
 def mysql():
     """
     Setup MySQL server, user and database
