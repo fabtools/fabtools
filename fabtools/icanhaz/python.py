@@ -55,7 +55,7 @@ def virtualenv(directory, no_site_packages=True, python=None):
     """
     package('virtualenv', use_sudo=True)
     if not is_file(os.path.join(directory, 'bin', 'python')):
-        options = []
+        options = ['--quiet']
         if no_site_packages:
             options.append('--no-site-packages')
         if python:
