@@ -7,7 +7,7 @@ from fabtools.user import *
 
 def user(name):
     """
-    I can haz user
+    Require a user
     """
     if not exists(name):
         create(name)
@@ -15,7 +15,7 @@ def user(name):
 
 def sudoer(username, hosts="ALL", operators="ALL", passwd=False, commands="ALL"):
     """
-    I can haz sudo permissions for that user
+    Require sudo permissions for a given user
     """
     tags = "PASSWD:" if passwd else "NOPASSWD:"
     spec = "%(username)s %(hosts)s=(%(operators)s) %(tags)s %(commands)s" % locals()

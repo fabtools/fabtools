@@ -7,7 +7,7 @@ from fabtools.deb import *
 
 def ppa(name):
     """
-    I can haz PPA
+    Require a PPA
     """
     assert name.startswith('ppa:')
     user, repo = name[4:].split('/', 2)
@@ -22,7 +22,7 @@ def ppa(name):
 
 def package(pkg_name, update=False):
     """
-    I can haz deb package
+    Require a deb package
     """
     if not is_installed(pkg_name):
         install(pkg_name, update)
@@ -30,7 +30,7 @@ def package(pkg_name, update=False):
 
 def packages(pkg_list, update=False):
     """
-    I can haz several deb packages
+    Require several deb packages
     """
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg)]
     if pkg_list:

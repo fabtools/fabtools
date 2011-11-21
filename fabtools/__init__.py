@@ -8,3 +8,6 @@ import fabtools.python_distribute
 import fabtools.service
 import fabtools.supervisor
 import fabtools.user
+
+import fabtools.require
+icanhaz = require

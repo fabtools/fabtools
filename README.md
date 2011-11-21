@@ -5,9 +5,9 @@ Introduction
 
 `fabtools` makes it easier to manage system users, packages, databases, etc.
 
-`fabtools` includes a number of low-level actions, as well as a higher level interface called `icanhaz`.
+`fabtools` includes a number of low-level actions, as well as a higher level interface called `require`.
 
-Using `icanhaz` allows you to use a more declarative style, similar to Chef or Puppet.
+Using `require` allows you to use a more declarative style, similar to Chef or Puppet.
 
 Example
 =======
@@ -16,47 +16,47 @@ Here is an example fabfile using `fabtools`.
 
 ```python
 from fabric.api import *
-from fabtools import icanhaz
+from fabtools import require
 import fabtools
 
 @task
 def setup():
 
-    # Ensure those Debian/Ubuntu packages are installed
-    icanhaz.deb.packages([
+    # Require some Debian/Ubuntu packages
+    require.deb.packages([
         'build-essential',
         'python-dev',
         'supervisor',
     ])
 
-    # Ensure those Python packages are installed
-    icanhaz.python.package('pyramid')
+    # Require a Python package
+    require.python.package('pyramid')
 
-    # Ensure we have an email server
-    icanhaz.postfix.server('example.com')
+    # Require an email server
+    require.postfix.server('example.com')
 
-    # Ensure we have a PostgreSQL server
-    icanhaz.postgres.server()
-    icanhaz.postgres.user('myuser', 's3cr3tp4ssw0rd)
-    icanhaz.postgres.database('myappsdb', 'myuser')
+    # Require a PostgreSQL server
+    require.postgres.server()
+    require.postgres.user('myuser', 's3cr3tp4ssw0rd)
+    require.postgres.database('myappsdb', 'myuser')
 
-    # Ensure we have a supervisor process for our app
-    icanhaz.supervisor.process('myapp', {
+    # Require a supervisor process for our app
+    require.supervisor.process('myapp', {
         'command': '/home/myuser/env/bin/gunicorn_paster',
         'config': '/home/myuser/env/myapp/production.ini',
         'directory': '/home/myuser/env/myapp',
         'user': 'myuser',
     })
 
-    # Ensure we have an nginx server proxying to our app
-    icanhaz.nginx.server()
-    icanhaz.nginx.site('example.com', {
+    # Require an nginx server proxying to our app
+    require.nginx.server()
+    require.nginx.site('example.com', {
         'aliases': 'www.example.com www2.example.com',
         'docroot': '/home/myuser/env/myapp/myapp/public',
         'proxy_url': 'http://127.0.0.1:8888',
     })
 
-    # Ensure we have a cron task running daily
+    # Setup a daily cron task
     fabtools.cron.add_daily('maintenance', 'myuser', 'my_script.py')
 ```
 
@@ -67,22 +67,6 @@ Supported targets
 
 * Ubuntu 10.04 LTS
 * Ubuntu 10.10
-
-Serious mode
-============
-
-If you're not a fan of cutesy names, here is a way to switch to "serious mode" for your fabfiles:
-
-```python
-from fabric.api import *
-from fabtools import icanhaz as require
-
-@task
-def serious_setup():
-    require.postgres.server()
-    require.postgres.user('myuser', 's3cr3tp4ssw0rd)
-    require.postgres.database('myappsdb', 'myuser')
-```
 
 Tests
 =====

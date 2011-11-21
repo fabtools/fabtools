@@ -1,14 +1,14 @@
 """
-Idempotent API for managing postfix email server
+Idempotent API for managing Postfix email server
 """
 from fabric.api import *
 from fabtools.deb import is_installed, preseed_package, install
-from fabtools.icanhaz.service import started
+from fabtools.require.service import started
 
 
 def server(mailname):
     """
-    I can haz postfix email server
+    Require a Postfix email server
     """
 
     # Ensure the package is installed

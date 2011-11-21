@@ -8,7 +8,7 @@ except ImportError:
 from fabric.api import *
 from fabric.state import connections
 
-from fabtools import icanhaz
+from fabtools import require
 
 
 class VagrantTestSuite(unittest.TestSuite):
@@ -47,7 +47,7 @@ class VagrantTestSuite(unittest.TestSuite):
 
             # Make sure the vagrant user can sudo to any user
             with self.settings():
-                icanhaz.sudoer('vagrant')
+                require.sudoer('vagrant')
 
             # Run the test suite
             unittest.TestSuite.run(self, result)

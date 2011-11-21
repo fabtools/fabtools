@@ -12,7 +12,7 @@ from fabtools.files import is_file, is_dir, md5sum
 
 def directory(path, use_sudo=False, owner='', group='', mode=''):
     """
-    I can haz directory
+    Require a directory
     """
     func = use_sudo and sudo or run
     if not is_dir(path):
@@ -25,7 +25,7 @@ def directory(path, use_sudo=False, owner='', group='', mode=''):
 
 def file(path=None, contents=None, source=None, url=None, md5=None, use_sudo=False, owner=None, group='', mode=None):
     """
-    I can haz file
+    Require a file
 
     You can provide either:
     - contents: the required contents of the file

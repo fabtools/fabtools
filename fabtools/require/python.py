@@ -1,17 +1,17 @@
 """
-Idempotent API for managing python packages
+Idempotent API for managing Python packages
 """
 import os.path
 
 from fabtools.files import is_file
 from fabtools.python import *
 from fabtools.python_distribute import is_distribute_installed, install_distribute
-from fabtools.icanhaz import deb
+from fabtools.require import deb
 
 
 def distribute():
     """
-    I can haz distribute
+    Require distribute
     """
     deb.packages([
         'curl',
@@ -23,7 +23,7 @@ def distribute():
 
 def pip(version=None):
     """
-    I can haz pip
+    Require pip
     """
     distribute()
     if not is_pip_installed(version):
@@ -32,7 +32,7 @@ def pip(version=None):
 
 def package(pkg_name, url=None, virtualenv=None, use_sudo=False, user=None):
     """
-    I can haz python package
+    Require a Python package
     """
     pip("1.0.2")
     if not is_installed(pkg_name):
@@ -41,7 +41,7 @@ def package(pkg_name, url=None, virtualenv=None, use_sudo=False, user=None):
 
 def packages(pkg_list, virtualenv=None, use_sudo=False, user=None):
     """
-    I can haz python packages
+    Require several Python packages
     """
     pip("1.0.2")
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg)]
@@ -51,7 +51,7 @@ def packages(pkg_list, virtualenv=None, use_sudo=False, user=None):
 
 def requirements(filename, virtualenv=None, use_sudo=False, user=None):
     """
-    I can haz python packages from a pip requirements file
+    Require Python packages from a pip requirements file
     """
     pip("1.0.2")
     install_requirements(filename, virtualenv=virtualenv, use_sudo=use_sudo, user=user)
@@ -59,7 +59,7 @@ def requirements(filename, virtualenv=None, use_sudo=False, user=None):
 
 def virtualenv(directory, no_site_packages=True, python=None, use_sudo=False, user=None):
     """
-    I can haz python virtual environment
+    Require a Python virtual environment
     """
     package('virtualenv', use_sudo=True)
     if not is_file(os.path.join(directory, 'bin', 'python')):

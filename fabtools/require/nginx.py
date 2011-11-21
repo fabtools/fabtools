@@ -3,13 +3,13 @@ Idempotent API for managing nginx sites
 """
 from fabric.api import *
 from fabtools.files import upload_template, is_link
-from fabtools.icanhaz.deb import package
-from fabtools.icanhaz.service import started
+from fabtools.require.deb import package
+from fabtools.require.service import started
 
 
 def server():
     """
-    I can haz nginx server
+    Require an nginx server
     """
     package('nginx')
     started('nginx')
@@ -17,7 +17,7 @@ def server():
 
 def site(server_name, options=None, enabled=True):
     """
-    I can haz nginx site
+    Require an nginx site
     """
     if options is None:
         options = {}
