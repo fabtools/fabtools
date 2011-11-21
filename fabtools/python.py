@@ -48,11 +48,10 @@ def is_installed(package, virtualenv=None):
     return (package in packages)
 
 
-def install(packages, upgrade=False, virtualenv=None, use_mirrors=True, use_sudo=False):
+def install(packages, upgrade=False, virtualenv=None, use_mirrors=True, use_sudo=False, user=None):
     """
     Install Python packages
     """
-    func = use_sudo and sudo or run
     if not isinstance(packages, basestring):
         packages = " ".join(packages)
     options = []
@@ -63,4 +62,8 @@ def install(packages, upgrade=False, virtualenv=None, use_mirrors=True, use_sudo
     if upgrade:
         options.append("--upgrade")
     options = " ".join(options)
-    func('pip install %(options)s %(packages)s' % locals())
+    command =  'pip install %(options)s %(packages)s' % locals()
+    if use_sudo:
+        sudo(command, user=user)
+    else:
+        run(command)

@@ -30,26 +30,26 @@ def pip(version=None):
         install_pip()
 
 
-def package(pkg_name, url=None, virtualenv=None, use_sudo=False):
+def package(pkg_name, url=None, virtualenv=None, use_sudo=False, user=None):
     """
     I can haz python package
     """
     pip("1.0.2")
     if not is_installed(pkg_name):
-        install(url or pkg_name, virtualenv=virtualenv, use_sudo=use_sudo)
+        install(url or pkg_name, virtualenv=virtualenv, use_sudo=use_sudo, user=user)
 
 
-def packages(pkg_list, virtualenv=None, use_sudo=False):
+def packages(pkg_list, virtualenv=None, use_sudo=False, user=None):
     """
     I can haz python packages
     """
     pip("1.0.2")
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg)]
     if pkg_list:
-        install(pkg_list, virtualenv=virtualenv, use_sudo=use_sudo)
+        install(pkg_list, virtualenv=virtualenv, use_sudo=use_sudo, user=user)
 
 
-def virtualenv(directory, no_site_packages=True, python=None):
+def virtualenv(directory, no_site_packages=True, python=None, use_sudo=False, user=None):
     """
     I can haz python virtual environment
     """
@@ -61,4 +61,8 @@ def virtualenv(directory, no_site_packages=True, python=None):
         if python:
             options.append('--python=%s' % python)
         options = ' '.join(options)
-        run('virtualenv %(options)s "%(directory)s"' % locals())
+        command = 'virtualenv %(options)s "%(directory)s"' % locals()
+        if use_sudo:
+            sudo(command, user=user)
+        else:
+            run(command)
