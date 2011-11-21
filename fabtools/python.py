@@ -67,3 +67,22 @@ def install(packages, upgrade=False, virtualenv=None, use_mirrors=True, use_sudo
         sudo(command, user=user)
     else:
         run(command)
+
+
+def install_requirements(filename, upgrade=False, virtualenv=None, use_mirrors=True, use_sudo=False, user=None):
+    """
+    Install Python packages from a pip requirements file
+    """
+    options = []
+    if virtualenv:
+        options.append('--environment="%s"' % virtualenv)
+    if use_mirrors:
+        options.append('--use-mirrors')
+    if upgrade:
+        options.append("--upgrade")
+    options = " ".join(options)
+    command = 'pip install %(options)s -r %(filename)s' % locals()
+    if use_sudo:
+        sudo(command, user=user)
+    else:
+        run(command)

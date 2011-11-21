@@ -49,6 +49,14 @@ def packages(pkg_list, virtualenv=None, use_sudo=False, user=None):
         install(pkg_list, virtualenv=virtualenv, use_sudo=use_sudo, user=user)
 
 
+def requirements(filename, virtualenv=None, use_sudo=False, user=None):
+    """
+    I can haz python packages from a pip requirements file
+    """
+    pip("1.0.2")
+    install_requirements(filename, virtualenv=virtualenv, use_sudo=use_sudo, user=user)
+
+
 def virtualenv(directory, no_site_packages=True, python=None, use_sudo=False, user=None):
     """
     I can haz python virtual environment
