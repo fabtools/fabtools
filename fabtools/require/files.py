@@ -24,7 +24,8 @@ def directory(path, use_sudo=False, owner='', group='', mode=''):
             func('chmod %(mode)s "%(path)s"' % locals())
 
 
-def file(path=None, contents=None, source=None, url=None, md5=None, use_sudo=False, owner=None, group='', mode=None):
+def file(path=None, contents=None, source=None, url=None, md5=None,
+         use_sudo=False, owner=None, group='', mode=None, verify_remote=True):
     """
     Require a file
 
@@ -32,6 +33,11 @@ def file(path=None, contents=None, source=None, url=None, md5=None, use_sudo=Fal
     - contents: the required contents of the file
     - source: the filename of a local file to upload
     - url: the address of a file to download (path is optional)
+
+    If verify_remote is True (the default), then an MD5 comparison will be used
+    to check whether the remote file is the same as the source. If this is
+    False, the file will be assumed to be the same if it is present. This is
+    useful for very large files, where generating an MD5 sum may take a while.
     """
     func = use_sudo and sudo or run
 
@@ -58,19 +64,24 @@ def file(path=None, contents=None, source=None, url=None, md5=None, use_sudo=Fal
             source.write(contents)
             source.close()
 
-        # Avoid reading the whole file into memory at once
-        digest = hashlib.md5()
-        f = open(source, 'rb')
-        try:
-            while True:
-                d = f.read(BLOCKSIZE)
-                if not d:
-                    break
-                digest.update(d)
-        finally:
-            f.close()
+        if verify_remote:
+            # Avoid reading the whole file into memory at once
+            digest = hashlib.md5()
+            f = open(source, 'rb')
+            try:
+                while True:
+                    d = f.read(BLOCKSIZE)
+                    if not d:
+                        break
+                    digest.update(d)
+            finally:
+                f.close()
+        else:
+            digest = None
 
-        if not is_file(path, use_sudo=use_sudo) or md5sum(path, use_sudo=use_sudo) != digest.hexdigest():
+        if (not is_file(path, use_sudo=use_sudo) or
+                (verify_remote and
+                    md5sum(path, use_sudo=use_sudo) != digest.hexdigest())):
             with settings(hide('running')):
                 if source:
                     put(source, path, use_sudo=use_sudo)
