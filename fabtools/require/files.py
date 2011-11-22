@@ -9,6 +9,7 @@ from urlparse import urlparse
 from fabric.api import *
 from fabtools.files import is_file, is_dir, md5sum
 
+BLOCKSIZE = 2 ** 20  # 1MB
 
 def directory(path, use_sudo=False, owner='', group='', mode=''):
     """
@@ -52,13 +53,24 @@ def file(path=None, contents=None, source=None, url=None, md5=None, use_sudo=Fal
     else:
         if source:
             assert not contents
-            contents = open(source).read()
         else:
-            tmp_file = NamedTemporaryFile(delete=False)
-            tmp_file.write(contents)
-            tmp_file.close()
+            source = NamedTemporaryFile(delete=False)
+            source.write(contents)
+            source.close()
 
-        if not is_file(path) or md5sum(path) != hashlib.md5(contents).hexdigest():
+        # Avoid reading the whole file into memory at once
+        digest = hashlib.md5()
+        f = open(source, 'rb')
+        try:
+            while True:
+                d = f.read(BLOCKSIZE)
+                if not d:
+                    break
+                digest.update(d)
+        finally:
+            f.close()
+
+        if not is_file(path, use_sudo=use_sudo) or md5sum(path, use_sudo=use_sudo) != digest.hexdigest():
             with settings(hide('running')):
                 if source:
                     put(source, path, use_sudo=use_sudo)
