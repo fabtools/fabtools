@@ -1,7 +1,10 @@
 """
 Fabric tools for managing Python packages using pip
 """
+from contextlib import contextmanager
 from distutils.version import StrictVersion as V
+import os.path
+
 from fabric.api import *
 from fabric.utils import puts
 
@@ -86,3 +89,13 @@ def install_requirements(filename, upgrade=False, virtualenv=None, use_mirrors=T
         sudo(command, user=user)
     else:
         run(command)
+
+
+@contextmanager
+def virtualenv(directory):
+    """
+    Context manager to activate a Python virtualenv
+    """
+    with cd(directory):
+        with prefix('source "%s"' % os.path.join(directory, 'bin', 'activate')):
+            yield
