@@ -36,7 +36,7 @@ def setup():
 
     # Require a PostgreSQL server
     require.postgres.server()
-    require.postgres.user('myuser', 's3cr3tp4ssw0rd)
+    require.postgres.user('myuser', 's3cr3tp4ssw0rd')
     require.postgres.database('myappsdb', 'myuser')
 
     # Require a supervisor process for our app
