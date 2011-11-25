@@ -24,9 +24,8 @@ def setup():
 
     # Require some Debian/Ubuntu packages
     require.deb.packages([
-        'build-essential',
-        'python-dev',
-        'supervisor',
+        'imagemagick,
+        'libxml2-dev',
     ])
 
     # Require a Python package
@@ -41,20 +40,17 @@ def setup():
     require.postgres.database('myappsdb', 'myuser')
 
     # Require a supervisor process for our app
-    require.supervisor.process('myapp', {
-        'command': '/home/myuser/env/bin/gunicorn_paster',
-        'config': '/home/myuser/env/myapp/production.ini',
-        'directory': '/home/myuser/env/myapp',
-        'user': 'myuser',
-    })
+    require.supervisor.process('myapp',
+        command='/home/myuser/env/bin/gunicorn_paster /home/myuser/env/myapp/production.ini',
+        directory='/home/myuser/env/myapp',
+        user='myuser'
+        )
 
     # Require an nginx server proxying to our app
-    require.nginx.server()
-    require.nginx.site('example.com', {
-        'aliases': 'www.example.com www2.example.com',
-        'docroot': '/home/myuser/env/myapp/myapp/public',
-        'proxy_url': 'http://127.0.0.1:8888',
-    })
+    require.nginx.proxied_site('example.com',
+        docroot='/home/myuser/env/myapp/myapp/public',
+        proxy_url='http://127.0.0.1:8888'
+        )
 
     # Setup a daily cron task
     fabtools.cron.add_daily('maintenance', 'myuser', 'my_script.py')

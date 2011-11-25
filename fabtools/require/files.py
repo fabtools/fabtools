@@ -73,3 +73,17 @@ def file(path=None, contents=None, source=None, url=None, md5=None, use_sudo=Fal
     # Ensure correct mode
     if mode:
         func('chmod %(mode)s "%(path)s"' % locals())
+
+
+def template_file(path=None, template_contents=None, template_source=None, context=None, **kwargs):
+    """
+    Require a file whose contents is defined by a template
+    """
+    if template_contents is None:
+        with open(template_source) as template_file:
+            template_contents = template_file.read()
+
+    if context is None:
+        context = {}
+
+    file(path=path, contents=template_contents % context, **kwargs)
