@@ -24,7 +24,7 @@ def setup():
 
     # Require some Debian/Ubuntu packages
     require.deb.packages([
-        'imagemagick,
+        'imagemagick',
         'libxml2-dev',
     ])
 
