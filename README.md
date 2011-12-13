@@ -67,7 +67,7 @@ Supported targets
 Tests
 =====
 
-The tests use [Vagrant](http://vagrantup.com/) to launch virtual machines,
+The integration tests use [Vagrant](http://vagrantup.com/) to launch virtual machines,
 against which all the tests will be run.
 
 You can launch the tests using the Python 2.7 built-in [unittest](http://docs.python.org/library/unittest.html) runner:
@@ -79,3 +79,12 @@ $ python -m unittest tests
 Note that you must have vagrant base boxes named `ubuntu_10_04` and `ubuntu_10_10`
 for the tests to work out of the box. You may edit the `BASE_BOXES` list in `tests/__init__.py`
 to match your local configuration if necessary.
+
+You must also have the `mock` package installed.
+
+If you do not have Vagrant installed, you may optionally skip the integration
+tests and run the unit tests in isolation:
+
+```
+$ SKIP_VAGRANT_TESTS=1 python -m unittest tests
+```
