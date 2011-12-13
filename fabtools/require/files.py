@@ -59,10 +59,12 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
     else:
         if source:
             assert not contents
+            t = None
         else:
-            source = NamedTemporaryFile(delete=False)
-            source.write(contents)
-            source.close()
+            t = NamedTemporaryFile(delete=False)
+            t.write(contents)
+            t.close()
+            source = t.name
 
         if verify_remote:
             # Avoid reading the whole file into memory at once
@@ -88,6 +90,9 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
                 else:
                     put(tmp_file.name, path, use_sudo=use_sudo)
                     os.remove(tmp_file.name)
+
+        if t is not None:
+            os.unlink(source)
 
     # Ensure correct owner
     if owner:
