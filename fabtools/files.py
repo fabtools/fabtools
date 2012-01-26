@@ -2,6 +2,7 @@
 Fabric tools for managing files and directories
 """
 import os.path
+from contextlib import contextmanager
 from fabric.api import *
 from fabric.contrib.files import upload_template as _upload_template
 
@@ -58,3 +59,26 @@ def md5sum(filename, use_sudo=False):
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = func('md5sum %(filename)s' % locals())
     return res.split()[0]
+
+
+@contextmanager
+def watch(_filename, _use_sudo=False, _callable=None, *args, **kwargs):
+    """
+    Trigger the callable if the file has changed at the end of the context.
+    Underscores are used to avoid conflicts with the args/kwargs
+    of the callable.
+
+    Typical usage:
+        from fabtools.files import watch
+        from fabtools.services import restart
+        from fabtools.contrib.files import uncomment
+        with watch("/etc/daemon.conf", True, restart, "daemon"):
+            uncomment("/etc/daemon.conf", "someoption")
+            comment("/etc/daemon.conf", "otheroption")
+        # The daemon will be restarted only if its config file was changed.
+    """
+    old_md5 = md5sum(_filename, _use_sudo)
+    yield
+    new_md5 = md5sum(_filename, _use_sudo)
+    if old_md5 != new_md5:
+        _callable(*args, **kwargs)

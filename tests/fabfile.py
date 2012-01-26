@@ -36,6 +36,16 @@ def files():
         assert fabtools.files.is_file('baz')
         assert run('cat baz') == baz_contents, run('cat baz')
 
+        # Ensure that the callable is triggered only
+        # when the watched file is modified
+        require.file('watched', contents='aaa')
+        with fabtools.files.watch('watched', False, require.file, 'modified1'):
+            require.file('watched', contents='bbb')
+        assert fabtools.files.is_file('modified1')
+        with fabtools.files.watch('watched', False, require.file, 'modified2'):
+            pass
+        assert not fabtools.files.is_file('modified2')
+
 
 def python():
     """
