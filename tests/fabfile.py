@@ -1,5 +1,6 @@
 import os
 from tempfile import NamedTemporaryFile
+import hashlib
 
 from fabric.api import *
 from fabtools import require
@@ -35,6 +36,13 @@ def files():
         os.remove(tmp_file.name)
         assert fabtools.files.is_file('baz')
         assert run('cat baz') == baz_contents, run('cat baz')
+
+        # Check md5 sums (unavailable, empty, with content)
+        run('touch f1')
+        run('echo -n hello > f2')
+        assert fabtools.files.md5sum('doesnotexist') is None
+        assert fabtools.files.md5sum('f1') == hashlib.md5('').hexdigest()
+        assert fabtools.files.md5sum('f2') == hashlib.md5('hello').hexdigest()
 
 
 def python():

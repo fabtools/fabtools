@@ -57,4 +57,7 @@ def md5sum(filename, use_sudo=False):
     func = use_sudo and sudo or run
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = func('md5sum %(filename)s' % locals())
+    if res.failed:
+        warn(res)
+        return None
     return res.split()[0]
