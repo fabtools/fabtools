@@ -62,11 +62,12 @@ def md5sum(filename, use_sudo=False):
 
 
 @contextmanager
-def watch(_filename, _use_sudo=False, _callable=None, *args, **kwargs):
+def watch(_filenames, _use_sudo=False, _callable=None, *args, **kwargs):
     """
-    Trigger the callable if the file has changed at the end of the context.
+    Trigger the callable if any files changed at the end of the context.
     Underscores are used to avoid conflicts with the args/kwargs
     of the callable.
+    The filenames can be a string (short for [filename1]) instead of a list.
 
     Typical usage:
         from fabtools.files import watch
@@ -77,8 +78,13 @@ def watch(_filename, _use_sudo=False, _callable=None, *args, **kwargs):
             comment("/etc/daemon.conf", "otheroption")
         # The daemon will be restarted only if its config file was changed.
     """
-    old_md5 = md5sum(_filename, _use_sudo)
+    filenames = [_filenames] if isinstance(_filenames, basestring) \
+                else _filenames
+    old_md5 = dict()
+    for filename in filenames:
+        old_md5[filename] = md5sum(filename, _use_sudo)
     yield
-    new_md5 = md5sum(_filename, _use_sudo)
-    if old_md5 != new_md5:
-        _callable(*args, **kwargs)
+    for filename in filenames:
+        if md5sum(filename, _use_sudo) != old_md5[filename]:
+            _callable(*args, **kwargs)
+            return
