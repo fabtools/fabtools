@@ -55,6 +55,21 @@ def install(packages, update=False, options=None):
     sudo('%(manager)s install %(options)s %(packages)s' % locals())
 
 
+def uninstall(packages, purge=False, options=None):
+    """
+    Remove .deb package(s)
+    """
+    manager = MANAGER
+    command = "purge" if purge else "remove"
+    if options is None:
+        options = []
+    if not isinstance(packages, basestring):
+        packages = " ".join(packages)
+    options.append("--assume-yes")
+    options = " ".join(options)
+    sudo('%(manager)s %(command)s %(options)s %(packages)s' % locals())
+
+
 def preseed_package(pkg_name, preseed):
     """
     Enable unattended package installation by preseeding debconf parameters
