@@ -1,4 +1,4 @@
-*.egg/
+*.egg
 *.egg-info/
 .Python
 bin/
@@ -6,5 +6,6 @@ build/
 include/
 lib/
 man/
+share/
 tests/.vagrant
 *.pyc
