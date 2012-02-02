@@ -9,6 +9,7 @@ from urlparse import urlparse
 from fabric.api import *
 from fabtools.files import is_file, is_dir, md5sum
 
+BLOCKSIZE = 2 ** 20  # 1MB
 
 def directory(path, use_sudo=False, owner='', group='', mode=''):
     """
@@ -23,7 +24,8 @@ def directory(path, use_sudo=False, owner='', group='', mode=''):
             func('chmod %(mode)s "%(path)s"' % locals())
 
 
-def file(path=None, contents=None, source=None, url=None, md5=None, use_sudo=False, owner=None, group='', mode=None):
+def file(path=None, contents=None, source=None, url=None, md5=None,
+         use_sudo=False, owner=None, group='', mode=None, verify_remote=True):
     """
     Require a file
 
@@ -31,6 +33,11 @@ def file(path=None, contents=None, source=None, url=None, md5=None, use_sudo=Fal
     - contents: the required contents of the file
     - source: the filename of a local file to upload
     - url: the address of a file to download (path is optional)
+
+    If verify_remote is True (the default), then an MD5 comparison will be used
+    to check whether the remote file is the same as the source. If this is
+    False, the file will be assumed to be the same if it is present. This is
+    useful for very large files, where generating an MD5 sum may take a while.
     """
     func = use_sudo and sudo or run
 
@@ -52,19 +59,40 @@ def file(path=None, contents=None, source=None, url=None, md5=None, use_sudo=Fal
     else:
         if source:
             assert not contents
-            contents = open(source).read()
+            t = None
         else:
-            tmp_file = NamedTemporaryFile(delete=False)
-            tmp_file.write(contents)
-            tmp_file.close()
+            t = NamedTemporaryFile(delete=False)
+            t.write(contents)
+            t.close()
+            source = t.name
 
-        if not is_file(path) or md5sum(path) != hashlib.md5(contents).hexdigest():
+        if verify_remote:
+            # Avoid reading the whole file into memory at once
+            digest = hashlib.md5()
+            f = open(source, 'rb')
+            try:
+                while True:
+                    d = f.read(BLOCKSIZE)
+                    if not d:
+                        break
+                    digest.update(d)
+            finally:
+                f.close()
+        else:
+            digest = None
+
+        if (not is_file(path, use_sudo=use_sudo) or
+                (verify_remote and
+                    md5sum(path, use_sudo=use_sudo) != digest.hexdigest())):
             with settings(hide('running')):
                 if source:
                     put(source, path, use_sudo=use_sudo)
                 else:
                     put(tmp_file.name, path, use_sudo=use_sudo)
                     os.remove(tmp_file.name)
+
+        if t is not None:
+            os.unlink(source)
 
     # Ensure correct owner
     if owner:
