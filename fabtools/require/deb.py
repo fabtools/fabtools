@@ -35,3 +35,20 @@ def packages(pkg_list, update=False):
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg)]
     if pkg_list:
         install(pkg_list, update)
+
+
+def nopackage(pkg_name):
+    """
+    Require a deb package to be absent
+    """
+    if is_installed(pkg_name):
+        uninstall(pkg_name)
+
+
+def nopackages(pkg_list):
+    """
+    Require several deb packages to be absent
+    """
+    pkg_list = [pkg for pkg in pkg_list if is_installed(pkg)]
+    if pkg_list:
+        uninstall(pkg_list)
