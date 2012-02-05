@@ -69,6 +69,4 @@ def distrib_codename():
     Get the codename of the distrib
     """
     with settings(hide('running', 'stdout')):
-        if run('which lsb_release'):
-            return run('lsb_release --codename --short')
-        return run('grep DISTRIB_CODENAME /etc/lsb-release').split('=')[1]
+        return run('lsb_release --codename --short')
