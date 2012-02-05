@@ -12,6 +12,15 @@ from fabric.state import connections
 from fabtools import require
 
 
+def version():
+    """
+    Get the vagrant version as a tuple
+    """
+    res = local('vagrant --version', capture=True)
+    ver = res.split()[2]
+    return tuple(map(int, ver.split('.')))
+
+
 def base_boxes():
     """
     Get the list of vagrant base boxes to use
@@ -93,7 +102,11 @@ class VagrantTestSuite(unittest.TestSuite):
         Get SSH connection parameters for the current box
         """
         with lcd(os.path.dirname(__file__)):
-            output = local('vagrant ssh_config', capture=True)
+            print version()
+            if version() >= (0, 9):
+                output = local('vagrant ssh-config', capture=True)
+            else:
+                output = local('vagrant ssh_config', capture=True)
 
         config = {}
         for line in output.splitlines()[1:]:
