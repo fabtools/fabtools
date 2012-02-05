@@ -79,6 +79,20 @@ def preseed_package(pkg_name, preseed):
         sudo('echo "%(pkg_name)s %(q_name)s %(q_type)s %(q_answer)s" | debconf-set-selections' % locals())
 
 
+def get_selections():
+    """
+    Get the state of dkpg selections
+    Returns dict with state => [packages]
+    """
+    with settings(hide('stdout')):
+        res = sudo('dpkg --get-selections')
+    selections = dict()
+    for line in res.splitlines():
+        package, status = line.split()
+        selections.setdefault(status, list()).append(package)
+    return selections
+
+
 def distrib_codename():
     """
     Get the codename of the distrib
