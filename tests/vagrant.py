@@ -1,3 +1,4 @@
+import os
 import os.path
 
 try:
@@ -9,6 +10,25 @@ from fabric.api import *
 from fabric.state import connections
 
 from fabtools import require
+
+
+def base_boxes():
+    """
+    Get the list of vagrant base boxes to use
+
+    The default is to get the list of all base boxes.
+
+    This can be overridden with the VAGRANT_BOXES environment variable.
+    """
+    boxes = os.environ.get('VAGRANT_BOXES')
+    if boxes is not None:
+        return boxes.split()
+    else:
+        res = local('vagrant box list', capture=True)
+        if res.failed:
+            return []
+        else:
+            return res.splitlines()
 
 
 class VagrantTestSuite(unittest.TestSuite):

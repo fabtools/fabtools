@@ -63,12 +63,11 @@ Supported targets
 
 * Ubuntu 10.04 LTS
 * Ubuntu 10.10
+* Ubuntu 11.04
+* Ubuntu 11.10
 
 Tests
 =====
-
-The integration tests use [Vagrant](http://vagrantup.com/) to launch virtual machines,
-against which all the tests will be run.
 
 You can launch the tests using the Python 2.7 built-in [unittest](http://docs.python.org/library/unittest.html) runner:
 
@@ -76,15 +75,28 @@ You can launch the tests using the Python 2.7 built-in [unittest](http://docs.py
 $ python -m unittest tests
 ```
 
-Note that you must have vagrant base boxes named `ubuntu_10_04` and `ubuntu_10_10`
-for the tests to work out of the box. You may edit the `BASE_BOXES` list in `tests/__init__.py`
-to match your local configuration if necessary.
+Unit tests
+----------
 
-You must also have the `mock` package installed.
+Running unit tests requires the [mock](http://pypi.python.org/pypi/mock/) library.
 
-If you do not have Vagrant installed, you may optionally skip the integration
-tests and run the unit tests in isolation:
+Functional tests
+----------------
+
+Running functional tests requires [Vagrant](http://vagrantup.com/) to launch virtual machines,
+against which all the tests will be run.
+
+If Vagrant is not installed, the functional tests will be skipped automatically.
+
+If Vagrant is installed, the default is to run the tests on all available base boxes.
+You can specify which base boxes should be used by setting the BASE_BOXES environment variable.
 
 ```
-$ SKIP_VAGRANT_TESTS=1 python -m unittest tests
+VAGRANT_BOXES='ubuntu_10_04 ubuntu_10_10' python -m unittest tests
+```
+
+You can also use this to manually disable functional tests:
+
+```
+VAGRANT_BOXES='' python -m unittest tests
 ```
