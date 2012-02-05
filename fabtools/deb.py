@@ -4,18 +4,25 @@ Fabric tools for managing Debian/Ubuntu packages
 from fabric.api import *
 
 
+MANAGER = 'apt-get'
+
+
 def update_index():
     """
     Quietly update package index
     """
-    sudo("aptitude -q -q update")
+    sudo("%s -q -q update" % MANAGER)
 
 
-def upgrade():
+def upgrade(safe=True):
     """
     Upgrade all packages
     """
-    sudo("aptitude --assume-yes safe-upgrade")
+    manager = MANAGER
+    cmds = {'apt-get': {False: 'dist-upgrade', True: 'upgrade'},
+            'aptitude': {False: 'full-upgrade', True: 'safe-upgrade'}}
+    cmd = cmds[manager][safe]
+    sudo("%(manager)s --assume-yes %(cmd)s" % locals())
 
 
 def is_installed(pkg_name):
@@ -36,6 +43,7 @@ def install(packages, update=False, options=None):
     """
     Install .deb package(s)
     """
+    manager = MANAGER
     if update:
         update_index()
     if options is None:
@@ -44,7 +52,7 @@ def install(packages, update=False, options=None):
         packages = " ".join(packages)
     options.append("--assume-yes")
     options = " ".join(options)
-    sudo('aptitude install %(options)s %(packages)s' % locals())
+    sudo('%(manager)s install %(options)s %(packages)s' % locals())
 
 
 def preseed_package(pkg_name, preseed):
