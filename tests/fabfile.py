@@ -41,12 +41,12 @@ def python():
     """
     Check Python package installation
     """
-    require.python.virtualenv('/tmp/venv', python='python2.6')
+    require.python.virtualenv('/tmp/venv')
     assert fabtools.files.is_dir('/tmp/venv')
     assert fabtools.files.is_file('/tmp/venv/bin/python')
 
     require.python.package('fabric', virtualenv='/tmp/venv')
-    assert fabtools.files.is_dir('/tmp/venv/lib/python2.6/site-packages/fabric')
+    assert fabtools.files.is_file('/tmp/venv/bin/fab')
 
 
 def mysql():
