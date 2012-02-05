@@ -9,15 +9,18 @@ from fabtools.require.deb import package
 from fabtools.require.service import started
 
 
-def server(version='8.4'):
+def server(version=None):
     """
     Require a PostgreSQL server
     """
-    package('postgresql-%s' % version)
-    service = 'postgresql-%s' % version
-    if not is_file(os.path.join('/etc/init.d', service)):
-        service = 'postgresql'
-    started(service)
+    if version:
+        pkg_name = service_name = 'postgresql-%s' % version
+    else:
+        pkg_name = service_name = 'postgresql'
+    package(pkg_name)
+    if not is_file(os.path.join('/etc/init.d', service_name)):
+        service_name = 'postgresql'
+    started(service_name)
 
 
 def user(name, password):
