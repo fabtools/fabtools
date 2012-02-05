@@ -9,6 +9,7 @@ except ImportError:
 from fabric.api import *
 from fabric.state import connections
 
+import fabtools
 from fabtools import require
 
 
@@ -77,6 +78,10 @@ class VagrantTestSuite(unittest.TestSuite):
             # Make sure the vagrant user can sudo to any user
             with self.settings():
                 require.sudoer('vagrant')
+
+            # Make sure the package index is up to date
+            with self.settings():
+                fabtools.deb.update_index()
 
             # Run the test suite
             unittest.TestSuite.run(self, result)
