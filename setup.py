@@ -18,6 +18,7 @@ setup(
     setup_requires=[],
     tests_require=[
         "unittest2",
+        "mock",
     ],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
