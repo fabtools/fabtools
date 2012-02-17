@@ -23,6 +23,18 @@ def version():
     return tuple(map(int, ver.split('.')))
 
 
+def halt_and_destroy():
+    """
+    Halt and destoy virtual machine
+    """
+    with lcd(os.path.dirname(__file__)):
+        local('vagrant halt')
+        if version() >= (0, 9, 99):
+            local('vagrant destroy -f')
+        else:
+            local('vagrant destroy')
+
+
 def base_boxes():
     """
     Get the list of vagrant base boxes to use
@@ -61,9 +73,7 @@ class VagrantTestSuite(unittest.TestSuite):
         Run the test suite on all the virtual machines
         """
         # Clean up
-        with lcd(os.path.dirname(__file__)):
-            local('vagrant halt')
-            local('vagrant destroy')
+        halt_and_destroy()
 
         for base_box in self.base_boxes:
 
@@ -108,7 +118,7 @@ class VagrantTestSuite(unittest.TestSuite):
         Get SSH connection parameters for the current box
         """
         with lcd(os.path.dirname(__file__)):
-            if version() >= (0, 9):
+            if version() >= (0, 9, 0):
                 command = 'ssh-config'
             else:
                 command = 'ssh_config'
@@ -125,11 +135,10 @@ class VagrantTestSuite(unittest.TestSuite):
         """
         Spin down the vagrant box
         """
+        halt_and_destroy()
         with lcd(os.path.dirname(__file__)):
-            local('vagrant halt')
-            local('vagrant destroy')
             local('rm -f Vagrantfile')
-            self.current_box = None
+        self.current_box = None
 
     def settings(self, *args, **kwargs):
         """
