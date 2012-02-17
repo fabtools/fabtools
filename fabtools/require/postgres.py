@@ -14,12 +14,20 @@ def server(version=None):
     Require a PostgreSQL server
     """
     if version:
-        pkg_name = service_name = 'postgresql-%s' % version
+        pkg_name = 'postgresql-%s' % version
     else:
-        pkg_name = service_name = 'postgresql'
+        pkg_name = 'postgresql'
     package(pkg_name)
-    if not is_file(os.path.join('/etc/init.d', service_name)):
+
+    if is_file('/etc/init.d/postgresql'):
         service_name = 'postgresql'
+    else:
+        if version and is_file('/etc/init.d/postgresql-%s' % version):
+            service_name = 'postgresql-%s' % version
+        else:
+            with cd('/etc/init.d'):
+                with settings(hide('running', 'stdout')):
+                    service_name = run('ls postgresql-*').splitlines()[0]
     started(service_name)
 
 
