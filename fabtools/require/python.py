@@ -30,31 +30,31 @@ def pip(version=None):
         install_pip()
 
 
-def package(pkg_name, url=None, virtualenv=None, use_sudo=False, user=None):
+def package(pkg_name, url=None, use_sudo=False, user=None):
     """
     Require a Python package
     """
-    pip("1.0.2")
+    pip('1.1')
     if not is_installed(pkg_name):
-        install(url or pkg_name, virtualenv=virtualenv, use_sudo=use_sudo, user=user)
+        install(url or pkg_name, use_sudo=use_sudo, user=user)
 
 
-def packages(pkg_list, virtualenv=None, use_sudo=False, user=None):
+def packages(pkg_list, use_sudo=False, user=None):
     """
     Require several Python packages
     """
-    pip("1.0.2")
+    pip('1.1')
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg)]
     if pkg_list:
-        install(pkg_list, virtualenv=virtualenv, use_sudo=use_sudo, user=user)
+        install(pkg_list, use_sudo=use_sudo, user=user)
 
 
-def requirements(filename, virtualenv=None, use_sudo=False, user=None):
+def requirements(filename, use_sudo=False, user=None):
     """
     Require Python packages from a pip requirements file
     """
-    pip("1.0.2")
-    install_requirements(filename, virtualenv=virtualenv, use_sudo=use_sudo, user=user)
+    pip('1.1')
+    install_requirements(filename, use_sudo=use_sudo, user=user)
 
 
 def virtualenv(directory, no_site_packages=True, python=None, use_sudo=False, user=None):
