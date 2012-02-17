@@ -17,7 +17,8 @@ def version():
     """
     Get the vagrant version as a tuple
     """
-    res = local('vagrant --version', capture=True)
+    with settings(hide('running')):
+        res = local('vagrant --version', capture=True)
     ver = res.split()[2]
     return tuple(map(int, ver.split('.')))
 
@@ -107,11 +108,12 @@ class VagrantTestSuite(unittest.TestSuite):
         Get SSH connection parameters for the current box
         """
         with lcd(os.path.dirname(__file__)):
-            print version()
             if version() >= (0, 9):
-                output = local('vagrant ssh-config', capture=True)
+                command = 'ssh-config'
             else:
-                output = local('vagrant ssh_config', capture=True)
+                command = 'ssh_config'
+            with settings(hide('running')):
+                output = local('vagrant %s' % command, capture=True)
 
         config = {}
         for line in output.splitlines()[1:]:
