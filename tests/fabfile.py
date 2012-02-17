@@ -45,7 +45,8 @@ def python():
     assert fabtools.files.is_dir('/tmp/venv')
     assert fabtools.files.is_file('/tmp/venv/bin/python')
 
-    require.python.package('fabric', virtualenv='/tmp/venv')
+    with fabtools.python.virtualenv('/tmp/venv'):
+        require.python.package('fabric')
     assert fabtools.files.is_file('/tmp/venv/bin/fab')
 
 

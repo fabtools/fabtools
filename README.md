@@ -29,7 +29,8 @@ def setup():
     ])
 
     # Require a Python package
-    require.python.package('pyramid')
+    with fabtools.python.virtualenv('/home/myuser/env'):
+        require.python.package('pyramid')
 
     # Require an email server
     require.postfix.server('example.com')

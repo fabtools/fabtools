@@ -57,15 +57,15 @@ def requirements(filename, use_sudo=False, user=None):
     install_requirements(filename, use_sudo=use_sudo, user=user)
 
 
-def virtualenv(directory, no_site_packages=True, python=None, use_sudo=False, user=None):
+def virtualenv(directory, system_site_packages=False, python=None, use_sudo=False, user=None):
     """
     Require a Python virtual environment
     """
     package('virtualenv', use_sudo=True)
     if not is_file(os.path.join(directory, 'bin', 'python')):
         options = ['--quiet']
-        if no_site_packages:
-            options.append('--no-site-packages')
+        if system_site_packages:
+            options.append('--system-site-packages')
         if python:
             options.append('--python=%s' % python)
         options = ' '.join(options)
