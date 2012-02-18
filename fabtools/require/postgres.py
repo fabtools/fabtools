@@ -1,6 +1,8 @@
 """
 Idempotent API for managing PostgreSQL users and databases
 """
+from __future__ import with_statement
+
 import os.path
 
 from fabtools.files import is_file

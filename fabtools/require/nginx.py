@@ -1,6 +1,8 @@
 """
 Idempotent API for managing nginx sites
 """
+from __future__ import with_statement
+
 from fabric.api import *
 from fabric.colors import red
 from fabtools.files import upload_template, is_link

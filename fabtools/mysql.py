@@ -1,6 +1,8 @@
 """
 Fabric tools for managing MySQL users and databases
 """
+from __future__ import with_statement
+
 from fabric.api import *
 
 

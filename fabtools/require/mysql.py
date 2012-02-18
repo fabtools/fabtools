@@ -1,6 +1,8 @@
 """
 Idempotent API for managing MySQL users and databases
 """
+from __future__ import with_statement
+
 from fabtools.mysql import *
 from fabtools.deb import is_installed, preseed_package
 from fabtools.require.deb import package

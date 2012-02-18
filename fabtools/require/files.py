@@ -1,6 +1,8 @@
 """
 Idempotent API for managing files and directories
 """
+from __future__ import with_statement
+
 import hashlib
 import os, os.path
 from tempfile import NamedTemporaryFile
@@ -9,7 +11,9 @@ from urlparse import urlparse
 from fabric.api import *
 from fabtools.files import is_file, is_dir, md5sum
 
+
 BLOCKSIZE = 2 ** 20  # 1MB
+
 
 def directory(path, use_sudo=False, owner='', group='', mode=''):
     """

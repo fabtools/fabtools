@@ -1,6 +1,8 @@
 """
 Fabric tools for managing Python packages using pip
 """
+from __future__ import with_statement
+
 from contextlib import contextmanager
 from distutils.version import StrictVersion as V
 import os.path
