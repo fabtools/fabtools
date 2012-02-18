@@ -47,7 +47,12 @@ def files():
             pass
         assert not fabtools.files.is_file('modified2')
 
-        # Check md5 sums (unavailable, empty, with content)
+
+def md5():
+    """
+    Check MD5 sums (unavailable, empty, with content)
+    """
+    with cd('/tmp'):
         run('touch f1')
         run('echo -n hello > f2')
         assert fabtools.files.md5sum('doesnotexist') is None
