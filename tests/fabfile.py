@@ -1,8 +1,8 @@
 from __future__ import with_statement
 
-import os
-from tempfile import NamedTemporaryFile
+from tempfile import mkstemp
 import hashlib
+import os
 
 from fabric.api import *
 from fabtools import require
@@ -31,11 +31,12 @@ def files():
 
         # Require that a file exists, whose contents should be this local file
         baz_contents = '''This is the contents of the bar file'''
-        tmp_file = NamedTemporaryFile(delete=False)
+        fd, filename = mkstemp()
+        tmp_file = os.fdopen(fd, 'w')
         tmp_file.write(baz_contents)
         tmp_file.close()
-        require.file('baz', source=tmp_file.name)
-        os.remove(tmp_file.name)
+        require.file('baz', source=filename)
+        os.remove(filename)
         assert fabtools.files.is_file('baz')
         assert run('cat baz') == baz_contents, run('cat baz')
 

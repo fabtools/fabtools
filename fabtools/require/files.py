@@ -5,7 +5,7 @@ from __future__ import with_statement
 
 import hashlib
 import os, os.path
-from tempfile import NamedTemporaryFile
+from tempfile import mkstemp
 from urlparse import urlparse
 
 from fabric.api import *
@@ -65,10 +65,10 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
             assert not contents
             t = None
         else:
-            t = NamedTemporaryFile(delete=False)
+            fd, source = mkstemp()
+            t = os.fdopen(fd, 'w')
             t.write(contents)
             t.close()
-            source = t.name
 
         if verify_remote:
             # Avoid reading the whole file into memory at once
