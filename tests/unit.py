@@ -6,7 +6,7 @@ import unittest
 class FilesTestCase(unittest.TestCase):
 
     def _file(self, *args, **kwargs):
-        """ Proxy to ensure ImportErrors actually case test failures rather
+        """ Proxy to ensure ImportErrors actually cause test failures rather
         than trashing the test run entirely """
         from fabtools import require
         require.files.file(*args, **kwargs)
