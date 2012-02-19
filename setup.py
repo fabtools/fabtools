@@ -1,3 +1,5 @@
+import os
+
 try:
     from setuptools import setup, find_packages
 except ImportError:
@@ -5,10 +7,14 @@ except ImportError:
     use_setuptools()
     from setuptools import setup, find_packages
 
+def read(filename):
+    return open(os.path.join(os.path.dirname(__file__), filename)).read()
+
 setup(
     name='fabtools',
     version='0.1',
     description='Tools for writing awesome Fabric files',
+    long_description=read('README.rst'),
     author='Ronan Amicel',
     author_email='ronan.amicel@gmail.com',
     url='http://github.com/ronnix/fabtools',
