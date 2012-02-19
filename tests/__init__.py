@@ -1,21 +1,15 @@
 import os
 import os.path
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 from fabric.main import load_fabfile
 from vagrant import base_boxes, VagrantFunctionTestCase, VagrantTestSuite
 from . import unit
 
 
-def load_tests(loader, tests, patterns):
+def load_tests(loader, suite, patterns):
     """
     Custom test loader
     """
-    suite = unittest.TestSuite()
-
     # Add unit tests (import here to avoid circular import)
     suite.addTest(loader.loadTestsFromModule(unit))
 
@@ -33,7 +27,3 @@ def load_tests(loader, tests, patterns):
         suite.addTest(vagrant_suite)
 
     return suite
-
-
-if __name__ == '__main__':
-    unittest.main()
