@@ -9,6 +9,7 @@ from fabtools import require
 import fabtools
 
 
+@task
 def files():
     """
     Check file creation
@@ -51,6 +52,7 @@ def files():
         assert not fabtools.files.is_file('modified2')
 
 
+@task
 def md5():
     """
     Check MD5 sums (unavailable, empty, with content)
@@ -63,6 +65,7 @@ def md5():
         assert fabtools.files.md5sum('f2') == hashlib.md5('hello').hexdigest()
 
 
+@task
 def python():
     """
     Check Python package installation
@@ -76,6 +79,7 @@ def python():
     assert fabtools.files.is_file('/tmp/venv/bin/fab')
 
 
+@task
 def mysql():
     """
     Setup MySQL server, user and database
@@ -91,6 +95,7 @@ def mysql():
         assert fabtools.mysql.database_exists('mydb')
 
 
+@task
 def postgresql():
     """
     Setup PostgreSQL server, user and database

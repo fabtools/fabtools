@@ -2,7 +2,6 @@ import os
 import os.path
 
 from fabric.main import load_fabfile
-from vagrant import base_boxes, VagrantFunctionTestCase, VagrantTestSuite
 from . import unit
 
 
@@ -14,6 +13,7 @@ def load_tests(loader, suite, patterns):
     suite.addTest(loader.loadTestsFromModule(unit))
 
     # Try to add vagrant functional tests
+    from vagrant import base_boxes, VagrantFunctionTestCase, VagrantTestSuite
     boxes = base_boxes()
     if boxes:
         vagrant_suite = VagrantTestSuite(boxes)

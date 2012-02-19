@@ -56,7 +56,7 @@ def base_boxes():
             return res.splitlines()
 
 
-class VagrantTestSuite(unittest.TestSuite):
+class VagrantTestSuite(unittest.BaseTestSuite):
     """
     Test suite with vagrant support
     """
@@ -64,11 +64,11 @@ class VagrantTestSuite(unittest.TestSuite):
     def __init__(self, base_boxes):
         self.base_boxes = base_boxes
         self.current_box = None
-        unittest.TestSuite.__init__(self)
+        unittest.BaseTestSuite.__init__(self)
 
     def addTest(self, test):
         test._suite = self
-        unittest.TestSuite.addTest(self, test)
+        unittest.BaseTestSuite.addTest(self, test)
 
     def run(self, result):
         """
@@ -97,7 +97,7 @@ class VagrantTestSuite(unittest.TestSuite):
                 fabtools.deb.update_index()
 
             # Run the test suite
-            unittest.TestSuite.run(self, result)
+            unittest.BaseTestSuite.run(self, result)
 
             # Stop the virtual machine and clean up
             self.stop_box()

@@ -70,10 +70,19 @@ Supported targets
 Tests
 =====
 
-You can launch the tests using the Python 2.7 built-in [unittest](http://docs.python.org/library/unittest.html) runner:
+Test runner
+-----------
+
+If you're using Python 2.7, you can launch the tests using the built-in [unittest](http://docs.python.org/library/unittest.html) runner:
 
 ```
 $ python -m unittest tests
+```
+
+If you're using Python 2.5 or 2.6, you'll need to install [unittest2](http://pypi.python.org/pypi/unittest2), and use the provided runner:
+
+```
+$ unit2 tests
 ```
 
 Unit tests
