@@ -3,6 +3,7 @@
 .Python
 bin/
 build/
+dist/
 include/
 lib/
 man/
