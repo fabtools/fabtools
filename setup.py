@@ -12,6 +12,7 @@ setup(
     author='Ronan Amicel',
     author_email='ronan.amicel@gmail.com',
     url='http://github.com/ronnix/fabtools',
+    license='BSD',
     install_requires=[
         "fabric>=1.2.0",
     ],
