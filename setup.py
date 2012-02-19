@@ -12,6 +12,7 @@ setup(
     author='Ronan Amicel',
     author_email='ronan.amicel@gmail.com',
     url='http://github.com/ronnix/fabtools',
+    license='BSD',
     install_requires=[
         "fabric>=1.2.0",
     ],
@@ -20,7 +21,7 @@ setup(
         "unittest2",
         "mock",
     ],
-    packages=find_packages(exclude=['ez_setup']),
+    packages=find_packages(exclude=['ez_setup', 'tests']),
     include_package_data=True,
     zip_safe=False,
     classifiers=[
