@@ -5,6 +5,7 @@ import fabtools.require.postfix
 import fabtools.require.postgres
 import fabtools.require.mysql
 import fabtools.require.python
+import fabtools.require.redis
 import fabtools.require.service
 import fabtools.require.supervisor
 import fabtools.require.system
