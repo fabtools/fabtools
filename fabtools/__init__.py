@@ -7,6 +7,7 @@ import fabtools.python
 import fabtools.python_distribute
 import fabtools.service
 import fabtools.supervisor
+import fabtools.system
 import fabtools.user
 
 import fabtools.require
