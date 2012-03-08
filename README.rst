@@ -100,3 +100,4 @@ You can specify which base boxes should be used by setting the VAGRANT_BOXES env
 You can also use this to manually disable functional tests::
 
     VAGRANT_BOXES='' python -m unittest tests
+
