@@ -1,40 +1,35 @@
 """
 Idempotent API for managing supervisor processes
 """
-from fabtools.require import deb
-from fabtools.require.files import template_file
+from fabtools.files import watch
 from fabtools.supervisor import *
 
 
-DEFAULT_TEMPLATE = """\
-[program:%(name)s]
-command=%(command)s
-directory=%(directory)s
-user=%(user)s
-autostart=true
-autorestart=true
-redirect_stderr=true
-"""
-
-
-def process(name, template_contents=None, template_source=None, **kwargs):
+def process(name, **kwargs):
     """
     Require a supervisor process
     """
-    deb.package('supervisor')
+    from fabtools import require
 
-    config_filename = '/etc/supervisor/conf.d/%s.conf' % name
+    require.deb.package('supervisor')
 
-    context = {}
-    context.update(kwargs)
-    context['name'] = name
+    # Set default parameters
+    params = {}
+    params.update(kwargs)
+    params.setdefault('autorestart', 'true')
+    params.setdefault('redirect_stderr', 'true')
 
-    if (template_contents is None) and (template_source is None):
-        template_contents = DEFAULT_TEMPLATE
+    # Build config file from parameters
+    lines = []
+    lines.append('[program:%(name)s]' % locals())
+    for key, value in sorted(params.items()):
+        lines.append("%s %s" % (key, value))
 
-    template_file(config_filename, template_contents, template_source, context, use_sudo=True)
+    # Upload config file
+    filename = '/etc/supervisor/conf.d/%(name)s.conf' % locals()
+    with watch(filename, True, reload_config):
+        require.file(filename, contents='\n'.join(lines), use_sudo=True)
 
-    reload_config()
-
+    # Start the process if needed
     if process_status(name) == 'STOPPED':
         start_process(name)
