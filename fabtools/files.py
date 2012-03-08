@@ -87,8 +87,9 @@ def watch(_filenames, _use_sudo=False, _callable=None, *args, **kwargs):
     filenames = [_filenames] if isinstance(_filenames, basestring) \
                 else _filenames
     old_md5 = dict()
-    for filename in filenames:
-        old_md5[filename] = md5sum(filename, _use_sudo)
+    with settings(hide('warnings')):
+        for filename in filenames:
+            old_md5[filename] = md5sum(filename, _use_sudo)
     yield
     for filename in filenames:
         if md5sum(filename, _use_sudo) != old_md5[filename]:
