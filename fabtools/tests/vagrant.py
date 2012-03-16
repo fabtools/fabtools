@@ -113,7 +113,8 @@ class VagrantTestSuite(unittest.BaseTestSuite):
             local('vagrant init %s' % self.current_box)
 
             # Spin up the box
-            local('vagrant up')
+            # (retry as it sometimes fails for no good reason)
+            local('vagrant up || vagrant up')
 
     def ssh_config(self):
         """

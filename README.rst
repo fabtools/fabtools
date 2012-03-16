@@ -68,16 +68,22 @@ Supported targets
 Tests
 =====
 
-Test runner
------------
+Running tests
+-------------
 
 If you're using Python 2.7, you can launch the tests using the built-in `unittest <http://docs.python.org/library/unittest.html>`_ runner::
 
-    $ python -m unittest tests
+    $ python -m unittest fabtools.tests
 
 If you're using Python 2.5 or 2.6, you'll need to install `unittest2 <http://pypi.python.org/pypi/unittest2>`_, and use the provided runner::
 
-    $ unit2 tests
+    $ pip install unittest2
+    $ unit2 fabtools.tests
+
+Or you can run the tests on all supported Python versions using `tox <http://pypi.python.org/pypi/tox>`_, which will take care of everything::
+
+    $ pip install tox
+    $ tox
 
 Unit tests
 ----------
@@ -95,9 +101,8 @@ If Vagrant is not installed, the functional tests will be skipped automatically.
 If Vagrant is installed, the default is to run the tests on all available base boxes.
 You can specify which base boxes should be used by setting the VAGRANT_BOXES environment variable::
 
-    VAGRANT_BOXES='ubuntu_10_04 ubuntu_10_10' python -m unittest tests
+    $ VAGRANT_BOXES='ubuntu_10_04 ubuntu_10_10' tox -e py27
 
 You can also use this to manually disable functional tests::
 
-    VAGRANT_BOXES='' python -m unittest tests
-
+    $ VAGRANT_BOXES='' tox

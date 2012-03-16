@@ -1,8 +1,7 @@
 from __future__ import with_statement
 
-from tempfile import mkstemp
-import hashlib
 import os
+from tempfile import mkstemp
 
 from fabric.api import *
 from fabtools import require
@@ -50,60 +49,3 @@ def files():
         with fabtools.files.watch('watched', False, require.file, 'modified2'):
             pass
         assert not fabtools.files.is_file('modified2')
-
-
-@task
-def md5():
-    """
-    Check MD5 sums (unavailable, empty, with content)
-    """
-    with cd('/tmp'):
-        run('touch f1')
-        run('echo -n hello > f2')
-        assert fabtools.files.md5sum('doesnotexist') is None
-        assert fabtools.files.md5sum('f1') == hashlib.md5('').hexdigest()
-        assert fabtools.files.md5sum('f2') == hashlib.md5('hello').hexdigest()
-
-
-@task
-def python():
-    """
-    Check Python package installation
-    """
-    require.python.virtualenv('/tmp/venv')
-    assert fabtools.files.is_dir('/tmp/venv')
-    assert fabtools.files.is_file('/tmp/venv/bin/python')
-
-    with fabtools.python.virtualenv('/tmp/venv'):
-        require.python.package('fabric')
-    assert fabtools.files.is_file('/tmp/venv/bin/fab')
-
-
-@task
-def mysql():
-    """
-    Setup MySQL server, user and database
-    """
-    require.mysql.server(password='s3cr3t')
-
-    with settings(mysql_user='root', mysql_password='s3cr3t'):
-
-        require.mysql.user('myuser', 'foo')
-        assert fabtools.mysql.user_exists('myuser')
-
-        require.mysql.database('mydb', owner='myuser')
-        assert fabtools.mysql.database_exists('mydb')
-
-
-@task
-def postgresql():
-    """
-    Setup PostgreSQL server, user and database
-    """
-    require.postgres.server()
-
-    require.postgres.user('pguser', 'foo')
-    assert fabtools.postgres.user_exists('pguser')
-
-    require.postgres.database('pgdb', 'pguser')
-    assert fabtools.postgres.database_exists('pgdb')
