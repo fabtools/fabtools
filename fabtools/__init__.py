@@ -6,6 +6,7 @@ import fabtools.mysql
 import fabtools.python
 import fabtools.python_distribute
 import fabtools.service
+import fabtools.shorewall
 import fabtools.supervisor
 import fabtools.system
 import fabtools.user
