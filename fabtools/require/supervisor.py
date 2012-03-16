@@ -1,6 +1,8 @@
 """
 Idempotent API for managing supervisor processes
 """
+from __future__ import with_statement
+
 from fabtools.files import watch
 from fabtools.supervisor import *
 

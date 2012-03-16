@@ -1,6 +1,8 @@
 """
 Idempotent API for managing Redis instances
 """
+from __future__ import with_statement
+
 from fabtools.files import is_file, watch
 from fabtools.deb import *
 
