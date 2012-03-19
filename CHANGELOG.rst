@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.3 (2012-03-19)
+------------------------
+
+* Added support for Shorewall (Shoreline Firewall)
+* Fixed Python 2.5 compatibility
+* Refactored tests
+
 Version 0.2.1 (2012-03-09)
 --------------------------
 
