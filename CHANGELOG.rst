@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 0.3.1 (2012-03-19)
+--------------------------
+
+* Fixed bug in functional tests runner
+
 Version 0.3 (2012-03-19)
 ------------------------
 

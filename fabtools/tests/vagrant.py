@@ -30,11 +30,12 @@ def halt_and_destroy():
     Halt and destoy virtual machine
     """
     with lcd(os.path.dirname(__file__)):
-        local('vagrant halt')
-        if version() >= (0, 9, 99):
-            local('vagrant destroy -f')
-        else:
-            local('vagrant destroy')
+        if os.path.exists('Vagrantfile'):
+            local('vagrant halt')
+            if version() >= (0, 9, 99):
+                local('vagrant destroy -f')
+            else:
+                local('vagrant destroy')
 
 
 def base_boxes():
