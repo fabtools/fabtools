@@ -36,3 +36,14 @@ def set_sysctl(key, value):
     Set a kernel parameter
     """
     sudo('/sbin/sysctl -n -e -w %(key)s=%(value)s' % locals())
+
+
+def supported_locales():
+    """
+    Gets the list of supported locales
+
+    Each locale is returned as a (locale, charset) tuple
+    """
+    with settings(hide('running', 'stdout')):
+        res = run('grep -v "^#" /usr/share/i18n/SUPPORTED')
+    return [line.split(' ') for line in res.splitlines()]

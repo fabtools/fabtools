@@ -4,10 +4,14 @@ Idempotent API for managing system settings
 from __future__ import with_statement
 
 from fabric.api import sudo
+from fabric.contrib.files import append
 
 from fabtools.files import watch
-from fabtools.system import get_hostname, set_hostname
-from fabtools.system import get_sysctl, set_sysctl
+from fabtools.system import (
+    get_hostname, set_hostname,
+    get_sysctl, set_sysctl,
+    supported_locales,
+    )
 
 
 def sysctl(key, value, persist=True):
@@ -34,3 +38,48 @@ def hostname(name):
     """
     if get_hostname() != name:
         set_hostname(name)
+
+
+def locales(names):
+    """
+    Require the list of locales to be available
+    """
+
+    config_file = '/var/lib/locales/supported.d/local'
+
+    def regenerate():
+        sudo('dpkg-reconfigure locales')
+
+    # Regenerate locales if config file changes
+    with watch(config_file, True, regenerate):
+
+        # Add valid locale names to the config file
+        supported = dict(supported_locales())
+        for name in names:
+            if name in supported:
+                charset = supported[name]
+                locale = "%s %s" % (name, charset)
+                append(config_file, locale, use_sudo=True)
+            else:
+                warn('Unsupported locale name "%s"' % name)
+
+
+def locale(name):
+    """
+    Require the locale to be available
+    """
+    locales([name])
+
+
+def default_locale(name):
+    """
+    Require the locale to be the default
+    """
+    from fabtools import require
+
+    # Ensure the locale is available
+    locale(name)
+
+    # Make it the default
+    contents = 'LANG="%s"\n' % name
+    require.file('/etc/default/locale', contents, use_sudo=True)
