@@ -73,12 +73,12 @@ Running tests
 
 If you're using Python 2.7, you can launch the tests using the built-in `unittest <http://docs.python.org/library/unittest.html>`_ runner::
 
-    $ python -m unittest fabtools.tests
+    $ python -m unittest discover
 
 If you're using Python 2.5 or 2.6, you'll need to install `unittest2 <http://pypi.python.org/pypi/unittest2>`_, and use the provided runner::
 
     $ pip install unittest2
-    $ unit2 fabtools.tests
+    $ unit2 discover
 
 Or you can run the tests on all supported Python versions using `tox <http://pypi.python.org/pypi/tox>`_, which will take care of everything::
 
