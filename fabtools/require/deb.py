@@ -1,8 +1,25 @@
 """
 Idempotent API for managing Debian/Ubuntu packages
 """
-from fabtools.files import is_file
+from fabric.utils import puts
+
+from fabtools.files import is_file, watch
 from fabtools.deb import *
+import fabtools.require
+
+
+def source(name, uri, distribution, *components):
+    """
+    Require a package source
+    """
+    path = '/etc/apt/sources.list.d/%(name)s.list' % locals()
+    components = ' '.join(components)
+    source_line = 'deb %(uri)s %(distribution)s %(components)s\n' % locals()
+    def on_update():
+        puts('Added APT repository: %s' % source_line)
+        update_index()
+    with watch(path, _callable=on_update):
+        fabtools.require.file(path=path, contents=source_line, use_sudo=True)
 
 
 def ppa(name):
