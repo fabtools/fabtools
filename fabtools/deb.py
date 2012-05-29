@@ -101,3 +101,12 @@ def distrib_codename():
     """
     with settings(hide('running', 'stdout')):
         return run('lsb_release --codename --short')
+
+
+def add_apt_key(filename, update=True):
+    """
+    Add an APT key
+    """
+    sudo('apt-key add %(filename)s' % locals())
+    if update:
+        update_index()
