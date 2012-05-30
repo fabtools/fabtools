@@ -92,6 +92,5 @@ def virtualenv(directory):
     """
     Context manager to activate a Python virtualenv
     """
-    with cd(directory):
-        with prefix('source "%s"' % os.path.join(directory, 'bin', 'activate')):
-            yield
+    with prefix('source "%s"' % os.path.join(directory, 'bin', 'activate')):
+        yield
