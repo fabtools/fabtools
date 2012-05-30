@@ -1,6 +1,15 @@
 Changelog
 =========
 
+Version 0.4 (2012-05-30)
+------------------------
+
+* Added support for requiring an arbitrary APT source
+* Added support for adding APT signing keys
+* Added support for requiring a user with a home directory
+* Added vagrant helpers
+* Fixed Python virtualenv context manager
+
 Version 0.3.2 (2012-03-19)
 --------------------------
 
