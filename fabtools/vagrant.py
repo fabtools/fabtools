@@ -25,6 +25,7 @@ def _settings_dict(config):
     settings['host_string'] = "%s@%s:%s" % (user, hostname, port)
     settings['user'] = user
     settings['key_filename'] = config['IdentityFile']
+    settings['forward_agent'] = (config.get('ForwardAgent', 'no') == 'yes')
     settings['disable_known_hosts'] = True
 
     return settings
