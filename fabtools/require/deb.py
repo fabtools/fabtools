@@ -1,6 +1,8 @@
 """
 Idempotent API for managing Debian/Ubuntu packages
 """
+from __future__ import with_statement
+
 from fabric.utils import puts
 
 from fabtools.files import is_file, watch
