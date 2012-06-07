@@ -10,7 +10,7 @@ def _run_as_pg(command):
     """
     Run command as 'postgres' user
     """
-    return sudo(command, user='postgres')
+    return sudo(command, user='postgres', shell=False)
 
 
 def user_exists(name):
