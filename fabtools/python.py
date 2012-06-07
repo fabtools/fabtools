@@ -5,7 +5,7 @@ from __future__ import with_statement
 
 from contextlib import contextmanager
 from distutils.version import StrictVersion as V
-import os.path
+import posixpath
 
 from fabric.api import *
 from fabric.utils import puts
@@ -92,5 +92,5 @@ def virtualenv(directory):
     """
     Context manager to activate a Python virtualenv
     """
-    with prefix('source "%s"' % os.path.join(directory, 'bin', 'activate')):
+    with prefix('source "%s"' % posixpath.join(directory, 'bin', 'activate')):
         yield

@@ -1,7 +1,7 @@
 """
 Idempotent API for managing Python packages
 """
-import os.path
+import posixpath
 
 from fabtools.files import is_file
 from fabtools.python import *
@@ -62,7 +62,7 @@ def virtualenv(directory, system_site_packages=False, python=None, use_sudo=Fals
     Require a Python virtual environment
     """
     package('virtualenv', use_sudo=True)
-    if not is_file(os.path.join(directory, 'bin', 'python')):
+    if not is_file(posixpath.join(directory, 'bin', 'python')):
         options = ['--quiet']
         if system_site_packages:
             options.append('--system-site-packages')
