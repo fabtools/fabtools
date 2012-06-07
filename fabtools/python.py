@@ -51,7 +51,7 @@ def is_installed(package):
     return (package in packages)
 
 
-def install(packages, upgrade=False, use_mirrors=True, use_sudo=False, user=None):
+def install(packages, upgrade=False, use_mirrors=True, use_sudo=False, user=None, download_cache=None):
     """
     Install Python packages
     """
@@ -62,6 +62,8 @@ def install(packages, upgrade=False, use_mirrors=True, use_sudo=False, user=None
         options.append('--use-mirrors')
     if upgrade:
         options.append('--upgrade')
+    if download_cache:
+        options.append('--download-cache="%s"' % download_cache)
     options = ' '.join(options)
     command =  'pip install %(options)s %(packages)s' % locals()
     if use_sudo:
@@ -70,7 +72,7 @@ def install(packages, upgrade=False, use_mirrors=True, use_sudo=False, user=None
         run(command)
 
 
-def install_requirements(filename, upgrade=False, use_mirrors=True, use_sudo=False, user=None):
+def install_requirements(filename, upgrade=False, use_mirrors=True, use_sudo=False, user=None, download_cache=None):
     """
     Install Python packages from a pip requirements file
     """
@@ -79,6 +81,8 @@ def install_requirements(filename, upgrade=False, use_mirrors=True, use_sudo=Fal
         options.append('--use-mirrors')
     if upgrade:
         options.append('--upgrade')
+    if download_cache:
+        options.append('--download-cache="%s"' % download_cache)
     options = ' '.join(options)
     command = 'pip install %(options)s -r %(filename)s' % locals()
     if use_sudo:
