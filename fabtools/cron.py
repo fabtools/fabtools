@@ -35,7 +35,7 @@ def add_daily(name, user, command):
 
 def remove_task(name, timespec, user, command):
     """
-    Add a cron task
+    Remove a cron task
     """
     entry = '%(timespec)s %(user)s %(command)s\n' % locals()
     # FIXME: This is wrong, the remote cron file should be retrieved
