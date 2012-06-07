@@ -34,9 +34,9 @@ def install_pip():
     """
     Install pip
     """
-    with cd("/tmp"):
-        run("curl --silent -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py")
-        sudo("python get-pip.py")
+    with cd('/tmp'):
+        run('curl --silent -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py')
+        sudo('python get-pip.py')
 
 
 def is_installed(package):
@@ -44,9 +44,9 @@ def is_installed(package):
     Check if a Python package is installed
     """
     options = []
-    options = " ".join(options)
+    options = ' '.join(options)
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        res = run("pip freeze %(options)s" % locals())
+        res = run('pip freeze %(options)s' % locals())
     packages = [line.split('==')[0] for line in res.splitlines()]
     return (package in packages)
 
@@ -56,13 +56,13 @@ def install(packages, upgrade=False, use_mirrors=True, use_sudo=False, user=None
     Install Python packages
     """
     if not isinstance(packages, basestring):
-        packages = " ".join(packages)
+        packages = ' '.join(packages)
     options = []
     if use_mirrors:
         options.append('--use-mirrors')
     if upgrade:
-        options.append("--upgrade")
-    options = " ".join(options)
+        options.append('--upgrade')
+    options = ' '.join(options)
     command =  'pip install %(options)s %(packages)s' % locals()
     if use_sudo:
         sudo(command, user=user)
@@ -78,8 +78,8 @@ def install_requirements(filename, upgrade=False, use_mirrors=True, use_sudo=Fal
     if use_mirrors:
         options.append('--use-mirrors')
     if upgrade:
-        options.append("--upgrade")
-    options = " ".join(options)
+        options.append('--upgrade')
+    options = ' '.join(options)
     command = 'pip install %(options)s -r %(filename)s' % locals()
     if use_sudo:
         sudo(command, user=user)
