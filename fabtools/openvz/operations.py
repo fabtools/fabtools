@@ -5,8 +5,6 @@ The remote host needs a patched kernel with OpenVZ support
 """
 from __future__ import with_statement
 
-from contextlib import contextmanager
-
 from fabric.api import *
 
 
@@ -19,60 +17,69 @@ def create(ctid, ostemplate=None, config=None, private=None,
         private=private, root=root, ipadd=ipadd, hostname=hostname, **kwargs)
 
 
-def destroy(ctid):
+def destroy(ctid_or_name):
     """
     Destroy OpenVZ container
     """
-    return _vzctl('destroy', ctid)
+    return _vzctl('destroy', ctid_or_name)
 
 
-def set(ctid, save=True, **kwargs):
+def set(ctid_or_name, save=True, **kwargs):
     """
     Set OpenVZ container parameters
     """
-    return _vzctl('set', ctid, **kwargs)
+    return _vzctl('set', ctid_or_name, save=save, **kwargs)
 
 
-def start(ctid, wait=False, force=False, **kwargs):
+def start(ctid_or_name, wait=False, force=False, **kwargs):
     """
     Start OpenVZ container
 
     Warning: wait=True is broken with vzctl 3.0.24 on Debian 6.0 (squeeze)
     """
-    return _vzctl('start', ctid, wait=wait, force=force, **kwargs)
+    return _vzctl('start', ctid_or_name, wait=wait, force=force, **kwargs)
 
 
-def stop(ctid, fast=False, **kwargs):
+def stop(ctid_or_name, fast=False, **kwargs):
     """
     Stop OpenVZ container
     """
-    return _vzctl('stop', ctid, fast=fast, **kwargs)
+    return _vzctl('stop', ctid_or_name, fast=fast, **kwargs)
 
 
-def restart(ctid, wait=True, force=False, fast=False, **kwargs):
+def restart(ctid_or_name, wait=True, force=False, fast=False, **kwargs):
     """
     Restart OpenVZ container
     """
-    return _vzctl('restart', ctid, wait=wait, force=force, fast=fast, **kwargs)
+    return _vzctl('restart', ctid_or_name, wait=wait, force=force, fast=fast, **kwargs)
 
 
-def status(ctid):
+def status(ctid_or_name):
     """
     Show status of OpenVZ container
     """
-    return _vzctl('status', ctid)
+    with settings(warn_only=True):
+        return _vzctl('status', ctid_or_name)
 
 
-def exec2(ctid, command):
+def exists(ctid_or_name):
+    """
+    Does the container exist?
+    """
+    with settings(hide('running', 'stdout', 'warnings'), warn_only=True):
+        return status(ctid_or_name).succeeded
+
+
+def exec2(ctid_or_name, command):
     """
     Run command inside OpenVZ container
     """
-    return sudo('vzctl exec2 %s %s' % (ctid, command))
+    return sudo('vzctl exec2 %s %s' % (ctid_or_name, command))
 
 
-def _vzctl(command, ctid, **kwargs):
+def _vzctl(command, ctid_or_name, **kwargs):
     args = _expand_args(**kwargs)
-    return sudo('vzctl %s %s %s' % (command, ctid, args))
+    return sudo('vzctl %s %s %s' % (command, ctid_or_name, args))
 
 
 def _expand_args(**kwargs):
@@ -98,3 +105,23 @@ def download_template(name=None, url=None):
 
     with cd('/var/lib/vz/template/cache'):
         sudo('wget --progress=dot "%s"' % url)
+
+
+def list_ctids():
+    """
+    Get the list of currently used CTIDs
+    """
+    with settings(hide('running', 'stdout')):
+        res = sudo('vzlist -a -1')
+    return map(int, res.splitlines())
+
+
+def get_available_ctid():
+    """
+    Get an available CTID
+    """
+    current_ctids = list_ctids()
+    if current_ctids:
+        return max(current_ctids) + 1
+    else:
+        return 1000

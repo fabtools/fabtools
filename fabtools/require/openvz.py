@@ -4,7 +4,8 @@ Idempotent API for managing OpenVZ containers
 import os.path
 
 from fabtools.files import is_file
-from fabtools.openvz import download_template
+from fabtools import openvz
+from fabtools.openvz.container import Container
 
 
 def template(name=None, url=None):
@@ -17,4 +18,15 @@ def template(name=None, url=None):
         filename = os.path.basename(url)
 
     if not is_file(os.path.join('/var/lib/vz/template/cache', filename)):
-        download_template(name, url)
+        openvz.download_template(name, url)
+
+
+def container(name, ostemplate, **kwargs):
+    """
+    Require an OpenVZ container
+    """
+    if not openvz.exists(name):
+        ctid = openvz.get_available_ctid()
+        openvz.create(ctid, ostemplate=ostemplate, **kwargs)
+        openvz.set(ctid, name=name)
+    return Container(name)
