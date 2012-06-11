@@ -62,6 +62,13 @@ def status(ctid_or_name):
         return _vzctl('status', ctid_or_name)
 
 
+def running(ctid_or_name):
+    """
+    Is the container running?
+    """
+    return status(ctid_or_name).split(' ')[4] == 'running'
+
+
 def exists(ctid_or_name):
     """
     Does the container exist?

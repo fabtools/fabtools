@@ -39,6 +39,9 @@ class Container(object):
     def status(self):
         return vz.status(self.ctid)
 
+    def running(self):
+        return vz.running(self.ctid)
+
     def exists(self):
         return vz.exists(self.ctid)
 
