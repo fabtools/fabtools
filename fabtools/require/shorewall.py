@@ -203,8 +203,38 @@ def _routestopped_config(routestopped):
     file('/etc/shorewall/routestopped', contents=''.join(lines), use_sudo=True)
 
 
+MASQ_HEADER = '''\
+#INTERFACE\tSOURCE\tADDRESS\tPROTO\tPORT(S)
+'''
+
+MASQ_FORMAT = '%(interface)s\t%(source)s\t%(address)s\t%(proto)s\t%(port)s\n'
+
+
+def _masq_config(masq):
+    """
+    Masquerading/SNAT configuration
+    """
+    if masq is None:
+        masq = []
+
+    lines = [MASQ_HEADER]
+    for entry in masq:
+        entry.setdefault('interface', 'eth0')
+        entry.setdefault('address', '-')
+        entry.setdefault('proto', '-')
+        entry.setdefault('port', '-')
+
+        if isinstance(entry['source'], list):
+            entry['source'] = ','.join(entry['source'])
+
+        lines.append(MASQ_FORMAT % entry)
+
+    file('/etc/shorewall/masq', contents=''.join(lines), use_sudo=True)
+
+
 CONFIG_FILES = [
     '/etc/shorewall/interfaces',
+    '/etc/shorewall/masq',
     '/etc/shorewall/policy',
     '/etc/shorewall/routestopped',
     '/etc/shorewall/rules',
@@ -212,7 +242,8 @@ CONFIG_FILES = [
 ]
 
 
-def firewall(zones=None, interfaces=None, policy=None, rules=None, routestopped=None):
+def firewall(zones=None, interfaces=None, policy=None, rules=None,
+    routestopped=None, masq=None):
     """
     Require a firewall
     """
@@ -229,6 +260,7 @@ def firewall(zones=None, interfaces=None, policy=None, rules=None, routestopped=
         _policy_config(policy)
         _rules_config(rules)
         _routestopped_config(routestopped)
+        _masq_config(masq)
 
     with settings(hide('running')):
         sed('/etc/default/shorewall', 'startup=0', 'startup=1', use_sudo=True)
