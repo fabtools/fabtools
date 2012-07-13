@@ -66,7 +66,7 @@ def install(packages, upgrade=False, use_mirrors=True, use_sudo=False, user=None
     if download_cache:
         options.append('--download-cache="%s"' % download_cache)
     options = ' '.join(options)
-    command =  'pip install %(options)s %(packages)s' % locals()
+    command = 'pip install %(options)s %(packages)s' % locals()
     if use_sudo:
         sudo(command, user=user)
     else:
