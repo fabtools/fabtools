@@ -64,6 +64,7 @@ Supported targets
 * Ubuntu 10.10
 * Ubuntu 11.04
 * Ubuntu 11.10
+* Ubuntu 12.04 LTS
 
 Tests
 =====
@@ -101,7 +102,7 @@ If Vagrant is not installed, the functional tests will be skipped automatically.
 If Vagrant is installed, the default is to run the tests on all available base boxes.
 You can specify which base boxes should be used by setting the VAGRANT_BOXES environment variable::
 
-    $ VAGRANT_BOXES='ubuntu_10_04 ubuntu_10_10' tox -e py27
+    $ VAGRANT_BOXES='ubuntu_10_04 ubuntu_12_04' tox -e py27
 
 You can also use this to manually disable functional tests::
 
