@@ -3,6 +3,7 @@ import fabtools.deb
 import fabtools.files
 import fabtools.postgres
 import fabtools.mysql
+import fabtools.network
 import fabtools.openvz
 import fabtools.python
 import fabtools.python_distribute
