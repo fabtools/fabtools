@@ -30,7 +30,7 @@ def halt_and_destroy():
     Halt and destoy virtual machine
     """
     with lcd(os.path.dirname(__file__)):
-        if os.path.exists('Vagrantfile'):
+        if os.path.exists(os.path.join(env['lcwd'], 'Vagrantfile')):
             local('vagrant halt')
             if version() >= (0, 9, 99):
                 local('vagrant destroy -f')
@@ -75,9 +75,6 @@ class VagrantTestSuite(unittest.BaseTestSuite):
         """
         Run the test suite on all the virtual machines
         """
-        # Clean up
-        halt_and_destroy()
-
         for base_box in self.base_boxes:
 
             # Start a virtual machine using this base box
@@ -112,6 +109,9 @@ class VagrantTestSuite(unittest.BaseTestSuite):
             # Create a fresh vagrant config file
             local('rm -f Vagrantfile')
             local('vagrant init %s' % self.current_box)
+
+            # Clean up
+            halt_and_destroy()
 
             # Spin up the box
             # (retry as it sometimes fails for no good reason)
