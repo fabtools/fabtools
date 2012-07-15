@@ -3,7 +3,7 @@ Idempotent API for managing system settings
 """
 from __future__ import with_statement
 
-from fabric.api import sudo
+from fabric.api import sudo, warn
 from fabric.contrib.files import append
 
 from fabtools.files import watch
