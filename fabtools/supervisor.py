@@ -4,7 +4,6 @@ Fabric tools for managing supervisor processes
 from __future__ import with_statement
 
 from fabric.api import *
-from fabtools.files import upload_template
 
 
 def reload_config():
