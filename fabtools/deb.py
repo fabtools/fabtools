@@ -9,11 +9,12 @@ from fabric.api import *
 MANAGER = 'apt-get'
 
 
-def update_index():
+def update_index(quiet=True):
     """
     Quietly update package index
     """
-    sudo("%s -q -q update" % MANAGER)
+    options = "-q -q" if quiet else ""
+    sudo("%s %s update" % (MANAGER, options))
 
 
 def upgrade(safe=True):
