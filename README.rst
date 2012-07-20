@@ -9,6 +9,17 @@ Introduction
 
 Using ``require`` allows you to use a more declarative style, similar to Chef or Puppet.
 
+Installing
+==========
+
+To install the latest release from PyPI::
+
+    $ pip install fabtools
+
+To install the latest development version from GitHub::
+
+    $ pip install git+https://github.com/ronnix/fabtools.git
+
 Example
 =======
 
