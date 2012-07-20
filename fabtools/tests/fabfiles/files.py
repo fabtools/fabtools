@@ -2,6 +2,7 @@ from __future__ import with_statement
 
 import os
 from tempfile import mkstemp
+from functools import partial
 
 from fabric.api import *
 from fabtools import require
@@ -40,12 +41,21 @@ def files():
         assert fabtools.files.is_file('baz')
         assert run('cat baz') == baz_contents, run('cat baz')
 
+        # Ensure that changes to watched file are detected
+        require.file('watched', contents='aaa')
+        with fabtools.files.watch('watched') as f:
+            require.file('watched', contents='bbb')
+        assert f.changed
+        with fabtools.files.watch('watched') as f:
+            pass
+        assert not f.changed
+
         # Ensure that the callable is triggered only
         # when the watched file is modified
         require.file('watched', contents='aaa')
-        with fabtools.files.watch('watched', False, require.file, 'modified1'):
+        with fabtools.files.watch('watched', callback=partial(require.file, 'modified1')):
             require.file('watched', contents='bbb')
         assert fabtools.files.is_file('modified1')
-        with fabtools.files.watch('watched', False, require.file, 'modified2'):
+        with fabtools.files.watch('watched', callback=partial(require.file, 'modified2')):
             pass
         assert not fabtools.files.is_file('modified2')

@@ -17,11 +17,11 @@ def source(name, uri, distribution, *components):
     path = '/etc/apt/sources.list.d/%(name)s.list' % locals()
     components = ' '.join(components)
     source_line = 'deb %(uri)s %(distribution)s %(components)s\n' % locals()
-    def on_update():
+    with watch(path) as config:
+        fabtools.require.file(path=path, contents=source_line, use_sudo=True)
+    if config.changed:
         puts('Added APT repository: %s' % source_line)
         update_index()
-    with watch(path, _callable=on_update):
-        fabtools.require.file(path=path, contents=source_line, use_sudo=True)
 
 
 def ppa(name):

@@ -91,12 +91,7 @@ def instance(name, version=VERSION, **kwargs):
     config_filename = '/etc/redis/%(name)s.conf' % locals()
 
     # Upload config file
-    context = dict(need_restart=False)
-
-    def on_change():
-        context['need_restart'] = True
-
-    with watch(config_filename, True, on_change):
+    with watch(config_filename, use_sudo=True) as config:
         require.file(config_filename, contents='\n'.join(lines),
             use_sudo=True, owner='redis')
 
@@ -106,5 +101,7 @@ def instance(name, version=VERSION, **kwargs):
         user='redis',
         directory='/var/run/redis',
         command="%(redis_server)s %(config_filename)s" % locals())
-    if context['need_restart']:
+
+    # Restart if needed
+    if config.changed:
         fabtools.supervisor.restart_process(process_name)

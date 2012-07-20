@@ -29,8 +29,7 @@ def process(name, **kwargs):
 
     # Upload config file
     filename = '/etc/supervisor/conf.d/%(name)s.conf' % locals()
-
-    with watch(filename, True, update_config):
+    with watch(filename, callback=update_config, use_sudo=True):
         require.file(filename, contents='\n'.join(lines), use_sudo=True)
 
     # Start the process if needed

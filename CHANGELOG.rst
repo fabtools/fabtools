@@ -4,6 +4,9 @@ Changelog
 Version 0.5 (unreleased)
 ------------------------
 
+* The ``watch`` context manager now allows you to either provide
+  a callback or do an explicit check afterwards (**warning**: this change
+  is not backwards compatible, please update your fabfiles)
 * Add support for some network-related operations:
     * get the IPV4 address assigned to an interface
     * get the list of name server IP addresses

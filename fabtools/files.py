@@ -4,7 +4,6 @@ Fabric tools for managing files and directories
 from __future__ import with_statement
 
 import os.path
-from contextlib import contextmanager
 
 from fabric.api import *
 from fabric.contrib.files import upload_template as _upload_template
@@ -67,31 +66,61 @@ def md5sum(filename, use_sudo=False):
     return res.split()[0]
 
 
-@contextmanager
-def watch(_filenames, _use_sudo=False, _callable=None, *args, **kwargs):
+class watch(object):
     """
-    Trigger the callable if any files changed at the end of the context.
-    Underscores are used to avoid conflicts with the args/kwargs
-    of the callable.
-    The filenames can be a string (short for [filename1]) instead of a list.
+    Context manager to watch for changes to the contents of some files
 
-    Typical usage:
+    The 'filenames' argument can be either a string (single filename)
+    or a list (multiple filenames).
+
+    You can read the 'changed' attribute at the end of the block to
+    check if the contents of any of the watched files has changed.
+
+    You can also provide a callback that will be called at the end of
+    the block if the contents of any of the watched files has changed.
+
+    Example using an explicit check::
+
+        from fabric.contrib.files import comment, uncomment
         from fabtools.files import watch
         from fabtools.services import restart
-        from fabtools.contrib.files import uncomment
-        with watch("/etc/daemon.conf", True, restart, "daemon"):
-            uncomment("/etc/daemon.conf", "someoption")
-            comment("/etc/daemon.conf", "otheroption")
-        # The daemon will be restarted only if its config file was changed.
+        with watch('/etc/daemon.conf') as config:
+            uncomment('/etc/daemon.conf', 'someoption')
+            comment('/etc/daemon.conf', 'otheroption')
+        if config.changed:
+            restart('daemon')
+
+    Example using a callback::
+
+        from functools import partial
+        from fabric.contrib.files import comment, uncomment
+        from fabtools.files import watch
+        from fabtools.services import restart
+        with watch('/etc/daemon.conf', callback=partial(restart, 'daemon')):
+            uncomment('/etc/daemon.conf', 'someoption')
+            comment('/etc/daemon.conf', 'otheroption')
     """
-    filenames = [_filenames] if isinstance(_filenames, basestring) \
-                else _filenames
-    old_md5 = dict()
-    with settings(hide('warnings')):
-        for filename in filenames:
-            old_md5[filename] = md5sum(filename, _use_sudo)
-    yield
-    for filename in filenames:
-        if md5sum(filename, _use_sudo) != old_md5[filename]:
-            _callable(*args, **kwargs)
-            return
+
+    def __init__(self, filenames, callback=None, use_sudo=False):
+        if isinstance(filenames, basestring):
+            self.filenames = [filenames]
+        else:
+            self.filenames = filenames
+        self.callback = callback
+        self.use_sudo = use_sudo
+        self.digest = dict()
+        self.changed = False
+
+    def __enter__(self):
+        with settings(hide('warnings')):
+            for filename in self.filenames:
+                self.digest[filename] = md5sum(filename, self.use_sudo)
+        return self
+
+    def __exit__(self, type, value, tb):
+        for filename in self.filenames:
+            if md5sum(filename, self.use_sudo) != self.digest[filename]:
+                self.changed = True
+                break
+        if self.changed and self.callback:
+            self.callback()

@@ -249,18 +249,18 @@ def firewall(zones=None, interfaces=None, policy=None, rules=None,
     """
     package('shorewall')
 
-    def on_change():
-        puts("Shorewall configuration changed")
-        if is_started():
-            restart('shorewall')
-
-    with watch(CONFIG_FILES, False, on_change):
+    with watch(CONFIG_FILES) as config:
         _zone_config(zones)
         _interfaces_config(interfaces)
         _policy_config(policy)
         _rules_config(rules)
         _routestopped_config(routestopped)
         _masq_config(masq)
+
+    if config.changed:
+        puts("Shorewall configuration changed")
+        if is_started():
+            restart('shorewall')
 
     with settings(hide('running')):
         sed('/etc/default/shorewall', 'startup=0', 'startup=1', use_sudo=True)

@@ -24,12 +24,12 @@ def sysctl(key, value, persist=True):
     if persist:
         from fabtools import require
         filename = '/etc/sysctl.d/60-%s.conf' % key
-        def on_change():
-            sudo('service procps start')
-        with watch(filename, True, on_change):
+        with watch(filename, use_sudo=True) as config:
             require.file(filename,
                 contents='%(key)s = %(value)s\n' % locals(),
                 use_sudo=True)
+        if config.changed:
+            sudo('service procps start')
 
 
 def hostname(name):
@@ -47,11 +47,8 @@ def locales(names):
 
     config_file = '/var/lib/locales/supported.d/local'
 
-    def regenerate():
-        sudo('dpkg-reconfigure locales')
-
     # Regenerate locales if config file changes
-    with watch(config_file, True, regenerate):
+    with watch(config_file, use_sudo=True) as config:
 
         # Add valid locale names to the config file
         supported = dict(supported_locales())
@@ -62,6 +59,9 @@ def locales(names):
                 append(config_file, locale, use_sudo=True)
             else:
                 warn('Unsupported locale name "%s"' % name)
+
+    if config.changed:
+        sudo('dpkg-reconfigure locales')
 
 
 def locale(name):
