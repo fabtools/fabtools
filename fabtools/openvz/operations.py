@@ -81,7 +81,7 @@ def exec2(ctid_or_name, command):
     """
     Run command inside OpenVZ container
     """
-    return sudo('vzctl exec2 %s %s' % (ctid_or_name, command))
+    return sudo("vzctl exec2 %s '%s'" % (ctid_or_name, command))
 
 
 def _vzctl(command, ctid_or_name, **kwargs):
