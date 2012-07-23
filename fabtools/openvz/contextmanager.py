@@ -44,6 +44,11 @@ def guest(name_or_ctid):
         _orig_sudo_prefix = env.sudo_prefix
         env.sudo_prefix = 'sudo -S -p "%(sudo_prompt)s" '
 
+        # Try to cd to the user's home directory for consistency,
+        # as the default directory is "/" with "vzctl exec2"
+        if not env.cwd:
+            env.command_prefixes.insert(0, 'cd 2>/dev/null || true')
+
         # Build the guest command
         guest_command = _shell_wrap_inner(
             _prefix_commands(_prefix_env_vars(command), 'remote'),
@@ -55,6 +60,8 @@ def guest(name_or_ctid):
         # Restore env
         env.shell = _orig_shell
         env.sudo_prefix = _orig_sudo_prefix
+        if not env.cwd:
+            env.command_prefixes.pop(0)
 
         # Run host command as root
         return _run_host_command(host_command, shell=shell, pty=pty,
