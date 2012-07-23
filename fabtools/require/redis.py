@@ -64,7 +64,8 @@ def instance(name, version=VERSION, **kwargs):
     require.directory('/var/run/redis', use_sudo=True, owner='redis')
 
     # Required for background saving
-    require.system.sysctl('vm.overcommit_memory', '1')
+    with settings(warn_only=True):
+        require.system.sysctl('vm.overcommit_memory', '1')
 
     # Set default parameters
     params = {}
