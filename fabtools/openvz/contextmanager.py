@@ -2,8 +2,19 @@
 Fabric tools for managing OpenVZ containers
 """
 from contextlib import contextmanager
+import hashlib
+import os.path
+import posixpath
+import tempfile
 
-from fabric.state import env, output, default_channel
+from fabric.api import (
+    env,
+    hide,
+    output,
+    settings,
+    sudo,
+    )
+from fabric.state import default_channel
 from fabric.utils import error
 
 from fabric.operations import (
@@ -15,6 +26,7 @@ from fabric.operations import (
     _sudo_prefix,
     )
 import fabric.operations
+import fabric.sftp
 
 
 @contextmanager
@@ -27,8 +39,9 @@ def guest(name_or_ctid):
     them as an unpriviledged user.
     """
 
-    # Monkey patch fabric's _run_command
+    # Monkey patch fabric operations
     _orig_run_command = fabric.operations._run_command
+    _orig_put = fabric.sftp.SFTP.put
 
     def run_guest_command(command, shell=True, pty=False,
         combine_stderr=True, sudo=False, user=None):
@@ -67,12 +80,76 @@ def guest(name_or_ctid):
         return _run_host_command(host_command, shell=shell, pty=pty,
             combine_stderr=combine_stderr)
 
+    def put_guest(self, local_path, remote_path, use_sudo, mirror_local_mode, mode,
+        local_is_path):
+        """
+        Upload file to a guest container
+        """
+        pre = self.ftp.getcwd()
+        pre = pre if pre else ''
+        if local_is_path and self.isdir(remote_path):
+            basename = os.path.basename(local_path)
+            remote_path = posixpath.join(remote_path, basename)
+        if output.running:
+            print("[%s] put: %s -> %s" % (
+                env.host_string,
+                local_path if local_is_path else '<file obj>',
+                posixpath.join(pre, remote_path)
+            ))
+
+        # Have to bounce off FS if doing file-like objects
+        fd, real_local_path = None, local_path
+        if not local_is_path:
+            fd, real_local_path = tempfile.mkstemp()
+            old_pointer = local_path.tell()
+            local_path.seek(0)
+            file_obj = os.fdopen(fd, 'wb')
+            file_obj.write(local_path.read())
+            file_obj.close()
+            local_path.seek(old_pointer)
+
+        # Use temporary file with a unique name on the host machine
+        guest_path = remote_path
+        hasher = hashlib.sha1()
+        hasher.update(env.host_string)
+        hasher.update(name_or_ctid)
+        hasher.update(guest_path)
+        host_path = hasher.hexdigest()
+
+        # Upload the file to host machine
+        rattrs = self.ftp.put(real_local_path, host_path)
+
+        # Copy file to the guest container
+        with settings(hide('everything'), cwd=""):
+            _orig_run_command("cat \"%s\" | vzctl exec \"%s\" 'cat - > \"%s\"'"
+                % (host_path, name_or_ctid, guest_path), sudo=True)
+
+        # Revert to original remote_path for return value's sake
+        remote_path = guest_path
+
+        # Clean up
+        if not local_is_path:
+            os.remove(real_local_path)
+
+        # Handle modes if necessary
+        if (local_is_path and mirror_local_mode) or (mode is not None):
+            lmode = os.stat(local_path).st_mode if mirror_local_mode else mode
+            lmode = lmode & 07777
+            rmode = rattrs.st_mode & 07777
+            if lmode != rmode:
+                with hide('everything'):
+                    sudo('chmod %o \"%s\"' % (lmode, remote_path))
+
+        return remote_path
+
     fabric.operations._run_command = run_guest_command
+    fabric.sftp.SFTP.put = put_guest
 
     yield
 
     # Monkey unpatch
     fabric.operations._run_command = _orig_run_command
+    fabric.sftp.SFTP.put = _orig_put
 
 
 def _run_host_command(command, shell=True, pty=True, combine_stderr=True):
