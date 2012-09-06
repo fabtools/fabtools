@@ -4,7 +4,7 @@ Idempotent API for managing supervisor processes
 from __future__ import with_statement
 
 from fabtools.files import watch
-from fabtools.supervisor import *
+from fabtools.supervisor import update_config, process_status, start_process
 
 
 def process(name, **kwargs):
@@ -12,7 +12,6 @@ def process(name, **kwargs):
     Require a supervisor process
     """
     from fabtools import require
-
     require.deb.package('supervisor')
     require.service.started('supervisor')
 
@@ -30,7 +29,8 @@ def process(name, **kwargs):
 
     # Upload config file
     filename = '/etc/supervisor/conf.d/%(name)s.conf' % locals()
-    with watch(filename, True, reload_config):
+
+    with watch(filename, True, update_config):
         require.file(filename, contents='\n'.join(lines), use_sudo=True)
 
     # Start the process if needed
