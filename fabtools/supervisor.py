@@ -13,6 +13,15 @@ def reload_config():
     sudo("supervisorctl reload")
 
 
+def update_config():
+    """
+    Reread and update supervisor job configurations. Less heavy-handed than
+    a full reload, as it doesn't restart the backend supervisor process and
+    all managed processes.
+    """
+    sudo("supervisorctl update")
+
+
 def process_status(name):
     """
     Get the status of a supervisor process
