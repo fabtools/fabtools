@@ -1,6 +1,24 @@
 Changelog
 =========
 
+Version 0.5 (unreleased)
+------------------------
+
+* Add support for some network-related operations:
+    * get the IPV4 address assigned to an interface
+    * get the list of name server IP addresses
+* The ``services`` module now supports both upstart and traditional
+  SysV-style ``/etc/init.d`` scripts (thanks to Selwin Ong)
+* The ``virtualenv`` context manager can now also be used with ``local()``
+  (thanks to khorn)
+* The ``supervisor`` module now uses ``update`` instead of ``reload``
+  to avoid unnecessary restarts (thanks to Dan Fairs)
+* Add support for OpenVZ containers (requires a kernel with OpenVZ patches)
+* ``pip`` can now use a download cache
+* Upgrade Redis version to 2.4.17
+* Misc bug fixes and improvements
+* Support for Ubuntu 12.04 LTS
+
 Version 0.4 (2012-05-30)
 ------------------------
 
