@@ -18,7 +18,7 @@ To install the latest release from PyPI::
 
 To install the latest development version from GitHub::
 
-    $ pip install git+https://github.com/ronnix/fabtools.git
+    $ pip install git+git://github.com/ronnix/fabtools.git
 
 Example
 =======
