@@ -7,7 +7,7 @@ from fabtools.files import is_file, watch
 from fabtools.deb import *
 
 
-VERSION='2.4.15'
+VERSION = '2.4.17'
 
 BINARIES = [
     'redis-benchmark',
