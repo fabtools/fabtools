@@ -9,11 +9,16 @@ from fabtools.require.deb import package
 from fabtools.require.service import started
 
 
-def server(version='5.1', password=None):
+def server(version=None, password=None):
     """
     Require a MySQL server
     """
-    if not is_installed("mysql-server-%s" % version):
+    if version:
+        pkg_name = 'mysql-server-%s' % version
+    else:
+        pkg_name = 'mysql-server'
+
+    if not is_installed(pkg_name):
         if password is None:
             password = prompt_password()
 
@@ -23,7 +28,7 @@ def server(version='5.1', password=None):
                 'mysql-server/root_password_again': ('password', password),
             })
 
-        package('mysql-server-%s' % version)
+        package(pkg_name)
 
     started('mysql')
 
