@@ -167,6 +167,11 @@ class VagrantTestCase(unittest.TestCase):
     Test case with vagrant support
     """
 
+    def __init__(self, name, callable):
+        super(VagrantTestCase, self).__init__()
+        self._name = name
+        self._callable = callable
+
     def run(self, result=None):
         """
         Run the test case within a Fabric context manager
@@ -174,15 +179,5 @@ class VagrantTestCase(unittest.TestCase):
         with self._suite.settings():
             unittest.TestCase.run(self, result)
 
-
-class VagrantFunctionTestCase(unittest.FunctionTestCase):
-    """
-    Function test case with vagrant support
-    """
-
-    def run(self, result=None):
-        """
-        Run the test case within a Fabric context manager
-        """
-        with self._suite.settings():
-            unittest.FunctionTestCase.run(self, result)
+    def runTest(self):
+        self._callable()
