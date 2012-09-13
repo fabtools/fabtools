@@ -1,5 +1,10 @@
 """
-Idempotent API for managing files and directories
+Files and directories
+=====================
+
+This module provides high-level tools for managing files and
+directories.
+
 """
 from __future__ import with_statement
 
@@ -17,7 +22,17 @@ BLOCKSIZE = 2 ** 20  # 1MB
 
 def directory(path, use_sudo=False, owner='', group='', mode=''):
     """
-    Require a directory
+    Require a directory to exist.
+
+    ::
+
+        from fabtools import require
+
+        require.directory('/tmp/mydir', owner='alice')
+
+    .. note:: this function can be accessed directly from the
+              ``fabtools.require`` module for convenience.
+
     """
     func = use_sudo and sudo or run
     if not is_dir(path):
@@ -31,17 +46,39 @@ def directory(path, use_sudo=False, owner='', group='', mode=''):
 def file(path=None, contents=None, source=None, url=None, md5=None,
          use_sudo=False, owner=None, group='', mode=None, verify_remote=True):
     """
-    Require a file
+    Require a file to exist and have specific contents and properties.
 
     You can provide either:
-    - contents: the required contents of the file
-    - source: the filename of a local file to upload
-    - url: the address of a file to download (path is optional)
 
-    If verify_remote is True (the default), then an MD5 comparison will be used
-    to check whether the remote file is the same as the source. If this is
-    False, the file will be assumed to be the same if it is present. This is
-    useful for very large files, where generating an MD5 sum may take a while.
+    - *contents*: the required contents of the file::
+
+        from fabtools import require
+
+        require.file('/tmp/hello.txt', contents='Hello, world')
+
+    - *source*: the local path of a file to upload::
+
+        from fabtools import require
+
+        require.file('/tmp/hello.txt', source='files/hello.txt')
+
+    - *url*: the URL of a file to download (*path* is then optional)::
+
+        from fabric.api import cd
+        from fabtools import require
+
+        with cd('tmp'):
+            require.file(url='http://example.com/files/hello.txt')
+
+    If *verify_remote* is ``True`` (the default), then an MD5 comparison
+    will be used to check whether the remote file is the same as the
+    source. If this is ``False``, the file will be assumed to be the
+    same if it is present. This is useful for very large files, where
+    generating an MD5 sum may take a while.
+
+    .. note:: this function can be accessed directly from the
+              ``fabtools.require`` module for convenience.
+
     """
     func = use_sudo and sudo or run
 
@@ -109,7 +146,7 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
 
 def template_file(path=None, template_contents=None, template_source=None, context=None, **kwargs):
     """
-    Require a file whose contents is defined by a template
+    Require a file whose contents is defined by a template.
     """
     if template_contents is None:
         with open(template_source) as template_file:

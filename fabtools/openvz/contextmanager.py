@@ -1,5 +1,6 @@
 """
-Fabric tools for managing OpenVZ containers
+OpenVZ containers
+=================
 """
 from __future__ import with_statement
 
@@ -34,11 +35,26 @@ import fabric.sftp
 @contextmanager
 def guest(name_or_ctid):
     """
-    Context manager to run commands inside a guest container
+    Context manager to run commands inside a guest container.
 
-    Warning: commands executed with run() will be run as root
-    inside the container. Use sudo(command, user='foo') to run
-    them as an unpriviledged user.
+    Supported basic operations are: `run`_, `sudo`_ and `put`_.
+
+    .. warning:: commands executed with ``run()`` will be run as
+                 **root** inside the container.
+                 Use ``sudo(command, user='foo')`` to run them as
+                 an unpriviledged user.
+    Example::
+
+        from fabtools.openvz import guest
+
+        with guest('foo'):
+            run('hostname')
+            sudo('whoami', user='alice')
+            put('files/hello.txt')
+
+    .. _run: http://docs.fabfile.org/en/1.4.3/api/core/operations.html#fabric.operations.run
+    .. _sudo: http://docs.fabfile.org/en/1.4.3/api/core/operations.html#fabric.operations.sudo
+    .. _put: http://docs.fabfile.org/en/1.4.3/api/core/operations.html#fabric.operations.put
     """
 
     # Monkey patch fabric operations

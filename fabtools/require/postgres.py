@@ -1,5 +1,6 @@
 """
-Idempotent API for managing PostgreSQL users and databases
+PostgreSQL users and databases
+==============================
 """
 from __future__ import with_statement
 
@@ -13,7 +14,14 @@ from fabtools.require.service import started
 
 def server(version=None):
     """
-    Require a PostgreSQL server
+    Require a PostgreSQL server to be installed and running.
+
+    ::
+
+        from fabtools import require
+
+        require.postgres.server()
+
     """
     if version:
         pkg_name = 'postgresql-%s' % version
@@ -35,7 +43,14 @@ def server(version=None):
 
 def user(name, password):
     """
-    Require a PostgreSQL user
+    Require a PostgreSQL user.
+
+    ::
+
+        from fabtools import require
+
+        require.postgres.user('dbuser', password='somerandomstring')
+
     """
     if not user_exists(name):
         create_user(name, password)
@@ -44,7 +59,14 @@ def user(name, password):
 def database(name, owner, template='template0', encoding='UTF8',
              locale='en_US.UTF-8'):
     """
-    Require a PostgreSQL database
+    Require a PostgreSQL database.
+
+    ::
+
+        from fabtools import require
+
+        require.postgres.database('myapp', owner='dbuser')
+
     """
     if not database_exists(name):
         create_database(name, owner, template=template, encoding=encoding,

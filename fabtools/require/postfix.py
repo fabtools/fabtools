@@ -1,5 +1,11 @@
 """
-Idempotent API for managing Postfix email server
+Postfix
+=======
+
+This module provides high-level tools for managing the Postfix_ email server.
+
+.. _Postfix: http://www.postfix.org/
+
 """
 from fabric.api import *
 from fabtools.deb import is_installed, preseed_package, install
@@ -8,7 +14,17 @@ from fabtools.require.service import started
 
 def server(mailname):
     """
-    Require a Postfix email server
+    Require a Postfix email server.
+
+    This makes sure that Postfix is installed and started.
+
+    ::
+
+        from fabtools import require
+
+        # Handle incoming email for our domain
+        require.postfix.server('example.com')
+
     """
 
     # Ensure the package is installed

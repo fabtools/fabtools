@@ -1,5 +1,6 @@
 """
-Fabric tools for managing files and directories
+Files and directories
+=====================
 """
 from __future__ import with_statement
 
@@ -11,7 +12,7 @@ from fabric.contrib.files import upload_template as _upload_template
 
 def is_file(path, use_sudo=False):
     """
-    Check if a path exists, and is a file
+    Check if a path exists, and is a file.
     """
     func = use_sudo and sudo or run
     with settings(hide('running', 'warnings'), warn_only=True):
@@ -20,7 +21,7 @@ def is_file(path, use_sudo=False):
 
 def is_dir(path, use_sudo=False):
     """
-    Check if a path exists, and is a directory
+    Check if a path exists, and is a directory.
     """
     func = use_sudo and sudo or run
     with settings(hide('running', 'warnings'), warn_only=True):
@@ -29,7 +30,7 @@ def is_dir(path, use_sudo=False):
 
 def is_link(path, use_sudo=False):
     """
-    Check if a path exists, and is a symbolic link
+    Check if a path exists, and is a symbolic link.
     """
     func = use_sudo and sudo or run
     with settings(hide('running', 'warnings'), warn_only=True):
@@ -39,7 +40,7 @@ def is_link(path, use_sudo=False):
 def upload_template(filename, template, context=None, use_sudo=False,
                   user="root", mkdir=False, chown=False):
     """
-    Upload a template file
+    Upload a template file.
     """
     if mkdir:
         d = os.path.dirname(filename)
@@ -55,7 +56,7 @@ def upload_template(filename, template, context=None, use_sudo=False,
 
 def md5sum(filename, use_sudo=False):
     """
-    Compute MD5 sum
+    Compute the MD5 sum of a file.
     """
     func = use_sudo and sudo or run
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
@@ -68,37 +69,46 @@ def md5sum(filename, use_sudo=False):
 
 class watch(object):
     """
-    Context manager to watch for changes to the contents of some files
+    Context manager to watch for changes to the contents of some files.
 
-    The 'filenames' argument can be either a string (single filename)
+    The *filenames* argument can be either a string (single filename)
     or a list (multiple filenames).
 
-    You can read the 'changed' attribute at the end of the block to
+    You can read the *changed* attribute at the end of the block to
     check if the contents of any of the watched files has changed.
 
-    You can also provide a callback that will be called at the end of
+    You can also provide a *callback* that will be called at the end of
     the block if the contents of any of the watched files has changed.
 
     Example using an explicit check::
 
         from fabric.contrib.files import comment, uncomment
+
         from fabtools.files import watch
         from fabtools.services import restart
+
+        # Edit configuration file
         with watch('/etc/daemon.conf') as config:
             uncomment('/etc/daemon.conf', 'someoption')
             comment('/etc/daemon.conf', 'otheroption')
+
+        # Restart daemon if needed
         if config.changed:
             restart('daemon')
 
-    Example using a callback::
+    Same example using a callback::
 
         from functools import partial
+
         from fabric.contrib.files import comment, uncomment
+
         from fabtools.files import watch
         from fabtools.services import restart
+
         with watch('/etc/daemon.conf', callback=partial(restart, 'daemon')):
             uncomment('/etc/daemon.conf', 'someoption')
             comment('/etc/daemon.conf', 'otheroption')
+
     """
 
     def __init__(self, filenames, callback=None, use_sudo=False):

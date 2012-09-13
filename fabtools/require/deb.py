@@ -1,5 +1,10 @@
 """
-Idempotent API for managing Debian/Ubuntu packages
+Debian packages
+===============
+
+This module provides high-level tools for managing Debian/Ubuntu packages
+and repositories.
+
 """
 from __future__ import with_statement
 
@@ -12,7 +17,15 @@ import fabtools.require
 
 def source(name, uri, distribution, *components):
     """
-    Require a package source
+    Require a package source.
+
+    ::
+
+        from fabtools import require
+
+        # Official MongoDB packages
+        require.deb.source('mongodb', 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart', 'dist', '10gen')
+
     """
     path = '/etc/apt/sources.list.d/%(name)s.list' % locals()
     components = ' '.join(components)
@@ -26,7 +39,16 @@ def source(name, uri, distribution, *components):
 
 def ppa(name):
     """
-    Require a PPA
+    Require a `PPA`_ package source.
+
+    ::
+
+        from fabtools import require
+
+        # Node.js packages by Chris Lea
+        require.deb.ppa('ppa:chris-lea/node.js')
+
+    .. _PPA: https://help.launchpad.net/Packaging/PPA
     """
     assert name.startswith('ppa:')
     user, repo = name[4:].split('/', 2)
@@ -41,7 +63,13 @@ def ppa(name):
 
 def package(pkg_name, update=False):
     """
-    Require a deb package
+    Require a deb package to be installed.
+
+    ::
+
+        from fabtools import require
+
+        require.deb.package('foo')
     """
     if not is_installed(pkg_name):
         install(pkg_name, update)
@@ -49,7 +77,17 @@ def package(pkg_name, update=False):
 
 def packages(pkg_list, update=False):
     """
-    Require several deb packages
+    Require several deb packages to be installed.
+
+    ::
+
+        from fabtools import require
+
+        require.deb.packages([
+            'foo',
+            'bar',
+            'baz',
+        ])
     """
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg)]
     if pkg_list:
@@ -58,7 +96,13 @@ def packages(pkg_list, update=False):
 
 def nopackage(pkg_name):
     """
-    Require a deb package to be absent
+    Require a deb package to be uninstalled.
+
+    ::
+
+        from fabtools import require
+
+        require.deb.nopackage('apache2')
     """
     if is_installed(pkg_name):
         uninstall(pkg_name)
@@ -66,7 +110,17 @@ def nopackage(pkg_name):
 
 def nopackages(pkg_list):
     """
-    Require several deb packages to be absent
+    Require several deb packages to be uninstalled.
+
+    ::
+
+        from fabtools import require
+
+        require.deb.nopackages([
+            'perl',
+            'php5',
+            'ruby',
+        ])
     """
     pkg_list = [pkg for pkg in pkg_list if is_installed(pkg)]
     if pkg_list:

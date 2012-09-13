@@ -1,5 +1,12 @@
 """
-Idempotent API for managing nginx sites
+Nginx
+=====
+
+This module provides high-level tools for installing the `nginx`_
+web server and managing the configuration of web sites.
+
+.. nginx: http://nginx.org/
+
 """
 from __future__ import with_statement
 
@@ -13,7 +20,13 @@ from fabtools.require.service import started
 
 def server():
     """
-    Require an nginx server
+    Require nginx server to be installed and running.
+
+    ::
+
+        from fabtools import require
+
+        require.nginx.server()
     """
     package('nginx')
     started('nginx')
@@ -21,7 +34,31 @@ def server():
 
 def site(server_name, template_contents=None, template_source=None, enabled=True, check_config=True, **kwargs):
     """
-    Require an nginx site
+    Require an nginx site.
+
+    You must provide a template for the site configuration, either as a
+    string (*template_contents*) or as the path to a local template
+    file (*template_source*).
+
+    ::
+
+        from fabtools import require
+
+        CONFIG_TPL = '''
+        server {
+            listen      %(port)d;
+            server_name %(server_name)s %(server_alias)s;
+            root        %(docroot)s;
+            access_log  /var/log/nginx/%(server_name)s.log;
+        }'''
+
+        require.nginx.site('example.com', template_contents=CONFIG_TPL,
+            port=80,
+            server_alias='www.example.com',
+            docroot='/var/www/mysite',
+        )
+
+    .. seealso:: :py:func:`fabtools.require.files.template_file`
     """
     server()
 
@@ -79,6 +116,25 @@ server {
 
 def proxied_site(server_name, enabled=True, **kwargs):
     """
-    Require an nginx site for a proxied app
+    Require an nginx site for a proxied app.
+
+    This uses a predefined configuration template suitable for proxying
+    requests to a backend application server.
+
+    Required keyword arguments are:
+
+    - *port*: the port nginx should listen on
+    - *proxy_url*: URL of backend application server
+    - *docroot*: path to static files
+
+    ::
+
+        from fabtools import require
+
+        require.nginx.proxied_site('example.com',
+            port=80,
+            proxy_url='http://127.0.0.1:8080/',
+            docroot='/path/to/myapp/static',
+        )
     """
     site(server_name, template_contents=PROXIED_SITE_TEMPLATE, enabled=enabled, **kwargs)

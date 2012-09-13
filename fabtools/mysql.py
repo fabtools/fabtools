@@ -1,5 +1,9 @@
 """
-Fabric tools for managing MySQL users and databases
+MySQL users and databases
+=========================
+
+This module provides tools for creating MySQL users and databases.
+
 """
 from __future__ import with_statement
 
@@ -8,14 +12,14 @@ from fabric.api import *
 
 def prompt_password(user='root'):
     """
-    Ask MySQL password interactively
+    Ask MySQL password interactively.
     """
     return prompt('Please enter password for MySQL user "%s":' % user)
 
 
 def _query(query, use_sudo=True, **kwargs):
     """
-    Run a MySQL query
+    Run a MySQL query.
     """
     func = use_sudo and sudo or run
 
@@ -33,7 +37,7 @@ def _query(query, use_sudo=True, **kwargs):
 
 def user_exists(name, **kwargs):
     """
-    Check if a MySQL user exists
+    Check if a MySQL user exists.
     """
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = _query("use mysql; SELECT User FROM user WHERE User = '%(name)s';" % {
@@ -44,7 +48,16 @@ def user_exists(name, **kwargs):
 
 def create_user(name, password, host='localhost', **kwargs):
     """
-    Create a MySQL user
+    Create a MySQL user.
+
+    Example::
+
+        import fabtools
+
+        # Create DB user if it does not exist
+        if not fabtools.mysql.user_exists('dbuser'):
+            fabtools.mysql.create_user('dbuser', password='somerandomstring')
+
     """
     with settings(hide('running')):
         _query("CREATE USER '%(name)s'@'%(host)s' IDENTIFIED BY '%(password)s';" % {
@@ -57,7 +70,7 @@ def create_user(name, password, host='localhost', **kwargs):
 
 def database_exists(name, **kwargs):
     """
-    Check if a MySQL database exists
+    Check if a MySQL database exists.
     """
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = _query("use mysql; SELECT Db FROM db WHERE Db = '%(name)s';" % {
@@ -69,7 +82,16 @@ def database_exists(name, **kwargs):
 
 def create_database(name, owner=None, owner_host='localhost', charset='utf8', collate='utf8_general_ci', **kwargs):
     """
-    Create a MySQL database
+    Create a MySQL database.
+
+    Example::
+
+        import fabtools
+
+        # Create DB if it does not exist
+        if not fabtools.mysql.database_exists('myapp'):
+            fabtools.mysql.create_database('myapp', owner='dbuser')
+
     """
     with settings(hide('running')):
 

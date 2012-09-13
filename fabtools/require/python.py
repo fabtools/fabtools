@@ -1,5 +1,13 @@
 """
-Idempotent API for managing Python packages
+Python environments and packages
+================================
+
+This module includes tools for using `virtual environments`_
+and installing packages using `pip`_.
+
+.. _virtual environments: http://www.virtualenv.org/
+.. _pip: http://www.pip-installer.org/
+
 """
 import posixpath
 
@@ -11,7 +19,9 @@ from fabtools.require import deb
 
 def distribute():
     """
-    Require distribute
+    Require `distribute`_ to be installed.
+
+    .. _distribute: http://packages.python.org/distribute/
     """
     deb.packages([
         'curl',
@@ -23,7 +33,7 @@ def distribute():
 
 def pip(version=None):
     """
-    Require pip
+    Require `pip`_ to be installed.
     """
     distribute()
     if not is_pip_installed(version):
@@ -32,7 +42,24 @@ def pip(version=None):
 
 def package(pkg_name, url=None, **kwargs):
     """
-    Require a Python package
+    Require a Python package.
+
+    If the package is not installed, it will be installed
+    using the `pip installer`_.
+
+    ::
+
+        from fabtools.python import virtualenv
+        from fabtools import require
+
+        # Install package system-wide
+        require.python.package('foo', use_sudo=True)
+
+        # Install package in an existing virtual environment
+        with virtualenv('/path/to/venv'):
+            require.python.package('bar')
+
+    .. _pip installer: http://www.pip-installer.org/
     """
     pip('1.1')
     if not is_installed(pkg_name):
@@ -41,7 +68,7 @@ def package(pkg_name, url=None, **kwargs):
 
 def packages(pkg_list, **kwargs):
     """
-    Require several Python packages
+    Require several Python packages.
     """
     pip('1.1')
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg)]
@@ -51,7 +78,9 @@ def packages(pkg_list, **kwargs):
 
 def requirements(filename, **kwargs):
     """
-    Require Python packages from a pip requirements file
+    Require Python packages from a pip `requirements file`_.
+
+    .. _requirements file: http://www.pip-installer.org/en/latest/requirements.html
     """
     pip('1.1')
     install_requirements(filename, **kwargs)
@@ -59,7 +88,15 @@ def requirements(filename, **kwargs):
 
 def virtualenv(directory, system_site_packages=False, python=None, use_sudo=False, user=None):
     """
-    Require a Python virtual environment
+    Require a Python `virtual environment`_.
+
+    ::
+
+        from fabtools import require
+
+        require.python.virtualenv('/path/to/venv')
+
+    .. _virtual environment: http://www.virtualenv.org/
     """
     package('virtualenv', use_sudo=True)
     if not is_file(posixpath.join(directory, 'bin', 'python')):

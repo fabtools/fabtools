@@ -1,5 +1,12 @@
 """
-Fabric tools for managing supervisor processes
+Supervisor processes
+====================
+
+This module provides high-level tools for managing long-running
+processes using `supervisord`_.
+
+.. _supervisord: http://supervisord.org/
+
 """
 from __future__ import with_statement
 
@@ -8,23 +15,24 @@ from fabric.api import *
 
 def reload_config():
     """
-    Reload supervisor configuration
+    Reload supervisor configuration.
     """
     sudo("supervisorctl reload")
 
 
 def update_config():
     """
-    Reread and update supervisor job configurations. Less heavy-handed than
-    a full reload, as it doesn't restart the backend supervisor process and
-    all managed processes.
+    Reread and update supervisor job configurations.
+
+    Less heavy-handed than a full reload, as it doesn't restart the
+    backend supervisor process and all managed processes.
     """
     sudo("supervisorctl update")
 
 
 def process_status(name):
     """
-    Get the status of a supervisor process
+    Get the status of a supervisor process.
     """
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = sudo("supervisorctl status %(name)s" % locals())

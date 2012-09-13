@@ -1,5 +1,6 @@
 """
-Fabric tools for managing network
+Network
+=======
 """
 from __future__ import with_statement
 
@@ -8,11 +9,7 @@ from fabric.api import *
 
 def interfaces():
     """
-    Get the list of network interfaces
-
-        >>> fabtools.network.interfaces()
-        ['eth0', 'eth1', 'lo']
-
+    Get the list of network interfaces.
     """
     with settings(hide('running', 'stdout')):
         res = run('/sbin/ifconfig -s')
@@ -21,10 +18,15 @@ def interfaces():
 
 def address(interface):
     """
-    Get the IPv4 address assigned to an interface
+    Get the IPv4 address assigned to an interface.
 
-        >>> fabtools.network.address('lo')
-        '127.0.0.1'
+    Example::
+
+        import fabtools
+
+        # Print all configured IP addresses
+        for interface in fabtools.network.interfaces():
+            print(fabtools.network.address(interface))
 
     """
     with settings(hide('running', 'stdout')):
@@ -34,10 +36,15 @@ def address(interface):
 
 def nameservers():
     """
-    Get the list of nameserver addresses
+    Get the list of nameserver addresses.
 
-        >>> fabtools.network.nameservers()
-        ['208.67.222.222', '208.67.220.220']
+    Example::
+
+        import fabtools
+
+        # Check that all name servers are reachable
+        for ip in fabtools.network.nameservers():
+            run('ping -c1 %s' % ip)
 
     """
     with settings(hide('running', 'stdout')):

@@ -1,7 +1,6 @@
 """
-Fabric tools for managing OpenVZ containers
-
-The remote host needs a patched kernel with OpenVZ support
+OpenVZ containers
+=================
 """
 from __future__ import with_statement
 
@@ -11,7 +10,7 @@ from fabric.api import *
 def create(ctid, ostemplate=None, config=None, private=None,
            root=None, ipadd=None, hostname=None, **kwargs):
     """
-    Create OpenVZ container
+    Create an OpenVZ container.
     """
     return _vzctl('create', ctid, ostemplate=ostemplate, config=config,
         private=private, root=root, ipadd=ipadd, hostname=hostname, **kwargs)
@@ -19,44 +18,47 @@ def create(ctid, ostemplate=None, config=None, private=None,
 
 def destroy(ctid_or_name):
     """
-    Destroy OpenVZ container
+    Destroy the container.
     """
     return _vzctl('destroy', ctid_or_name)
 
 
 def set(ctid_or_name, save=True, **kwargs):
     """
-    Set OpenVZ container parameters
+    Set container parameters.
     """
     return _vzctl('set', ctid_or_name, save=save, **kwargs)
 
 
 def start(ctid_or_name, wait=False, force=False, **kwargs):
     """
-    Start OpenVZ container
+    Start the container.
 
-    Warning: wait=True is broken with vzctl 3.0.24 on Debian 6.0 (squeeze)
+    If *wait* is ``True``, wait until the container is up and running.
+
+    .. warning:: ``wait=True`` is broken with vzctl 3.0.24
+                 on Debian 6.0 (*squeeze*)
     """
     return _vzctl('start', ctid_or_name, wait=wait, force=force, **kwargs)
 
 
 def stop(ctid_or_name, fast=False, **kwargs):
     """
-    Stop OpenVZ container
+    Stop the container.
     """
     return _vzctl('stop', ctid_or_name, fast=fast, **kwargs)
 
 
 def restart(ctid_or_name, wait=True, force=False, fast=False, **kwargs):
     """
-    Restart OpenVZ container
+    Restart the container.
     """
     return _vzctl('restart', ctid_or_name, wait=wait, force=force, fast=fast, **kwargs)
 
 
 def status(ctid_or_name):
     """
-    Show status of OpenVZ container
+    Get the status of the container.
     """
     with settings(warn_only=True):
         return _vzctl('status', ctid_or_name)
@@ -64,14 +66,14 @@ def status(ctid_or_name):
 
 def running(ctid_or_name):
     """
-    Is the container running?
+    Check if the container is running.
     """
     return status(ctid_or_name).split(' ')[4] == 'running'
 
 
 def exists(ctid_or_name):
     """
-    Does the container exist?
+    Check if the container exists.
     """
     with settings(hide('running', 'stdout', 'warnings'), warn_only=True):
         return status(ctid_or_name).succeeded
@@ -79,7 +81,16 @@ def exists(ctid_or_name):
 
 def exec2(ctid_or_name, command):
     """
-    Run command inside OpenVZ container
+    Run a command inside the container.
+
+    ::
+
+        import fabtools
+
+        res = fabtools.openvz.exec2('foo', 'hostname')
+
+    .. warning:: the command will be run as **root**.
+
     """
     return sudo("vzctl exec2 %s '%s'" % (ctid_or_name, command))
 
@@ -105,7 +116,24 @@ def _expand_args(**kwargs):
 
 def download_template(name=None, url=None):
     """
-    Download an OpenVZ template
+    Download an OpenVZ template.
+
+    Example::
+
+        from fabtools.openvz import download_template
+
+        # Use custom OS template
+        download_template(url='http://example.com/templates/mybox.tar.gz')
+
+    If no *url* is provided, the OS template will be downloaded from the
+    `download.openvz.org <http://download.openvz.org/template/precreated/>`_
+    repository::
+
+        from fabtools.openvz import download_template
+
+        # Use OS template from http://download.openvz.org/template/precreated/
+        download_template('debian-6.0-x86_64')
+
     """
     if url is None:
         url = 'http://download.openvz.org/template/precreated/%s.tar.gz' % name
@@ -116,7 +144,7 @@ def download_template(name=None, url=None):
 
 def list_ctids():
     """
-    Get the list of currently used CTIDs
+    Get the list of currently used CTIDs.
     """
     with settings(hide('running', 'stdout')):
         res = sudo('vzlist -a -1')
@@ -125,7 +153,7 @@ def list_ctids():
 
 def get_available_ctid():
     """
-    Get an available CTID
+    Get an available CTID.
     """
     current_ctids = list_ctids()
     if current_ctids:

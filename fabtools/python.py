@@ -1,5 +1,13 @@
 """
-Fabric tools for managing Python packages using pip
+Python environments and packages
+================================
+
+This module includes tools for using `virtual environments`_
+and installing packages using `pip`_.
+
+.. _virtual environments: http://www.virtualenv.org/
+.. _pip: http://www.pip-installer.org/
+
 """
 from __future__ import with_statement
 
@@ -14,7 +22,9 @@ from fabric.utils import puts
 
 def is_pip_installed(version=None):
     """
-    Check if pip is installed
+    Check if `pip`_ is installed.
+
+    .. _pip: http://www.pip-installer.org/
     """
     with settings(hide('running', 'warnings', 'stderr', 'stdout'), warn_only=True):
         res = run('pip --version')
@@ -33,7 +43,17 @@ def is_pip_installed(version=None):
 
 def install_pip():
     """
-    Install pip
+    Install the latest version of `pip`_.
+
+    .. _pip: http://www.pip-installer.org/
+
+    ::
+
+        import fabtools
+
+        if not fabtools.python.is_pip_installed():
+            fabtools.python.install_pip()
+
     """
     with cd('/tmp'):
         run('curl --silent -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py')
@@ -42,7 +62,7 @@ def install_pip():
 
 def is_installed(package):
     """
-    Check if a Python package is installed
+    Check if a Python package is installed.
     """
     options = []
     options = ' '.join(options)
@@ -54,7 +74,20 @@ def is_installed(package):
 
 def install(packages, upgrade=False, use_mirrors=True, use_sudo=False, user=None, download_cache=None):
     """
-    Install Python packages
+    Install Python package(s) using `pip`_.
+
+    .. _pip: http://www.pip-installer.org/
+
+    Examples::
+
+        import fabtools
+
+        # Install a single package
+        fabtools.python.install('package', use_sudo=True)
+
+        # Install a list of packages
+        fabtools.python.install(['pkg1', 'pkg2'], use_sudo=True)
+
     """
     if not isinstance(packages, basestring):
         packages = ' '.join(packages)
@@ -75,7 +108,15 @@ def install(packages, upgrade=False, use_mirrors=True, use_sudo=False, user=None
 
 def install_requirements(filename, upgrade=False, use_mirrors=True, use_sudo=False, user=None, download_cache=None):
     """
-    Install Python packages from a pip requirements file
+    Install Python packages from a pip `requirements file`_.
+
+    ::
+
+        import fabtools
+
+        fabtools.python.install_requirements('project/requirements.txt')
+
+    .. _requirements file: http://www.pip-installer.org/en/latest/requirements.html
     """
     options = []
     if use_mirrors:
@@ -95,7 +136,17 @@ def install_requirements(filename, upgrade=False, use_mirrors=True, use_sudo=Fal
 @contextmanager
 def virtualenv(directory, local=False):
     """
-    Context manager to activate a Python virtualenv
+    Context manager to activate an existing Python `virtual environment`_.
+
+    ::
+
+        from fabric.api import run
+        from fabtools.python import virtualenv
+
+        with virtualenv('/path/to/virtualenv'):
+            run('python -V')
+
+    .. _virtual environment: http://www.virtualenv.org/
     """
     join = os.path.join if local else posixpath.join
     with prefix('. "%s"' % join(directory, 'bin', 'activate')):

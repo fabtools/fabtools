@@ -1,5 +1,6 @@
 """
-Idempotent API for managing shorewall
+Shorewall firewall
+==================
 """
 from __future__ import with_statement
 
@@ -245,7 +246,25 @@ CONFIG_FILES = [
 def firewall(zones=None, interfaces=None, policy=None, rules=None,
     routestopped=None, masq=None):
     """
-    Require a firewall
+    Ensure that a firewall is configured.
+
+    Example::
+
+        from fabtools.shorewall import *
+        from fabtools import require
+
+        # We need a firewall with some custom rules
+        require.shorewall.firewall(
+            rules=[
+                Ping(),
+                SSH(),
+                HTTP(),
+                HTTPS(),
+                SMTP(),
+                rule(port=1234, source=hosts(['example.com'])),
+            ]
+        )
+
     """
     package('shorewall')
 
@@ -268,7 +287,7 @@ def firewall(zones=None, interfaces=None, policy=None, rules=None,
 
 def started():
     """
-    Ensure the firewall is started
+    Ensure that the firewall is started.
     """
     if not is_started():
         start('shorewall')
@@ -276,7 +295,7 @@ def started():
 
 def stopped():
     """
-    Ensure the firewall is stopped
+    Ensure that the firewall is stopped.
     """
     if not is_stopped():
         stop('shorewall')

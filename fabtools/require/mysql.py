@@ -1,5 +1,10 @@
 """
-Idempotent API for managing MySQL users and databases
+MySQL
+=====
+
+This module provides high-level tools for installing a MySQL server
+and creating MySQL users and databases.
+
 """
 from __future__ import with_statement
 
@@ -11,7 +16,14 @@ from fabtools.require.service import started
 
 def server(version=None, password=None):
     """
-    Require a MySQL server
+    Require a MySQL server to be installed and running.
+
+    Example::
+
+        from fabtools import require
+
+        require.mysql.server(password='s3cr3t')
+
     """
     if version:
         pkg_name = 'mysql-server-%s' % version
@@ -35,7 +47,16 @@ def server(version=None, password=None):
 
 def user(name, password, **kwargs):
     """
-    Require a MySQL user
+    Require a MySQL user.
+
+    Extra arguments will be passed to :py:func:`fabtools.mysql.create_user`.
+
+    Example::
+
+        from fabtools import require
+
+        require.mysql.user('dbuser', 'somerandomstring')
+
     """
     if not user_exists(name, **kwargs):
         create_user(name, password, **kwargs)
@@ -43,7 +64,16 @@ def user(name, password, **kwargs):
 
 def database(name, **kwargs):
     """
-    Require a MySQL database
+    Require a MySQL database.
+
+    Extra arguments will be passed to :py:func:`fabtools.mysql.create_database`.
+
+    Example::
+
+        from fabtools import require
+
+        require.mysql.database('myapp', owner='dbuser')
+
     """
     if not database_exists(name, **kwargs):
         create_database(name, **kwargs)

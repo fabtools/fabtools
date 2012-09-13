@@ -1,5 +1,6 @@
 """
-Fabric tools for managing users
+Users
+=====
 """
 from __future__ import with_statement
 
@@ -8,7 +9,7 @@ from fabric.api import *
 
 def exists(name):
     """
-    Check if user exists
+    Check if a user exists.
     """
     with settings(hide('running', 'stdout', 'warnings'), warn_only=True):
         return sudo('getent passwd %(name)s' % locals()).succeeded
@@ -16,7 +17,15 @@ def exists(name):
 
 def create(name, home=None, shell=None, uid=None, gid=None, groups=None):
     """
-    Create a new user
+    Create a new user.
+
+    Example::
+
+        import fabtools
+
+        if not fabtools.user.exists('alice'):
+            fabtools.user.create('alice', home='/home/alice')
+
     """
     options = []
     if gid:

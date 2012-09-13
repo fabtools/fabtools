@@ -1,5 +1,11 @@
 """
-Idempotent API for managing Redis instances
+Redis
+=====
+
+This module provides high-level tools for managing `Redis`_ instances.
+
+.. _Redis: http://redis.io/
+
 """
 from __future__ import with_statement
 
@@ -20,7 +26,9 @@ BINARIES = [
 
 def installed_from_source(version=VERSION):
     """
-    Require Redis to be installed from source
+    Require Redis to be installed from source.
+
+    The compiled binaries will be installed in ``/opt/redis-{version}/``.
     """
     from fabtools import require
 
@@ -50,9 +58,28 @@ def installed_from_source(version=VERSION):
 
 def instance(name, version=VERSION, **kwargs):
     """
-    Require a Redis instance to be running
+    Require a Redis instance to be running.
 
-    The instance will be managed using supervisord.
+    The instance will be managed using supervisord, as a process named
+    ``redis_{name}``, running as the ``redis`` user.
+
+    ::
+
+        from fabtools import require
+        from fabtools.supervisor import process_status
+
+        require.redis.installed_from_source()
+
+        require.redis.instance('db1', port='6379')
+        require.redis.instance('db2', port='6380')
+
+        print process_status('redis_db1')
+        print process_status('redis_db2')
+
+    .. seealso:: :ref:`supervisor_module` and
+                 :ref:`require_supervisor_module`
+
+
     """
     from fabtools import require
 
