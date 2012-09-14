@@ -24,7 +24,7 @@ def install_distribute():
         sudo("python distribute_setup.py")
 
 
-def install(packages, installer=None, upgrade=False, use_sudo=False):
+def install(packages, upgrade=False, use_sudo=False):
     """
     Install Python packages with distribute
     """
