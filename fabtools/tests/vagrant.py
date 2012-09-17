@@ -50,7 +50,8 @@ def base_boxes():
     if boxes is not None:
         return boxes.split()
     else:
-        res = local('vagrant box list', capture=True)
+        with settings(warn_only=True):
+            res = local('vagrant box list', capture=True)
         if res.failed:
             return []
         else:
