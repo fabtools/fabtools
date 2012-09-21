@@ -17,7 +17,7 @@ setup(
     long_description=read('README.rst') + '\n' + read('docs/CHANGELOG.rst'),
     author='Ronan Amicel',
     author_email='ronan.amicel@gmail.com',
-    url='http://github.com/ronnix/fabtools',
+    url='http://fabtools.readthedocs.org/',
     license='BSD',
     install_requires=[
         "fabric>=1.2.0",
