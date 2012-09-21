@@ -15,8 +15,8 @@ API Documentation
    api/require/index
 
 
-Changelog
-=========
+History
+=======
 
 .. toctree::
    :maxdepth: 1

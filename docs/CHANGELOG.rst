@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Version 0.5 (unreleased)
+Version 0.5 (2012-09-21)
 ------------------------
 
 * The ``watch`` context manager now allows you to either provide
@@ -20,7 +20,8 @@ Version 0.5 (unreleased)
 * ``pip`` can now use a download cache
 * Upgrade Redis version to 2.4.17
 * Misc bug fixes and improvements
-* Support for Ubuntu 12.04 LTS
+* Support for Ubuntu 12.04 LTS and Debian 6.0
+* Documentation improvements
 
 Version 0.4 (2012-05-30)
 ------------------------
