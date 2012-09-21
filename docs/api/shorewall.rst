@@ -1,7 +1,7 @@
 .. _shorewall_module:
 
 :mod:`fabtools.shorewall`
-------------------------
+-------------------------
 
 .. automodule:: fabtools.shorewall
 

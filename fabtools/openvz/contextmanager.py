@@ -43,6 +43,7 @@ def guest(name_or_ctid):
                  **root** inside the container.
                  Use ``sudo(command, user='foo')`` to run them as
                  an unpriviledged user.
+
     Example::
 
         from fabtools.openvz import guest

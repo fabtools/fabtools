@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 0.5.1 (2012-09-21)
+--------------------------
+
+* Documentation and packaging fixes
+
 Version 0.5 (2012-09-21)
 ------------------------
 
