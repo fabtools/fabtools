@@ -30,9 +30,10 @@ def install_nodejs(version="0.8.9"):
         sudo("make install")
     run('rm %(filename) ; rm -rf %(foldername)' % locals())
 
+
 def install(package=None, version=None, global_install=True):
     """
-    Install given npm package. If global_install is set to false, package 
+    Install given npm package. If global_install is set to false, package
     is installed locally.
 
     If no package is given npm install is run inside current directory
@@ -50,6 +51,7 @@ def install(package=None, version=None, global_install=True):
     else:
         run("npm install")
 
+
 def update(package, global_install=True):
     """
     update given pack
@@ -59,9 +61,10 @@ def update(package, global_install=True):
     else:
         run("npm install -l {package}".format(package=package))
 
+
 def uninstall(package, version=None, global_uninstall=True):
     """
-    Uninstall given npm package. If global_install is set to false, package 
+    Uninstall given npm package. If global_install is set to false, package
     is uninstalled locally.
     """
     if version:
