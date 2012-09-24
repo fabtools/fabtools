@@ -14,21 +14,22 @@ def install_nodejs(version="0.8.9"):
     version of Node JS.
     """
     require.deb.packages([
-        'make',
-        'openssl',
-        'libssl-dev',
-        'g++',
+        "make",
+        "openssl",
+        "python",
+        "libssl-dev",
+        "g++",
     ])
 
-    filename = "node-v{version}.tar.gz".format(locals())
+    filename = "node-v{version}.tar.gz".format(**locals())
     foldername = filename[0:-7]
 
-    run("wget http://nodejs.org/dist/v%(version)/%(filename)" % locals())
-    run("tar -xvzf {}").format(filename)
+    run("wget http://nodejs.org/dist/v{version}/{filename}".format(**locals()))
+    run("tar -xzf {filename}".format(filename=filename))
     with cd(foldername):
         run("./configure ; make")
         sudo("make install")
-    run('rm %(filename) ; rm -rf %(foldername)' % locals())
+    run('rm {filename} ; rm -rf {foldername}'.format(**locals()))
 
 
 def install(package=None, version=None, global_install=True):
@@ -57,9 +58,9 @@ def update(package, global_install=True):
     update given pack
     """
     if global_install:
-        sudo("npm install -g {package}".format(package=package))
+        sudo("npm update -g {package}".format(package=package))
     else:
-        run("npm install -l {package}".format(package=package))
+        run("npm update -l {package}".format(package=package))
 
 
 def uninstall(package, version=None, global_uninstall=True):
