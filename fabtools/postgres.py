@@ -14,7 +14,8 @@ def _run_as_pg(command):
     """
     Run command as 'postgres' user
     """
-    return sudo(command, user='postgres', shell=False)
+    with cd('/var/lib/postgresql'):
+        return sudo('sudo -u postgres %s' % command)
 
 
 def user_exists(name):
