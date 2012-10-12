@@ -31,11 +31,9 @@ def install_nodejs(version=DEFAULT_VERSION):
 
     """
     require.deb.packages([
-        "make",
-        "openssl",
-        "python",
-        "libssl-dev",
-        "g++",
+        'build-essential',
+        'python',
+        'libssl-dev',
     ])
 
     filename = 'node-v%s.tar.gz' % version
@@ -44,9 +42,10 @@ def install_nodejs(version=DEFAULT_VERSION):
     run('wget http://nodejs.org/dist/v%(version)s/%(filename)s' % locals())
     run('tar -xzf %s' % filename)
     with cd(foldername):
-        run("./configure ; make")
-        sudo("make install")
-    run('rm %(filename)s ; rm -rf %(foldername)s' % locals())
+        run('./configure')
+        run('make')
+        sudo('make install')
+    run('rm -rf %(filename)s %(foldername)s' % locals())
 
 
 def install(package=None, version=None, global_install=True):
@@ -79,7 +78,7 @@ def install(package=None, version=None, global_install=True):
         else:
             run('npm install -l %s' % package)
     else:
-        run("npm install")
+        run('npm install')
 
 
 def update(package, global_install=True):
