@@ -9,6 +9,7 @@ fabtools
    files
    mysql
    network
+   nodejs
    openvz
    postgres
    python
