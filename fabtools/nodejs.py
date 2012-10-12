@@ -38,15 +38,15 @@ def install_nodejs(version=DEFAULT_VERSION):
         "g++",
     ])
 
-    filename = "node-v{version}.tar.gz".format(**locals())
+    filename = 'node-v%s.tar.gz' % version
     foldername = filename[0:-7]
 
-    run("wget http://nodejs.org/dist/v{version}/{filename}".format(**locals()))
-    run("tar -xzf {filename}".format(filename=filename))
+    run('wget http://nodejs.org/dist/v%(version)s/%(filename)s' % locals())
+    run('tar -xzf %s' % filename)
     with cd(foldername):
         run("./configure ; make")
         sudo("make install")
-    run('rm {filename} ; rm -rf {foldername}'.format(**locals()))
+    run('rm %(filename)s ; rm -rf %(foldername)s' % locals())
 
 
 def install(package=None, version=None, global_install=True):
@@ -72,12 +72,12 @@ def install(package=None, version=None, global_install=True):
     """
     if package:
         if version:
-            package += "@{version}".format(version=version)
+            package += '@%s' % version
 
         if global_install:
-            sudo("npm install -g {package}".format(package=package))
+            sudo('npm install -g %s' % package)
         else:
-            run("npm install -l {package}".format(package=package))
+            run('npm install -l %s' % package)
     else:
         run("npm install")
 
@@ -87,9 +87,9 @@ def update(package, global_install=True):
     Update Node.js package.
     """
     if global_install:
-        sudo("npm update -g {package}".format(package=package))
+        sudo('npm update -g %s' % package)
     else:
-        run("npm update -l {package}".format(package=package))
+        run('npm update -l %s' % package)
 
 
 def uninstall(package, version=None, global_uninstall=True):
@@ -111,9 +111,9 @@ def uninstall(package, version=None, global_uninstall=True):
 
     """
     if version:
-        package += "@{version}".format(version=version)
+        package += '@%s' % version
 
     if global_uninstall:
-        sudo("npm uninstall -g {package}".format(package=package))
+        sudo('npm uninstall -g %s' % package)
     else:
-        sudo("npm uninstall -l {package}".format(package=package))
+        sudo('npm uninstall -l %s' % package)
