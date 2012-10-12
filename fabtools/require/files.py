@@ -30,7 +30,7 @@ def directory(path, use_sudo=False, owner='', group='', mode=''):
 
         require.directory('/tmp/mydir', owner='alice')
 
-    .. note:: this function can be accessed directly from the
+    .. note:: This function can be accessed directly from the
               ``fabtools.require`` module for convenience.
 
     """
@@ -76,7 +76,7 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
     same if it is present. This is useful for very large files, where
     generating an MD5 sum may take a while.
 
-    .. note:: this function can be accessed directly from the
+    .. note:: This function can be accessed directly from the
               ``fabtools.require`` module for convenience.
 
     """

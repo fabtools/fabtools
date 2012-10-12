@@ -19,7 +19,7 @@ def user(name, home=None):
         require.user('alice')                   # no home directory
         require.user('bob', home='/home/bob')
 
-    .. note:: this function can be accessed directly from the
+    .. note:: This function can be accessed directly from the
               ``fabtools.require`` module for convenience.
 
     """
@@ -33,7 +33,7 @@ def sudoer(username, hosts="ALL", operators="ALL", passwd=False, commands="ALL")
     """
     Require sudo permissions for a given user.
 
-    .. note:: this function can be accessed directly from the
+    .. note:: This function can be accessed directly from the
               ``fabtools.require`` module for convenience.
 
     """

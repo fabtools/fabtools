@@ -3,9 +3,9 @@ Supervisor processes
 ====================
 
 This module provides high-level tools for managing long-running
-processes using `supervisord`_.
+processes using `supervisor`_.
 
-.. _supervisord: http://supervisord.org/
+.. _supervisor: http://supervisord.org/
 
 """
 from __future__ import with_statement
@@ -26,11 +26,11 @@ def process(name, **kwargs):
     - ``user``: run the process as this user
     - ``stdout_logfile``: absolute path to the log file
 
-    You should refer to the `supervisord documentation`_ for the
+    You should refer to the `supervisor documentation`_ for the
     complete list of allowed arguments.
 
     .. note:: the default values for the following arguments differs from
-              the supervisord defaults:
+              the ``supervisor`` defaults:
 
               - ``autorestart``: defaults to ``true``
               - ``redirect_stderr``: defaults to ``true``
@@ -46,7 +46,7 @@ def process(name, **kwargs):
             stdout_logfile='/path/to/logs/myapp.log',
             )
 
-    .. _supervisord documentation: http://supervisord.org/configuration.html#program-x-section-values
+    .. _supervisor documentation: http://supervisord.org/configuration.html#program-x-section-values
     """
     from fabtools import require
     require.deb.package('supervisor')
