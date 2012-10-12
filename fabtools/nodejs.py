@@ -13,7 +13,10 @@ from fabric.api import run, sudo, cd
 from fabtools import require
 
 
-def install_nodejs(version="0.8.9"):
+DEFAULT_VERSION = '0.8.11'
+
+
+def install_nodejs(version=DEFAULT_VERSION):
     """
     Install Node JS from source.
 
