@@ -20,14 +20,14 @@ def install_nodejs(version=DEFAULT_VERSION):
     """
     Install Node JS from source.
 
-    Example::
+    ::
 
         import fabtools
 
         # Install Node.js
         fabtools.nodejs.install_nodejs()
 
-    .. note:: This function only works for recent versions of Node.js.
+    .. note:: This function may not work for old versions of Node.js.
 
     """
     require.deb.packages([
@@ -48,14 +48,13 @@ def install_nodejs(version=DEFAULT_VERSION):
     run('rm -rf %(filename)s %(foldername)s' % locals())
 
 
-def install(package=None, version=None, global_install=True):
+def install(package=None, version=None, local=False):
     """
     Install Node.js package using ``npm``.
 
-    If ``global_install`` is ``False``, the package will be installed
-    locally.
+    If *local* is ``True``, the package will be installed locally.
 
-    Example::
+    ::
 
         import fabtools
 
@@ -63,7 +62,7 @@ def install(package=None, version=None, global_install=True):
         fabtools.nodejs.install('express')
 
         # Install package locally
-        fabtools.nodejs.install('underscore', global_install=False)
+        fabtools.nodejs.install('underscore', local=False)
 
     If no package name is given, then ``npm install`` will be run,
     which will locally install all packages specified in the
@@ -73,32 +72,33 @@ def install(package=None, version=None, global_install=True):
         if version:
             package += '@%s' % version
 
-        if global_install:
-            sudo('npm install -g %s' % package)
-        else:
+        if local:
             run('npm install -l %s' % package)
+        else:
+            sudo('npm install -g %s' % package)
     else:
         run('npm install')
 
 
-def update(package, global_install=True):
+def update(package, local=False):
     """
     Update Node.js package.
+
+    If *local* is ``True``, the package will be updated locally.
     """
-    if global_install:
-        sudo('npm update -g %s' % package)
-    else:
+    if local:
         run('npm update -l %s' % package)
+    else:
+        sudo('npm update -g %s' % package)
 
 
-def uninstall(package, version=None, global_uninstall=True):
+def uninstall(package, version=None, local=False):
     """
     Uninstall Node.js package.
 
-    If ``global_install`` is False, the package will be uninstalled
-    locally.
+    If *local* is ``True``, the package will be uninstalled locally.
 
-    Example::
+    ::
 
         import fabtools
 
@@ -106,13 +106,13 @@ def uninstall(package, version=None, global_uninstall=True):
         fabtools.nodejs.uninstall('express')
 
         # Uninstall package locally
-        fabtools.nodejs.uninstall('underscore', global_uninstall=False)
+        fabtools.nodejs.uninstall('underscore', local=False)
 
     """
     if version:
         package += '@%s' % version
 
-    if global_uninstall:
-        sudo('npm uninstall -g %s' % package)
+    if local:
+        run('npm uninstall -l %s' % package)
     else:
-        sudo('npm uninstall -l %s' % package)
+        sudo('npm uninstall -g %s' % package)
