@@ -4,6 +4,7 @@ import fabtools.require.nginx
 import fabtools.require.postfix
 import fabtools.require.postgres
 import fabtools.require.mysql
+import fabtools.require.nodejs
 import fabtools.require.openvz
 import fabtools.require.python
 import fabtools.require.redis

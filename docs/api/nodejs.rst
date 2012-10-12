@@ -5,3 +5,5 @@
 
 .. automodule:: fabtools.nodejs
     :members:
+
+    .. seealso:: :ref:`require_nodejs_module`

@@ -8,6 +8,7 @@ fabtools.require
    files
    mysql
    nginx
+   nodejs
    openvz
    postfix
    postgres

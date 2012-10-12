@@ -5,12 +5,20 @@ Node.js
 This module provides tools for installing `Node.js`_ and managing
 packages using `npm`_.
 
+.. note: the ``simplejson`` module is required on Python 2.5
+
 .. _Node.js: http://nodejs.org/
 .. _npm: http://npmjs.org/
 
 """
-from fabric.api import run, sudo, cd
-from fabtools import require
+from __future__ import with_statement
+
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
+from fabric.api import run, sudo, cd, settings, hide
 
 
 DEFAULT_VERSION = '0.8.11'
@@ -30,6 +38,7 @@ def install_from_source(version=DEFAULT_VERSION):
     .. note:: This function may not work for old versions of Node.js.
 
     """
+    from fabtools import require
     require.deb.packages([
         'build-essential',
         'python',
@@ -46,6 +55,20 @@ def install_from_source(version=DEFAULT_VERSION):
         run('make')
         sudo('make install')
     run('rm -rf %(filename)s %(foldername)s' % locals())
+
+
+def version():
+    """
+    Get the version of Node.js currently installed.
+
+    Returns ``None`` if it is not installed.
+    """
+    with settings(hide('running', 'stdout'), warn_only=True):
+        res = run('/usr/local/bin/node --version')
+    if res.failed:
+        return None
+    else:
+        return res[1:]
 
 
 def install_package(package, version=None, local=False):
@@ -92,6 +115,31 @@ def install_dependencies():
 
     """
     run('npm install')
+
+
+def package_version(package, local=False):
+    """
+    Get the installed version of a Node.js package.
+
+    Returns ``None``is the package is not installed. If *local* is
+    ``True``, returns the version of the locally installed package.
+    """
+    options = ['--json true', '--silent']
+    if local:
+        options.append('-l')
+    else:
+        options.append('-g')
+    options = ' '.join(options)
+
+    with hide('running', 'stdout'):
+        res = run('npm list %s' % options)
+
+    dependencies = json.loads(res)['dependencies']
+    pkg_data = dependencies.get(package)
+    if pkg_data:
+        return pkg_data['version']
+    else:
+        return None
 
 
 def update_package(package, local=False):
