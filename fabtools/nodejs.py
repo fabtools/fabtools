@@ -16,7 +16,7 @@ from fabtools import require
 DEFAULT_VERSION = '0.8.11'
 
 
-def install_nodejs(version=DEFAULT_VERSION):
+def install_from_source(version=DEFAULT_VERSION):
     """
     Install Node JS from source.
 
@@ -48,9 +48,9 @@ def install_nodejs(version=DEFAULT_VERSION):
     run('rm -rf %(filename)s %(foldername)s' % locals())
 
 
-def install(package=None, version=None, local=False):
+def install_package(package=None, version=None, local=False):
     """
-    Install Node.js package using ``npm``.
+    Install a Node.js package.
 
     If *local* is ``True``, the package will be installed locally.
 
@@ -59,10 +59,10 @@ def install(package=None, version=None, local=False):
         import fabtools
 
         # Install package globally
-        fabtools.nodejs.install('express')
+        fabtools.nodejs.install_package('express')
 
         # Install package locally
-        fabtools.nodejs.install('underscore', local=False)
+        fabtools.nodejs.install_package('underscore', local=False)
 
     If no package name is given, then ``npm install`` will be run,
     which will locally install all packages specified in the
@@ -80,9 +80,9 @@ def install(package=None, version=None, local=False):
         run('npm install')
 
 
-def update(package, local=False):
+def update_package(package, local=False):
     """
-    Update Node.js package.
+    Update a Node.js package.
 
     If *local* is ``True``, the package will be updated locally.
     """
@@ -92,9 +92,9 @@ def update(package, local=False):
         sudo('HOME=/root npm update -g %s' % package)
 
 
-def uninstall(package, version=None, local=False):
+def uninstall_package(package, version=None, local=False):
     """
-    Uninstall Node.js package.
+    Uninstall a Node.js package.
 
     If *local* is ``True``, the package will be uninstalled locally.
 
@@ -103,10 +103,10 @@ def uninstall(package, version=None, local=False):
         import fabtools
 
         # Uninstall package globally
-        fabtools.nodejs.uninstall('express')
+        fabtools.nodejs.uninstall_package('express')
 
         # Uninstall package locally
-        fabtools.nodejs.uninstall('underscore', local=False)
+        fabtools.nodejs.uninstall_package('underscore', local=False)
 
     """
     if version:
