@@ -75,7 +75,7 @@ def install(package=None, version=None, local=False):
         if local:
             run('npm install -l %s' % package)
         else:
-            sudo('npm install -g %s' % package)
+            sudo('HOME=/root npm install -g %s' % package)
     else:
         run('npm install')
 
@@ -89,7 +89,7 @@ def update(package, local=False):
     if local:
         run('npm update -l %s' % package)
     else:
-        sudo('npm update -g %s' % package)
+        sudo('HOME=/root npm update -g %s' % package)
 
 
 def uninstall(package, version=None, local=False):
@@ -115,4 +115,4 @@ def uninstall(package, version=None, local=False):
     if local:
         run('npm uninstall -l %s' % package)
     else:
-        sudo('npm uninstall -g %s' % package)
+        sudo('HOME=/root npm uninstall -g %s' % package)
