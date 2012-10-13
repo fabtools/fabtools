@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 0.7.0 (2012-10-13)
+--------------------------
+
+* Fix changed directory owner requirement (thanks to Troy J. Farrell)
+* Add functions to get a file's owner, group and mode
+
 Version 0.6.0 (2012-10-13)
 --------------------------
 
