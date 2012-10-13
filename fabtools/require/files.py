@@ -37,10 +37,10 @@ def directory(path, use_sudo=False, owner='', group='', mode=''):
     func = use_sudo and sudo or run
     if not is_dir(path):
         func('mkdir -p "%(path)s"' % locals())
-        if owner:
-            func('chown %(owner)s:%(group)s "%(path)s"' % locals())
-        if mode:
-            func('chmod %(mode)s "%(path)s"' % locals())
+    if owner:
+        func('chown %(owner)s:%(group)s "%(path)s"' % locals())
+    if mode:
+        func('chmod %(mode)s "%(path)s"' % locals())
 
 
 def file(path=None, contents=None, source=None, url=None, md5=None,
