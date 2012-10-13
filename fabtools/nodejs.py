@@ -48,7 +48,7 @@ def install_from_source(version=DEFAULT_VERSION):
     run('rm -rf %(filename)s %(foldername)s' % locals())
 
 
-def install_package(package=None, version=None, local=False):
+def install_package(package, version=None, local=False):
     """
     Install a Node.js package.
 
@@ -64,20 +64,34 @@ def install_package(package=None, version=None, local=False):
         # Install package locally
         fabtools.nodejs.install_package('underscore', local=False)
 
-    If no package name is given, then ``npm install`` will be run,
-    which will locally install all packages specified in the
-    ``package.json`` file in the current directory.
     """
-    if package:
-        if version:
-            package += '@%s' % version
+    if version:
+        package += '@%s' % version
 
-        if local:
-            run('npm install -l %s' % package)
-        else:
-            sudo('HOME=/root npm install -g %s' % package)
+    if local:
+        run('npm install -l %s' % package)
     else:
-        run('npm install')
+        sudo('HOME=/root npm install -g %s' % package)
+
+
+def install_dependencies():
+    """
+    Install Node.js package dependencies.
+
+    This function calls ``npm install``, which will locally install all
+    packages specified as dependencies in the ``package.json`` file
+    found in the current directory.
+
+    ::
+
+        from fabric.api import cd
+        from fabtools import nodejs
+
+        with cd('/path/to/nodejsapp/'):
+            nodejs.install_dependencies()
+
+    """
+    run('npm install')
 
 
 def update_package(package, local=False):
