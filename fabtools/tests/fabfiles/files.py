@@ -59,3 +59,36 @@ def files():
         with fabtools.files.watch('watched', callback=partial(require.file, 'modified2')):
             pass
         assert not fabtools.files.is_file('modified2')
+
+
+@task
+def directories():
+    """
+    Check directory creation and modification
+    """
+
+    with cd('/tmp'):
+
+        sudo('rm -rf dir1 dir2')
+
+        # Test directory creation
+
+        require.directory('dir1')
+        assert fabtools.files.is_dir('dir1')
+        assert fabtools.files.owner('dir1') == env.user
+
+        # Test initial owner requirement
+
+        require.user('dirtest')
+        require.directory('dir2', owner='dirtest', use_sudo=True)
+
+        assert fabtools.files.is_dir('dir2')
+        assert fabtools.files.owner('dir2') == 'dirtest'
+
+        # Test changed owner requirement
+
+        require.user('dirtest2')
+        require.directory('dir2', owner='dirtest2', use_sudo=True)
+
+        assert fabtools.files.is_dir('dir2')
+        assert fabtools.files.owner('dir2') == 'dirtest2'
