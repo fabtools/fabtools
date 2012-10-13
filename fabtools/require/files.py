@@ -15,6 +15,7 @@ from urlparse import urlparse
 
 from fabric.api import *
 from fabtools.files import is_file, is_dir, md5sum
+import fabtools.files
 
 
 BLOCKSIZE = 2 ** 20  # 1MB
@@ -28,18 +29,24 @@ def directory(path, use_sudo=False, owner='', group='', mode=''):
 
         from fabtools import require
 
-        require.directory('/tmp/mydir', owner='alice')
+        require.directory('/tmp/mydir', owner='alice', use_sudo=True)
 
     .. note:: This function can be accessed directly from the
               ``fabtools.require`` module for convenience.
 
     """
     func = use_sudo and sudo or run
+
     if not is_dir(path):
         func('mkdir -p "%(path)s"' % locals())
-    if owner:
+
+    # Ensure correct owner
+    if (owner and fabtools.files.owner(path, use_sudo) != owner) or \
+       (group and fabtools.files.group(path, use_sudo) != group):
         func('chown %(owner)s:%(group)s "%(path)s"' % locals())
-    if mode:
+
+    # Ensure correct mode
+    if mode and fabtools.files.mode(path, use_sudo) != mode:
         func('chmod %(mode)s "%(path)s"' % locals())
 
 
@@ -136,11 +143,12 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
             os.unlink(source)
 
     # Ensure correct owner
-    if owner:
+    if (owner and fabtools.files.owner(path, use_sudo) != owner) or \
+       (group and fabtools.files.group(path, use_sudo) != group):
         func('chown %(owner)s:%(group)s "%(path)s"' % locals())
 
     # Ensure correct mode
-    if mode:
+    if mode and fabtools.files.mode(path, use_sudo) != mode:
         func('chmod %(mode)s "%(path)s"' % locals())
 
 
