@@ -37,6 +37,36 @@ def is_link(path, use_sudo=False):
         return func('[ -L "%(path)s" ]' % locals()).succeeded
 
 
+def owner(path, use_sudo=False):
+    """
+    Get the owner name of a file or directory.
+    """
+    func = use_sudo and sudo or run
+    with settings(hide('running', 'stdout')):
+        return func('stat -c %%U "%(path)s"' % locals())
+
+
+def group(path, use_sudo=False):
+    """
+    Get the group name of a file or directory.
+    """
+    func = use_sudo and sudo or run
+    with settings(hide('running', 'stdout')):
+        return func('stat -c %%G "%(path)s"' % locals())
+
+
+def mode(path, use_sudo=False):
+    """
+    Get the mode (permissions) of a file or directory.
+
+    Returns a string such as ``'0755'``, representing permissions as
+    an octal number.
+    """
+    func = use_sudo and sudo or run
+    with settings(hide('running', 'stdout')):
+        return func('stat -c %%a "%(path)s"' % locals())
+
+
 def upload_template(filename, template, context=None, use_sudo=False,
                   user="root", mkdir=False, chown=False):
     """
