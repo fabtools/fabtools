@@ -12,7 +12,7 @@ def read(filename):
 
 setup(
     name='fabtools',
-    version='0.5.1',
+    version='0.6.0',
     description='Tools for writing awesome Fabric files',
     long_description=read('README.rst') + '\n' + read('docs/CHANGELOG.rst'),
     author='Ronan Amicel',

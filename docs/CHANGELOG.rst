@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 0.6.0 (2012-10-13)
+--------------------------
+
+* Add support for Node.js (thanks to Frank Rousseau)
+* Fix dependency on Fabric >= 1.4.0 (thanks to Laurent Bachelier)
+
 Version 0.5.1 (2012-09-21)
 --------------------------
 
