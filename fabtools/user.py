@@ -12,7 +12,7 @@ def exists(name):
     Check if a user exists.
     """
     with settings(hide('running', 'stdout', 'warnings'), warn_only=True):
-        return sudo('getent passwd %(name)s' % locals()).succeeded
+        return run('getent passwd %(name)s' % locals()).succeeded
 
 
 def create(name, home=None, shell=None, uid=None, gid=None, groups=None):
