@@ -4,10 +4,12 @@ System settings
 """
 from __future__ import with_statement
 
-from fabric.api import sudo, warn
-from fabric.contrib.files import append
+from re import escape
 
-from fabtools.files import watch
+from fabric.api import sudo, warn
+from fabric.contrib.files import append, uncomment
+
+from fabtools.files import is_file, watch
 from fabtools.system import (
     get_hostname, set_hostname,
     get_sysctl, set_sysctl,
@@ -48,6 +50,9 @@ def locales(names):
 
     config_file = '/var/lib/locales/supported.d/local'
 
+    if not is_file(config_file):
+        config_file = '/etc/locale.gen'
+
     # Regenerate locales if config file changes
     with watch(config_file, use_sudo=True) as config:
 
@@ -57,12 +62,13 @@ def locales(names):
             if name in supported:
                 charset = supported[name]
                 locale = "%s %s" % (name, charset)
+                uncomment(config_file, escape(locale), use_sudo=True)
                 append(config_file, locale, use_sudo=True)
             else:
                 warn('Unsupported locale name "%s"' % name)
 
     if config.changed:
-        sudo('dpkg-reconfigure locales')
+        sudo('dpkg-reconfigure --frontend=noninteractive locales')
 
 
 def locale(name):
