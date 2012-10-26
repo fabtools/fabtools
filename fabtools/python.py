@@ -27,7 +27,7 @@ def is_pip_installed(version=None):
     .. _pip: http://www.pip-installer.org/
     """
     with settings(hide('running', 'warnings', 'stderr', 'stdout'), warn_only=True):
-        res = run('pip --version', combine_stderr=True)
+        res = run('pip --version 2>/dev/null')
         if res.failed:
             return False
         if version is None:
