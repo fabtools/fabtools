@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Version 0.8.0 (2012-10-26)
+--------------------------
+
+* Improve user module (thanks to Gaël Pasgrimaud)
+* Fix locale support on Debian (thanks to Olivier Kautz)
+* Fix version number in documentation (thanks to Guillaume Ayoub)
+* Fix potential issue with pip version parsing
+
 Version 0.7.0 (2012-10-13)
 --------------------------
 
