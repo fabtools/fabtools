@@ -17,6 +17,9 @@ from fabtools.python_distribute import is_distribute_installed, install_distribu
 from fabtools.require import deb
 
 
+DEFAULT_PIP_VERSION = '1.2.1'
+
+
 def distribute():
     """
     Require `distribute`_ to be installed.
@@ -61,7 +64,7 @@ def package(pkg_name, url=None, **kwargs):
 
     .. _pip installer: http://www.pip-installer.org/
     """
-    pip('1.1')
+    pip(DEFAULT_PIP_VERSION)
     if not is_installed(pkg_name):
         install(url or pkg_name, **kwargs)
 
@@ -70,7 +73,7 @@ def packages(pkg_list, **kwargs):
     """
     Require several Python packages.
     """
-    pip('1.1')
+    pip(DEFAULT_PIP_VERSION)
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg)]
     if pkg_list:
         install(pkg_list, **kwargs)
@@ -82,7 +85,7 @@ def requirements(filename, **kwargs):
 
     .. _requirements file: http://www.pip-installer.org/en/latest/requirements.html
     """
-    pip('1.1')
+    pip(DEFAULT_PIP_VERSION)
     install_requirements(filename, **kwargs)
 
 
