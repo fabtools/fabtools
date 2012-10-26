@@ -7,12 +7,14 @@ except ImportError:
     use_setuptools()
     from setuptools import setup, find_packages
 
+
 def read(filename):
     return open(os.path.join(os.path.dirname(__file__), filename)).read()
 
+
 setup(
     name='fabtools',
-    version='0.8.0',
+    version='0.8.1',
     description='Tools for writing awesome Fabric files',
     long_description=read('README.rst') + '\n' + read('docs/CHANGELOG.rst'),
     author='Ronan Amicel',

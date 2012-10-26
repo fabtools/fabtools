@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 0.8.1 (2012-10-26)
+--------------------------
+
+* Really fix pip version parsing issue
+* Upgrade default pip version to 1.2.1
+
 Version 0.8.0 (2012-10-26)
 --------------------------
 
