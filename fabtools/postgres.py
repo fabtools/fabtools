@@ -27,7 +27,7 @@ def user_exists(name):
     return (res == "1")
 
 
-def create_user(name, password):
+def create_user(name, password, options=None):
     """
     Create a PostgreSQL user.
 
@@ -40,7 +40,34 @@ def create_user(name, password):
             fabtools.postgres.create_user('dbuser', password='somerandomstring')
 
     """
-    _run_as_pg('''psql -c "CREATE USER %(name)s WITH PASSWORD '%(password)s';"''' % locals())
+    o = {
+        'SUPERUSER': False,
+        'CREATEDB': False,
+        'CREATEROLE': False,
+        'INHERIT': True,
+        'LOGIN': True,
+        'CONNECTION_LIMIT': None,
+        'ENCRYPTED_PASSWORD': False,
+    }
+    if options is not None:
+        o.update(options)
+    parts = [
+        'psql -c "',
+        'CREATE USER %s ' % (name,),
+        o.get('SUPERUSER') and 'SUPERUSER ' or 'NOSUPERUSER ',
+        o.get('CREATEDB') and 'CREATEDB ' or 'NOCREATEDB ',
+        o.get('CREATEROLE') and 'CREATEROLE ' or 'NOCREATEROLE ',
+        o.get('INHERIT') and 'INHERIT ' or 'NOINHERIT ',
+        o.get('LOGIN') and 'LOGIN ' or 'NOLOGIN ',
+        (o.get('CONNECTION_LIMIT')
+         and 'CONNECTION LIMIT %d ' % (o.get('CONNECTION_LIMIT'),)
+         or ''),
+        o.get('ENCRYPTED_PASSWORD') and 'ENCRYPTED ' or '',
+        '''PASSWORD '%s';''' % (password,),
+        '"',
+    ]
+    command = ''.join(parts)
+    _run_as_pg(command)
 
 
 def database_exists(name):
