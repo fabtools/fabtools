@@ -87,6 +87,10 @@ def reload(service):
 
         # Reload service
         fabtools.service.reload('foo')
+
+    .. warning::
+
+        The service need to support the ``reload`` operation.
     """
     sudo('service %(service)s reload' % locals())
 
@@ -101,5 +105,9 @@ def force_reload(service):
 
         # Force reload service
         fabtools.service.force_reload('foo')
+
+    .. warning::
+
+        The service need to support the ``force-reload`` operation.
     """
     sudo('service %(service)s force-reload' % locals())
