@@ -75,3 +75,31 @@ def restart(service):
             fabtools.service.start('foo')
     """
     sudo('service %(service)s restart' % locals())
+
+
+def reload(service):
+    """
+    Reload a service.
+
+    ::
+
+        import fabtools
+
+        # Reload service
+        fabtools.service.reload('foo')
+    """
+    sudo('service %(service)s reload' % locals())
+
+
+def force_reload(service):
+    """
+    Force reload a service.
+
+    ::
+
+        import fabtools
+
+        # Force reload service
+        fabtools.service.force_reload('foo')
+    """
+    sudo('service %(service)s force-reload' % locals())
