@@ -42,8 +42,15 @@ def owner(path, use_sudo=False):
     Get the owner name of a file or directory.
     """
     func = use_sudo and sudo or run
-    with settings(hide('running', 'stdout')):
-        return func('stat -c %%U "%(path)s"' % locals())
+    # I'd prefer to use quiet=True, but that's not supported with older
+    # versions of Fabric.
+    with settings(hide('running', 'stdout'), warn_only=True):
+        result = func('stat -c %%U "%(path)s"' % locals())
+        if result.failed and 'stat: illegal option' in result:
+            # Try the BSD version of stat
+            return func('stat -f %%Su "%(path)s"' % locals())
+        else:
+            return result
 
 
 def group(path, use_sudo=False):
@@ -51,8 +58,16 @@ def group(path, use_sudo=False):
     Get the group name of a file or directory.
     """
     func = use_sudo and sudo or run
-    with settings(hide('running', 'stdout')):
-        return func('stat -c %%G "%(path)s"' % locals())
+    # I'd prefer to use quiet=True, but that's not supported with older
+    # versions of Fabric.
+    with settings(hide('running', 'stdout'), warn_only=True):
+        result = func('stat -c %%G "%(path)s"' % locals())
+        if result.failed and 'stat: illegal option' in result:
+            # Try the BSD version of stat
+            return func('stat -f %%Sg "%(path)s"' % locals())
+        else:
+            return result
+
 
 
 def mode(path, use_sudo=False):
