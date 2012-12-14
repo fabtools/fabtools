@@ -8,6 +8,7 @@ import os.path
 
 from fabric.api import *
 from fabric.contrib.files import upload_template as _upload_template
+from fabric.contrib.files import exists
 
 
 def is_file(path, use_sudo=False):
@@ -112,11 +113,21 @@ def md5sum(filename, use_sudo=False):
     """
     func = use_sudo and sudo or run
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        res = func('md5sum %(filename)s' % locals())
-    if res.failed:
+        if exists(u'/usr/bin/md5sum'): # LSB
+            res = func(u'/usr/bin/md5sum %(filename)s' % locals())
+        elif exists(u'/sbin/md5'): # OS X
+            res = func(u'/sbin/md5 -r %(filename)s' % locals())
+        else:
+            res = u'No MD5 utility was found on this system.'
+
+    if res.succeeded:
+        parts = res.split()
+        _md5sum = len(parts) > 0 and parts[0] or None
+    else:
         warn(res)
-        return None
-    return res.split()[0]
+        _md5sum = None
+
+    return _md5sum
 
 
 class watch(object):
