@@ -139,7 +139,7 @@ def download_template(name=None, url=None):
         url = 'http://download.openvz.org/template/precreated/%s.tar.gz' % name
 
     with cd('/var/lib/vz/template/cache'):
-        sudo('wget --progress=dot "%s"' % url)
+        sudo('wget --progress=dot:mega "%s"' % url)
 
 
 def list_ctids():

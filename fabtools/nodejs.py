@@ -48,7 +48,7 @@ def install_from_source(version=DEFAULT_VERSION):
     filename = 'node-v%s.tar.gz' % version
     foldername = filename[0:-7]
 
-    run('wget http://nodejs.org/dist/v%(version)s/%(filename)s' % locals())
+    run('wget --progress=dot:mega http://nodejs.org/dist/v%(version)s/%(filename)s' % locals())
     run('tar -xzf %s' % filename)
     with cd(foldername):
         run('./configure')
