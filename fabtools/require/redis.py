@@ -11,6 +11,7 @@ from __future__ import with_statement
 
 from fabtools.files import is_file, watch
 from fabtools.deb import *
+import fabtools.supervisor
 
 
 VERSION = '2.4.17'
