@@ -44,7 +44,9 @@ def server(version=None):
     started(_service_name(version))
 
 
-def user(name, password, options=None):
+def user(name, password, superuser=False, createdb=False,
+        createrole=False, inherit=True, login=True, connection_limit=None,
+        encrypted_password=False):
     """
     Require the existence of a PostgreSQL user. The password and options
     provided will only be applied when creating a new user (existing
@@ -56,15 +58,13 @@ def user(name, password, options=None):
 
         require.postgres.user('dbuser', password='somerandomstring')
 
-        require.postgres.user('dbuser2', password='s3cr3t', options={
-            'CREATEDB': True,
-            'CREATEROLE': True,
-            'CONNECTION_LIMIT': 20,
-        })
+        require.postgres.user('dbuser2', password='s3cr3t',
+            createdb=True, create_role=True, connection_limit=20)
 
     """
     if not user_exists(name):
-        create_user(name, password, options)
+        create_user(name, password, superuser, createdb, createrole,
+            inherit, login, connection_limit, encrypted_password)
 
 
 def database(name, owner, template='template0', encoding='UTF8',

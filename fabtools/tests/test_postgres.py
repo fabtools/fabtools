@@ -36,20 +36,12 @@ class PostgresTestCase(unittest.TestCase):
 
     @mock.patch('fabtools.require.postgres.create_user')
     @mock.patch('fabtools.require.postgres.user_exists')
-    def test_require_user_not_exists(self, user_exists, create_user):
-        user_exists.return_value = False
-        from fabtools import require
-        require.postgres.user('foo', 'bar')
-        create_user.assert_called_with('foo', 'bar', None)
-
-    @mock.patch('fabtools.require.postgres.create_user')
-    @mock.patch('fabtools.require.postgres.user_exists')
     def test_require_user_with_default_options(self, user_exists, create_user):
         user_exists.return_value = False
         from fabtools import require
-        user_options = None
-        require.postgres.user('foo', 'bar', user_options)
-        create_user.assert_called_with('foo', 'bar', None)
+        require.postgres.user('foo', 'bar')
+        create_user.assert_called_with('foo', 'bar', False, False, False, True,
+            True, None, False)
 
     @mock.patch('fabtools.postgres._run_as_pg')
     def test_create_user_with_no_options(self, _run_as_pg):
@@ -57,34 +49,24 @@ class PostgresTestCase(unittest.TestCase):
         postgres.create_user('foo', 'bar')
         expected = (
             'psql -c "CREATE USER foo NOSUPERUSER NOCREATEDB NOCREATEROLE '
-            'INHERIT LOGIN PASSWORD \'bar\';"')
+            'INHERIT LOGIN UNENCRYPTED PASSWORD \'bar\';"')
         self.assertEqual(expected, _run_as_pg.call_args[0][0])
 
     @mock.patch('fabtools.postgres._run_as_pg')
     def test_create_user_with_no_connection_limit(self, _run_as_pg):
         from fabtools import postgres
-        options = {
-            'CONNECTION_LIMIT': -1,
-        }
-        postgres.create_user('foo', 'bar', options)
+        postgres.create_user('foo', 'bar', connection_limit=-1)
         expected = (
             'psql -c "CREATE USER foo NOSUPERUSER NOCREATEDB NOCREATEROLE '
-            'INHERIT LOGIN CONNECTION LIMIT -1 PASSWORD \'bar\';"')
+            'INHERIT LOGIN CONNECTION LIMIT -1 UNENCRYPTED PASSWORD \'bar\';"')
         self.assertEqual(expected, _run_as_pg.call_args[0][0])
 
     @mock.patch('fabtools.postgres._run_as_pg')
     def test_require_user_with_custom_options(self, _run_as_pg):
         from fabtools import postgres
-        options = {
-            'SUPERUSER': True,
-            'CREATEDB': True,
-            'CREATEROLE': True,
-            'INHERIT': False,
-            'LOGIN': False,
-            'CONNECTION_LIMIT': 20,
-            'ENCRYPTED_PASSWORD': True,
-        }
-        postgres.create_user('foo', 'bar', options)
+        postgres.create_user('foo', 'bar', superuser=True, createdb=True,
+            createrole=True, inherit=False, login=False, connection_limit=20,
+            encrypted_password=True)
         expected = (
             'psql -c "CREATE USER foo SUPERUSER CREATEDB CREATEROLE '
             'NOINHERIT NOLOGIN CONNECTION LIMIT 20 '

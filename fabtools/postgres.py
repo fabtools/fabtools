@@ -27,7 +27,9 @@ def user_exists(name):
     return (res == "1")
 
 
-def create_user(name, password, options=None):
+def create_user(name, password, superuser=False, createdb=False,
+    createrole=False, inherit=True, login=True, connection_limit=None,
+    encrypted_password=False):
     """
     Create a PostgreSQL user.
 
@@ -40,41 +42,23 @@ def create_user(name, password, options=None):
             fabtools.postgres.create_user('dbuser', password='somerandomstring')
 
         # Create DB user with custom options
-        fabtools.postgres.create_user('dbuser2', password='s3cr3t', options={
-            'CREATEDB': True,
-            'CREATEROLE': True,
-            'CONNECTION_LIMIT': 20,
-        })
+        fabtools.postgres.create_user('dbuser2', password='s3cr3t',
+            createdb=True, createrole=True, connection_limit=20)
 
     """
-    o = {
-        'SUPERUSER': False,
-        'CREATEDB': False,
-        'CREATEROLE': False,
-        'INHERIT': True,
-        'LOGIN': True,
-        'CONNECTION_LIMIT': None,
-        'ENCRYPTED_PASSWORD': False,
-    }
-    if options is not None:
-        o.update(options)
-    parts = [
-        'psql -c "',
-        'CREATE USER %s ' % (name,),
-        o.get('SUPERUSER') and 'SUPERUSER ' or 'NOSUPERUSER ',
-        o.get('CREATEDB') and 'CREATEDB ' or 'NOCREATEDB ',
-        o.get('CREATEROLE') and 'CREATEROLE ' or 'NOCREATEROLE ',
-        o.get('INHERIT') and 'INHERIT ' or 'NOINHERIT ',
-        o.get('LOGIN') and 'LOGIN ' or 'NOLOGIN ',
-        (o.get('CONNECTION_LIMIT')
-         and 'CONNECTION LIMIT %d ' % (o.get('CONNECTION_LIMIT'),)
-         or ''),
-        o.get('ENCRYPTED_PASSWORD') and 'ENCRYPTED ' or '',
-        '''PASSWORD '%s';''' % (password,),
-        '"',
+    options = [
+        'SUPERUSER' if superuser else 'NOSUPERUSER',
+        'CREATEDB' if createdb else 'NOCREATEDB',
+        'CREATEROLE' if createrole else 'NOCREATEROLE',
+        'INHERIT' if inherit else 'NOINHERIT',
+        'LOGIN' if login else 'NOLOGIN',
     ]
-    command = ''.join(parts)
-    _run_as_pg(command)
+    if connection_limit is not None:
+        options.append('CONNECTION LIMIT %d' % connection_limit)
+    password_type = 'ENCRYPTED' if encrypted_password else 'UNENCRYPTED'
+    options.append("%s PASSWORD '%s'" % (password_type, password))
+    options = ' '.join(options)
+    _run_as_pg('''psql -c "CREATE USER %(name)s %(options)s;"''' % locals())
 
 
 def database_exists(name):

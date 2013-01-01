@@ -1,8 +1,6 @@
 from __future__ import with_statement
 
-from fabric.api import *
-from fabtools import require
-import fabtools
+from fabric.api import task
 
 
 @task
@@ -10,6 +8,10 @@ def postgresql():
     """
     Setup PostgreSQL server, user and database
     """
+    from fabtools import require
+    import fabtools
+
+    # Test Postgres setup
     require.postgres.server()
 
     # Test low-level operations
