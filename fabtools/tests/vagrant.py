@@ -44,9 +44,9 @@ def base_boxes():
 
     The default is to get the list of all base boxes.
 
-    This can be overridden with the VAGRANT_BOXES environment variable.
+    This can be overridden with the FABTOOLS_TEST_BOXES environment variable.
     """
-    boxes = os.environ.get('VAGRANT_BOXES')
+    boxes = os.environ.get('FABTOOLS_TEST_BOXES')
     if boxes is not None:
         return boxes.split()
     else:

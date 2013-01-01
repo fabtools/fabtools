@@ -32,10 +32,10 @@ against which all the tests will be run.
 If Vagrant is not installed, the functional tests will be skipped automatically.
 
 If Vagrant is installed, the default is to run the tests on all available base boxes.
-You can specify which base boxes should be used by setting the VAGRANT_BOXES environment variable::
+You can specify which base boxes should be used by setting the FABTOOLS_TEST_BOXES environment variable::
 
-    $ VAGRANT_BOXES='ubuntu_10_04 ubuntu_12_04' tox -e py27
+    $ FABTOOLS_TEST_BOXES='ubuntu_10_04 ubuntu_12_04' tox -e py27
 
 You can also use this to manually disable functional tests::
 
-    $ VAGRANT_BOXES='' tox
+    $ FABTOOLS_TEST_BOXES='' tox
