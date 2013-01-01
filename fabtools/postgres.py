@@ -39,6 +39,13 @@ def create_user(name, password, options=None):
         if not fabtools.postgres.user_exists('dbuser'):
             fabtools.postgres.create_user('dbuser', password='somerandomstring')
 
+        # Create DB user with custom options
+        fabtools.postgres.create_user('dbuser2', password='s3cr3t', options={
+            'CREATEDB': True,
+            'CREATEROLE': True,
+            'CONNECTION_LIMIT': 20,
+        })
+
     """
     o = {
         'SUPERUSER': False,

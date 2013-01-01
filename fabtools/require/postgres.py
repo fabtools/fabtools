@@ -46,14 +46,21 @@ def server(version=None):
 
 def user(name, password, options=None):
     """
-    Require the existence of a PostgreSQL user.  Any options provided will be
-    only used to create the user if the user does not exist.
+    Require the existence of a PostgreSQL user. The password and options
+    provided will only be applied when creating a new user (existing
+    users will *not* be modified).
 
     ::
 
         from fabtools import require
 
         require.postgres.user('dbuser', password='somerandomstring')
+
+        require.postgres.user('dbuser2', password='s3cr3t', options={
+            'CREATEDB': True,
+            'CREATEROLE': True,
+            'CONNECTION_LIMIT': 20,
+        })
 
     """
     if not user_exists(name):
