@@ -84,7 +84,7 @@ def directories():
 
         # Test initial owner requirement
 
-        require.user('dirtest')
+        require.user('dirtest', create_home=False)
         require.directory('dir2', owner='dirtest', use_sudo=True)
 
         assert fabtools.files.is_dir('dir2')
@@ -92,7 +92,7 @@ def directories():
 
         # Test changed owner requirement
 
-        require.user('dirtest2')
+        require.user('dirtest2', create_home=False)
         require.directory('dir2', owner='dirtest2', use_sudo=True)
 
         assert fabtools.files.is_dir('dir2')

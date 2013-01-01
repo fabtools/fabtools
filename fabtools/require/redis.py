@@ -33,7 +33,7 @@ def installed_from_source(version=VERSION):
     """
     from fabtools import require
 
-    require.user('redis')
+    require.user('redis', home='/var/lib/redis')
 
     dest_dir = '/opt/redis-%(version)s' % locals()
     require.directory(dest_dir, use_sudo=True, owner='redis')
