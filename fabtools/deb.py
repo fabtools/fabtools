@@ -77,6 +77,7 @@ def install(packages, update=False, options=None):
         options = []
     if not isinstance(packages, basestring):
         packages = " ".join(packages)
+    options.append("--quiet")
     options.append("--assume-yes")
     options = " ".join(options)
     sudo('%(manager)s install %(options)s %(packages)s' % locals())
