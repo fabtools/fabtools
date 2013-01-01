@@ -70,7 +70,6 @@ def group(path, use_sudo=False):
             return result
 
 
-
 def mode(path, use_sudo=False):
     """
     Get the mode (permissions) of a file or directory.
@@ -113,12 +112,14 @@ def md5sum(filename, use_sudo=False):
     """
     func = use_sudo and sudo or run
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        if exists(u'/usr/bin/md5sum'): # LSB
+        # Linux (LSB)
+        if exists(u'/usr/bin/md5sum'):
             res = func(u'/usr/bin/md5sum %(filename)s' % locals())
-        elif exists(u'/sbin/md5'): # OS X
+        # BSD / OS X
+        elif exists(u'/sbin/md5'):
             res = func(u'/sbin/md5 -r %(filename)s' % locals())
         else:
-            res = u'No MD5 utility was found on this system.'
+            abort('No MD5 utility was found on this system.')
 
     if res.succeeded:
         parts = res.split()
