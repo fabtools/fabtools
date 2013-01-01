@@ -8,6 +8,7 @@ def postgresql():
     """
     Setup PostgreSQL server, user and database
     """
+
     from fabtools import require
     import fabtools
 

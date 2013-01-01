@@ -1,8 +1,8 @@
 from __future__ import with_statement
+
 import hashlib
 
 from fabric.api import *
-import fabtools
 
 
 @task
@@ -10,6 +10,9 @@ def md5():
     """
     Check MD5 sums (unavailable, empty, with content)
     """
+
+    import fabtools
+
     with cd('/tmp'):
         run('touch f1')
         run('echo -n hello > f2')

@@ -3,17 +3,12 @@ from __future__ import with_statement
 import time
 
 from fabric.api import *
-from fabtools import openvz
-from fabtools import require
-
-import fabtools
-
-from fabtools.openvz import guest
-from fabtools.require.openvz import container
 
 
 @task
 def test_openvz():
+
+    import fabtools
 
     # Skip test if the kernel does not support OpenVZ
     if not fabtools.files.is_dir('/proc/vz'):
@@ -27,6 +22,7 @@ def setup_networking():
     """
     Setup host networking
     """
+
     setup_nat()
     setup_firewall()
 
@@ -35,6 +31,9 @@ def setup_nat():
     """
     Make sure IP forwarding is enabled
     """
+
+    import fabtools
+
     fabtools.require.system.sysctl('net.ipv4.ip_forward', 1)
 
 
@@ -43,6 +42,8 @@ def setup_firewall():
     Shorewall config
     (based on http://www.shorewall.net/OpenVZ.html)
     """
+
+    from fabtools import require
 
     zones = [
         {
@@ -121,6 +122,11 @@ def setup_firewall():
 
 
 def setup_containers():
+
+    from fabtools import require
+    from fabtools.openvz import guest
+    from fabtools.require.openvz import container
+    import fabtools
 
     require.deb.package('vzctl')
 

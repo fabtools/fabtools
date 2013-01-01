@@ -1,6 +1,4 @@
 from fabric.api import *
-from fabtools import require
-import fabtools
 
 
 @task
@@ -8,6 +6,10 @@ def firewall():
     """
     Setup a firewall
     """
+
+    from fabtools import require
+    import fabtools
+
     require.shorewall.firewall(
         rules=[
             fabtools.shorewall.Ping(),

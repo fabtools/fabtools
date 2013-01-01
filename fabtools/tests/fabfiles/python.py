@@ -8,6 +8,7 @@ def python_virtualenv():
     """
     Test Python virtualenv creation
     """
+
     from fabtools import require
     import fabtools
 
@@ -22,6 +23,7 @@ def python_package():
     """
     Test Python package installation
     """
+
     from fabtools import require
     import fabtools
 

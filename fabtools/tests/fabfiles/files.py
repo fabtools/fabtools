@@ -5,8 +5,6 @@ from tempfile import mkstemp
 from functools import partial
 
 from fabric.api import *
-from fabtools import require
-import fabtools
 
 
 @task
@@ -14,6 +12,10 @@ def files():
     """
     Check file creation
     """
+
+    from fabtools import require
+    import fabtools
+
     with cd('/tmp'):
         # Require that a file exists
         require.file('foo')
@@ -66,6 +68,9 @@ def directories():
     """
     Check directory creation and modification
     """
+
+    from fabtools import require
+    import fabtools
 
     with cd('/tmp'):
 

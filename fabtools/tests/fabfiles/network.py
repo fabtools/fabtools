@@ -1,7 +1,6 @@
 import socket
 
 from fabric.api import task
-import fabtools
 
 
 def is_valid_ipv4_address(address):
@@ -35,6 +34,8 @@ def network():
     """
     Test network interfaces
     """
+
+    import fabtools
 
     interfaces = fabtools.network.interfaces()
 
