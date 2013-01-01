@@ -107,12 +107,15 @@ class VagrantTestSuite(unittest.BaseTestSuite):
         """
         with lcd(os.path.dirname(__file__)):
 
-            # Create a fresh vagrant config file
-            local('rm -f Vagrantfile')
-            local('vagrant init %s' % self.current_box)
+            if not os.path.exists('Vagrantfile') \
+            or not os.environ.get('FABTOOLS_TEST_NODESTROY'):
 
-            # Clean up
-            halt_and_destroy()
+                # Create a fresh vagrant config file
+                local('rm -f Vagrantfile')
+                local('vagrant init %s' % self.current_box)
+
+                # Clean up
+                halt_and_destroy()
 
             # Spin up the box
             # (retry as it sometimes fails for no good reason)
@@ -140,9 +143,10 @@ class VagrantTestSuite(unittest.BaseTestSuite):
         """
         Spin down the vagrant box
         """
-        halt_and_destroy()
-        with lcd(os.path.dirname(__file__)):
-            local('rm -f Vagrantfile')
+        if not os.environ.get('FABTOOLS_TEST_NODESTROY'):
+            halt_and_destroy()
+            with lcd(os.path.dirname(__file__)):
+                local('rm -f Vagrantfile')
         self.current_box = None
 
     def settings(self, *args, **kwargs):
