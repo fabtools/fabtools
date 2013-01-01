@@ -1,14 +1,12 @@
 from __future__ import with_statement
 
+import os.path
 try:
     import json
 except ImportError:
     import simplejson as json
 
 from fabric.api import *
-from fabtools import nodejs
-from fabtools import require
-from fabtools.files import is_file
 
 
 @task
@@ -16,6 +14,15 @@ def install_nodejs():
     """
     Test low level API
     """
+
+    from fabtools import nodejs
+    from fabtools import require
+    from fabtools.files import is_file
+
+    # Upload local copy of source archive to speed up tests
+    local_cache = '~/.vagrant.d/cache/fabtools/node-v%s.tar.gz' % nodejs.DEFAULT_VERSION
+    if os.path.exists(local_cache):
+        put(local_cache)
 
     # Install Node.js from source
     if nodejs.version() != nodejs.DEFAULT_VERSION:
@@ -70,6 +77,15 @@ def require_nodejs():
     """
     Test high level API
     """
+
+    from fabtools import nodejs
+    from fabtools import require
+    from fabtools.files import is_file
+
+    # Upload local copy of source archive to speed up tests
+    local_cache = '~/.vagrant.d/cache/fabtools/node-v%s.tar.gz' % nodejs.DEFAULT_VERSION
+    if os.path.exists(local_cache):
+        put(local_cache)
 
     # Require Node.js
 
