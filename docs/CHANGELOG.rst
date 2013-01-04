@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 0.9.2 (2013-01-05)
+--------------------------
+
+* Add syntax highlighting in README (thanks to Artur Dryomov)
+
 Version 0.9.1 (2013-01-04)
 --------------------------
 
