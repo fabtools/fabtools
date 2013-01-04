@@ -89,7 +89,8 @@ def requirements(filename, **kwargs):
     install_requirements(filename, **kwargs)
 
 
-def virtualenv(directory, system_site_packages=False, python=None, use_sudo=False, user=None):
+def virtualenv(directory, system_site_packages=False, python=None,
+    use_sudo=False, user=None, clear=False):
     """
     Require a Python `virtual environment`_.
 
@@ -108,6 +109,8 @@ def virtualenv(directory, system_site_packages=False, python=None, use_sudo=Fals
             options.append('--system-site-packages')
         if python:
             options.append('--python=%s' % python)
+        if clear:
+            options.append('--clear')
         options = ' '.join(options)
         command = 'virtualenv %(options)s "%(directory)s"' % locals()
         if use_sudo:
