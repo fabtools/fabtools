@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 0.9.1 (2013-01-04)
+--------------------------
+
+* Fix documentation formatting issues
+
 Version 0.9.0 (2013-01-04)
 --------------------------
 
