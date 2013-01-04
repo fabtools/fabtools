@@ -14,13 +14,14 @@ from fabtools.deb import *
 import fabtools.supervisor
 
 
-VERSION = '2.4.17'
+VERSION = '2.6.7'
 
 BINARIES = [
     'redis-benchmark',
     'redis-check-aof',
     'redis-check-dump',
     'redis-cli',
+    'redis-sentinel',
     'redis-server',
 ]
 
