@@ -1,6 +1,24 @@
 Changelog
 =========
 
+Version 0.9.0 (2013-01-04)
+--------------------------
+
+* Improve user creation and modification
+* Add support for BSD / OS X to `files.owner`, `files.group`,
+  `files.mode` and `files.md5sum` (thanks to Troy J. Farrell)
+* Improve PostgreSQL user creation (thanks to Troy J. Farrell
+  and Axel Haustant)
+* Add `reload` and `force_reload` operations to the `service`
+  module (thanks to Axel Haustant)
+* Fix missing import in `require.redis` (thanks to svevang
+  and Sébastien Béal)
+* Add --clear option to Python virtualenv (thanks to pahaz)
+* Upgrade default Redis version to 2.6.7
+* Upgrade default Node.js version to 0.8.16
+* Decrease verbosity of some operations
+* Speed up functional tests
+
 Version 0.8.1 (2012-10-26)
 --------------------------
 
