@@ -12,18 +12,24 @@ Using ``fabtools.require`` allows you to use a more declarative style, similar t
 Installing
 ==========
 
-To install the latest release from `PyPI <http://pypi.python.org/pypi/fabtools>`_::
+To install the latest release from `PyPI <http://pypi.python.org/pypi/fabtools>`_
+
+.. code-block:: console
 
     $ pip install fabtools
 
-To install the latest development version from `GitHub <https://github.com/ronnix/fabtools>`_::
+To install the latest development version from `GitHub <https://github.com/ronnix/fabtools>`_
+
+.. code-block:: console
 
     $ pip install git+git://github.com/ronnix/fabtools.git
 
 Example
 =======
 
-Here is an example ``fabfile.py`` using ``fabtools``::
+Here is an example ``fabfile.py`` using ``fabtools``
+
+.. code-block:: python
 
     from fabric.api import *
     from fabtools import require
