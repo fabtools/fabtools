@@ -21,7 +21,7 @@ except ImportError:
 from fabric.api import run, sudo, cd, settings, hide
 
 
-DEFAULT_VERSION = '0.8.11'
+DEFAULT_VERSION = '0.8.16'
 
 
 def install_from_source(version=DEFAULT_VERSION):
