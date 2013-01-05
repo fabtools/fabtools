@@ -4,7 +4,6 @@ Users
 """
 from __future__ import with_statement
 
-from crypt import crypt
 from pipes import quote
 import random
 import string
@@ -24,6 +23,7 @@ _SALT_CHARS = string.ascii_letters + string.digits + './'
 
 
 def _crypt_password(password):
+    from crypt import crypt
     random.seed()
     salt = ''
     for _ in range(2):
