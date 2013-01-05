@@ -114,7 +114,7 @@ def modify(name, comment=None, home=None, move_current_home=False, group=None,
     if group:
         args.append('-g %s' % quote(group))
     if extra_groups:
-        groups = ','.join(quote(group) for group in groups)
+        groups = ','.join(quote(group) for group in extra_groups)
         args.append('-G %s' % groups)
     if login_name:
         args.append('-l %s' % quote(login_name))
