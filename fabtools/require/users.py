@@ -9,7 +9,7 @@ import fabtools.require
 
 
 def user(name, comment=None, home=None, group=None, extra_groups=None,
-    create_home=False, skeleton_dir=None, password=None, system=False,
+    create_home=True, skeleton_dir=None, password=None, system=False,
     shell=None, uid=None):
     """
     Require a user and its home directory.
