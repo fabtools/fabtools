@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 0.9.3 (2013-01-08)
+--------------------------
+
+* Fix bugs in user creation (thanks pahaz and Stéphane Klein)
+* Add support for group creation
+
 Version 0.9.2 (2013-01-05)
 --------------------------
 
