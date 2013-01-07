@@ -10,6 +10,11 @@ import string
 
 from fabric.api import *
 
+from fabtools.group import (
+    exists as _group_exists,
+    create as _group_create,
+)
+
 
 def exists(name):
     """
@@ -32,9 +37,9 @@ def _crypt_password(password):
     return crypted_password
 
 
-def create(name, comment=None, home=None, group=None, extra_groups=None,
-    create_home=True, skeleton_dir=None, password=None, system=False,
-    shell=None, uid=None, create_group_if_need=True):
+def create(name, comment=None, home=None, create_home=True, skeleton_dir=None,
+    group=None, create_group=True, extra_groups=None,password=None,
+    system=False, shell=None, uid=None):
     """
     Create a new user and its home directory.
 
@@ -54,10 +59,6 @@ def create(name, comment=None, home=None, group=None, extra_groups=None,
     # portable command to create users across various distributions:
     # http://refspecs.linuxbase.org/LSB_4.1.0/LSB-Core-generic/LSB-Core-generic/useradd.html
 
-    # Note for command groupadd
-    # http://refspecs.linuxbase.org/LSB_4.1.0/LSB-Core-generic/LSB-Core-generic/groupadd.html
-    # please don`t use group-id in 'group' parameter and 'create_group_if_need'=True
-
     args = []
     if comment:
         args.append('-c %s' % quote(comment))
@@ -65,9 +66,9 @@ def create(name, comment=None, home=None, group=None, extra_groups=None,
         args.append('-d %s' % quote(home))
     if group:
         args.append('-g %s' % quote(group))
-        if create_group_if_need:
-            with settings(warn_only=True):
-                sudo('groupadd %s' % quote(group)) # can fail if group exist
+        if create_group:
+            if not _group_exists(group):
+                _group_create(group)
     if extra_groups:
         groups = ','.join(quote(group) for group in extra_groups)
         args.append('-G %s' % groups)
@@ -87,7 +88,6 @@ def create(name, comment=None, home=None, group=None, extra_groups=None,
     args.append(name)
     args = ' '.join(args)
     sudo('useradd %s' % args)
-
 
 
 def modify(name, comment=None, home=None, move_current_home=False, group=None,

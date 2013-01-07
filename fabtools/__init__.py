@@ -1,6 +1,7 @@
 import fabtools.cron
 import fabtools.deb
 import fabtools.files
+import fabtools.group
 import fabtools.postgres
 import fabtools.mysql
 import fabtools.network

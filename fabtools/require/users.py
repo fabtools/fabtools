@@ -8,9 +8,9 @@ from fabtools.user import *
 import fabtools.require
 
 
-def user(name, comment=None, home=None, group=None, extra_groups=None,
-    create_home=True, skeleton_dir=None, password=None, system=False,
-    shell=None, uid=None):
+def user(name, comment=None, home=None, create_home=True, skeleton_dir=None,
+    group=None, create_group=True, extra_groups=None, password=None,
+    system=False, shell=None, uid=None):
     """
     Require a user and its home directory.
 
@@ -31,9 +31,9 @@ def user(name, comment=None, home=None, group=None, extra_groups=None,
 
     # Make sure the user exists
     if not exists(name):
-        create(name, comment=comment, home=home, group=group,
-            extra_groups=extra_groups, create_home=create_home,
-            skeleton_dir=skeleton_dir, password=password, system=system,
+        create(name, comment=comment, home=home, create_home=create_home,
+            skeleton_dir=skeleton_dir, group=group, create_group=create_group,
+            extra_groups=extra_groups, password=password, system=system,
             shell=shell, uid=uid)
     else:
         modify(name, comment=comment, home=home, group=group,

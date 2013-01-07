@@ -6,6 +6,7 @@ fabtools.require
 
    deb
    files
+   groups
    mysql
    nginx
    nodejs

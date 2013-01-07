@@ -18,3 +18,4 @@ from fabtools.require.files import file
 from fabtools.require.files import directory
 from fabtools.require.users import user
 from fabtools.require.users import sudoer
+from fabtools.require.groups import group
