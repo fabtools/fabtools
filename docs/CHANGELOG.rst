@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 0.9.4 (2013-01-10)
+--------------------------
+
+* Add files missing in 0.9.3 (thanks to Stéfane Fermigier)
+
 Version 0.9.3 (2013-01-08)
 --------------------------
 
