@@ -32,6 +32,65 @@ def server():
     started('nginx')
 
 
+def enable(config):
+    """
+    Create link from /etc/nginx/sites-available/ in /etc/nginx/sites-enabled/
+
+    (does not reload nginx config)
+
+    ::
+        from fabtools import require
+
+        require.nginx.enable('default')
+
+    .. seealso:: :py:func:`fabtools.require.nginx.enabled`
+    """
+    config_filename = '/etc/nginx/sites-available/%s' % config
+    link_filename = '/etc/nginx/sites-enabled/%s' % config
+
+    if not is_link(link_filename):
+        sudo("ln -s %(config_filename)s %(link_filename)s" % locals())
+
+
+def disable(config):
+    """
+    Delete link in /etc/nginx/sites-enabled/
+
+    (does not reload nginx config)
+
+    ::
+        from fabtools import require
+
+        require.nginx.disable('default')
+
+    .. seealso:: :py:func:`fabtools.require.nginx.disabled`
+    """
+    link_filename = '/etc/nginx/sites-enabled/%s' % config
+
+    if is_link(link_filename):
+        sudo("rm %(link_filename)s" % locals())
+
+
+def enabled(config):
+    """
+    Ensure link to /etc/nginx/sites-available/config exists and reload nginx
+    configuration if needed.
+    """
+    enabled(config)
+
+    sudo("/etc/init.d/nginx reload")
+
+
+def disabled(config):
+    """
+    Ensure link to /etc/nginx/sites-available/config doesn't exist and reload
+    nginx configuration if needed.
+    """
+    disable(config)
+
+    sudo("/etc/init.d/nginx reload")
+
+
 def site(server_name, template_contents=None, template_source=None, enabled=True, check_config=True, **kwargs):
     """
     Require an nginx site.
