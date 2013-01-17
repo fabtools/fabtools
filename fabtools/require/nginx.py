@@ -17,6 +17,7 @@ from fabtools.files import upload_template, is_link
 from fabtools.require.deb import package
 from fabtools.require.files import template_file
 from fabtools.require.service import started
+import fabtools
 
 
 def server():
@@ -40,7 +41,7 @@ def enabled(config):
     """
     enable(config)
 
-    sudo("/etc/init.d/nginx reload")
+    fabtools.service.reload('nginx')
 
 
 def disabled(config):
@@ -50,7 +51,7 @@ def disabled(config):
     """
     disable(config)
 
-    sudo("/etc/init.d/nginx reload")
+    fabtools.service.reload('nginx')
 
 
 def site(server_name, template_contents=None, template_source=None, enabled=True, check_config=True, **kwargs):
@@ -108,7 +109,7 @@ def site(server_name, template_contents=None, template_source=None, enabled=True
         if is_link(link_filename):
             sudo("rm %(link_filename)s" % locals())
 
-    sudo("/etc/init.d/nginx reload")
+    fabtools.service.reload('nginx')
 
 
 PROXIED_SITE_TEMPLATE = """\
