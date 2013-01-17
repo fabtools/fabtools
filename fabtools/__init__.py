@@ -14,6 +14,7 @@ import fabtools.shorewall
 import fabtools.supervisor
 import fabtools.system
 import fabtools.user
+import fabtools.nginx
 
 import fabtools.require
 icanhaz = require

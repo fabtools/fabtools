@@ -12,6 +12,7 @@ from __future__ import with_statement
 
 from fabric.api import *
 from fabric.colors import red
+from fabtools.nginx import *
 from fabtools.files import upload_template, is_link
 from fabtools.require.deb import package
 from fabtools.require.files import template_file
@@ -32,51 +33,12 @@ def server():
     started('nginx')
 
 
-def enable(config):
-    """
-    Create link from /etc/nginx/sites-available/ in /etc/nginx/sites-enabled/
-
-    (does not reload nginx config)
-
-    ::
-        from fabtools import require
-
-        require.nginx.enable('default')
-
-    .. seealso:: :py:func:`fabtools.require.nginx.enabled`
-    """
-    config_filename = '/etc/nginx/sites-available/%s' % config
-    link_filename = '/etc/nginx/sites-enabled/%s' % config
-
-    if not is_link(link_filename):
-        sudo("ln -s %(config_filename)s %(link_filename)s" % locals())
-
-
-def disable(config):
-    """
-    Delete link in /etc/nginx/sites-enabled/
-
-    (does not reload nginx config)
-
-    ::
-        from fabtools import require
-
-        require.nginx.disable('default')
-
-    .. seealso:: :py:func:`fabtools.require.nginx.disabled`
-    """
-    link_filename = '/etc/nginx/sites-enabled/%s' % config
-
-    if is_link(link_filename):
-        sudo("rm %(link_filename)s" % locals())
-
-
 def enabled(config):
     """
     Ensure link to /etc/nginx/sites-available/config exists and reload nginx
     configuration if needed.
     """
-    enabled(config)
+    enable(config)
 
     sudo("/etc/init.d/nginx reload")
 
