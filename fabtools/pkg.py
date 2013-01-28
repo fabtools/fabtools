@@ -27,7 +27,7 @@ def update_index(force=False):
         sudo("%(manager)s up" % locals())
 
 
-def upgrade(full=True):
+def upgrade(full=False):
     """
     Upgrade all packages.
     """
