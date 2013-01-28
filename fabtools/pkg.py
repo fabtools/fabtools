@@ -33,7 +33,7 @@ def upgrade(full=True):
     """
     manager = MANAGER
     cmds = {'pkgin': {False: 'ug', True: 'fug'}}
-    cmd = cmds[manager][safe]
+    cmd = cmds[manager][full]
     sudo("%(manager)s %(cmd)s" % locals())
 
 
