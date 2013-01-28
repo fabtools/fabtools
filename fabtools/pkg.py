@@ -18,6 +18,7 @@ def update_index(force=False):
     """
     Update pkgin package definitions.
     """
+    manager = MANAGER
     if force:
         with quiet():
             sudo("%(manager)s cl" % locals())
