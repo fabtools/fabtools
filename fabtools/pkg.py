@@ -48,7 +48,7 @@ def is_installed(pkg_name):
         return False
 
 
-def install(packages, update=False, options=None):
+def install(packages, options=None, update=False):
     """
     Install one or more packages.
 
