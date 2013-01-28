@@ -55,6 +55,8 @@ def install(packages, update=False, yes=None, options=None):
     If *update* is ``True``, the package definitions will be updated
     first, using :py:func:`~fabtools.pkg.update_index`.
 
+    Extra *yes* may be passed to ``pkgin`` to validate license if necessary.
+
     Extra *options* may be passed to ``pkgin`` if necessary.
 
     Example::
