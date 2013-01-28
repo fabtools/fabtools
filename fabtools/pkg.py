@@ -85,7 +85,7 @@ def install(packages, options=None, update=False):
     sudo('%(manager)s %(options)s in %(packages)s' % locals())
 
 
-def uninstall(packages, orphan=False, options=None):
+def uninstall(packages, options=None, orphan=False):
     """
     Remove one or more packages.
 
@@ -97,6 +97,8 @@ def uninstall(packages, orphan=False, options=None):
     manager = MANAGER
     if options is None:
         options = []
+    elif isinstance(options, str):
+        options = [options]
     if not isinstance(packages, basestring):
         packages = " ".join(packages)
     options.append("-y")
