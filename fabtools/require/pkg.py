@@ -14,7 +14,7 @@ from fabtools.files import is_file
 from fabtools.pkg import *
 import fabtools.require
 
-def package(pkg_name, update=False):
+def package(pkg_name, update=False, yes=None):
     """
     Require a SmartOS package to be installed.
 
@@ -25,7 +25,7 @@ def package(pkg_name, update=False):
         require.pkg.package('foo')
     """
     if not is_installed(pkg_name):
-        install(pkg_name, update)
+        install(pkg_name, update, yes)
 
 def packages(pkg_list, update=False):
     """
