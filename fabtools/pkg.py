@@ -34,7 +34,7 @@ def upgrade(full=True):
     manager = MANAGER
     cmds = {'pkgin': {False: 'ug', True: 'fug'}}
     cmd = cmds[manager][full]
-    sudo("%(manager)s %(cmd)s" % locals())
+    sudo("%(manager)s -y %(cmd)s" % locals())
 
 
 def is_installed(pkg_name):
