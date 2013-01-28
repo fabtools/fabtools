@@ -104,7 +104,7 @@ def uninstall(packages, options=None, orphan=False):
     options.append("-y")
     options = " ".join(options)
     if orphan:
-        sudo('%(manager)s -y ar' % manager)
+        sudo('%(manager)s -y ar' % locals())
     sudo('%(manager)s %(options)s %(command)s %(packages)s' % locals())
 
 def smartos_build():
