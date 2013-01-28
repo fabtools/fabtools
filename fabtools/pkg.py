@@ -18,8 +18,9 @@ def update_index(force=False):
     """
     Update pkgin package definitions.
     """
-    if force, with quiet():
-        sudo("%s cl" % (MANAGER))
+    if force:
+        with quiet():
+            sudo("%s cl" % (MANAGER))
     sudo("%s -f up" % (MANAGER))
 
 
