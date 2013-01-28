@@ -76,6 +76,8 @@ def install(packages, update=False, options=None):
         update_index()
     if options is None:
         options = []
+    elif isinstance(options, str):
+        options = [options]
     if not isinstance(packages, basestring):
         packages = " ".join(packages)
     options.append("-y")
