@@ -2,8 +2,7 @@
 SmartOS packages
 ===============
 
-This module provides tools to manage SmartOS packages
-and repositories.
+This module provides tools to manage SmartOS packages.
 
 """
 from __future__ import with_statement
