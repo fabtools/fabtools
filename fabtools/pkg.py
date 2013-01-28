@@ -83,7 +83,7 @@ def install(packages, update=False, yes=None, options=None):
     options.append("-y")
     options = " ".join(options)
     if isinstance(yes, str):
-        sudo('yes %(yes)s | %(manager)s %(options)s in %(packages)s' % locals()))
+        sudo('yes %(yes)s | %(manager)s %(options)s in %(packages)s' % locals())
     else:
         sudo('%(manager)s %(options)s in %(packages)s' % locals())
 
