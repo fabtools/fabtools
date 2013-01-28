@@ -20,8 +20,10 @@ def update_index(force=False):
     """
     if force:
         with quiet():
-            sudo("%s cl" % (MANAGER))
-    sudo("%s -f up" % (MANAGER))
+            sudo("%(manager)s cl" % (locals())
+        sudo("%(manager)s -f up" % locals())
+    else:
+        sudo("%(manager)s up" % locals())
 
 
 def upgrade(full=True):
