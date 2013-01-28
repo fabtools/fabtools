@@ -48,7 +48,7 @@ def is_installed(pkg_name):
         return False
 
 
-def install(packages, options=None, update=False):
+def install(packages, update=False, options=None):
     """
     Install one or more packages.
 
@@ -85,7 +85,7 @@ def install(packages, options=None, update=False):
     sudo('%(manager)s %(options)s in %(packages)s' % locals())
 
 
-def uninstall(packages, options=None, orphan=False):
+def uninstall(packages, orphan=False, options=None):
     """
     Remove one or more packages.
 
