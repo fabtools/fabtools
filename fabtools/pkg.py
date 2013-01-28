@@ -62,7 +62,7 @@ def install(packages, update=False, options=None):
         import fabtools
 
         # Update index, then verbosely install a single package
-        fabtools.pkg.install('redis', '-V', update=True)
+        fabtools.pkg.install('redis', update=True, options='-V',)
 
         # Install multiple packages
         fabtools.pkg.install([
