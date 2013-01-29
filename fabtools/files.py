@@ -120,7 +120,7 @@ def md5sum(filename, use_sudo=False):
             res = func(u'/sbin/md5 -r %(filename)s' % locals())
         # SmartOS Joyent build
         elif exists(u'/opt/local/gnu/bin/md5sum'):
-            res = func(u'/opt/local/gnu/bin/md5sum -r %(filename)s' % locals())
+            res = func(u'/opt/local/gnu/bin/md5sum %(filename)s' % locals())
         else:
             abort('No MD5 utility was found on this system.')
 
