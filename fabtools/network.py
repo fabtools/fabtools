@@ -30,8 +30,11 @@ def address(interface):
 
     """
     with settings(hide('running', 'stdout')):
-        res = run("/sbin/ifconfig %(interface)s | grep 'inet addr'" % locals())
-    return res.split()[1].split(':')[1]
+        res = run("/sbin/ifconfig %(interface)s | grep 'inet '" % locals())
+    if 'addr' in res:
+        return res.split()[1].split(':')[1]
+    else:
+        return res.split()[1]
 
 
 def nameservers():
