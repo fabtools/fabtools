@@ -67,16 +67,9 @@ def supported_locales():
 
 def get_arch():
     """
-    Get the current architecture. Returns 'NA' if it can't be determined.
+    Get the current architecture.
 
     """
-
     with settings(hide('running', 'stdout')):
-        if run('uname -a | grep -qo x86_64').succeeded:
-            return 'x86_64'
-        elif run('uname -a | grep -qo i386').succeeded:
-            return 'i386'
-        elif run('uname -a | grep -qo i686').succeeded:
-            return 'i686'
-        else:
-            return 'NA'
+        arch = run('uname -p')
+            return arch

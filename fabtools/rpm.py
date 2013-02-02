@@ -93,20 +93,18 @@ def install(packages, repos=None, yes=None, options=None):
 
     """
     manager = MANAGER
-    if repos:
-      repos = " --enablerepo=".join(repos)
     if options is None:
         options = []
     elif isinstance(options, str):
         options = [options]
     if not isinstance(packages, basestring):
         packages = " ".join(packages)
+    for repo in repos:
+        options.append('--enablerepo=%(repo)s' % locals())
     options = " ".join(options)
     if isinstance(yes, str):
         sudo('yes %(yes)s | %(manager)s %(options)s install %(packages)s' % locals())
-    elif repos:
-        sudo('%(manager)s %(options)s --enablerepo=%(repos)s install %(packages)s' % locals())
-    else:
+     else:
         sudo('%(manager)s %(options)s install %(packages)s' % locals())
 
 

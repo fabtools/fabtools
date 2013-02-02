@@ -122,7 +122,7 @@ def repository(name):
     'rpmforge': 'http://apt.sw.be/RPM-GPG-KEY.dag.txt',
     'epel': '%(epel_url)s/RPM-GPG-KEY-EPEL-%(release)s' % locals()
     }
-    repo = supported[name][arch][str(release)]
+    repo = supported[name][str(arch)][str(release)]
     key = keys[name]
     with settings(hide('warnings'), warn_only=True):
       sudo('rpm --import %(key)s' % locals())
