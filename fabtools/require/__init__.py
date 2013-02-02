@@ -8,6 +8,7 @@ import fabtools.require.nodejs
 import fabtools.require.openvz
 import fabtools.require.python
 import fabtools.require.redis
+import fabtools.require.rpm
 import fabtools.require.service
 import fabtools.require.shorewall
 import fabtools.require.supervisor

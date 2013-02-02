@@ -63,3 +63,20 @@ def supported_locales():
     with settings(hide('running', 'stdout')):
         res = run('grep -v "^#" /usr/share/i18n/SUPPORTED')
     return [line.split(' ') for line in res.splitlines()]
+
+
+def get_arch():
+    """
+    Get the current architecture. Returns 'NA' if it can't be determined.
+
+    """
+
+    with settings(hide('running', 'stdout')):
+        if run('uname -a | grep -qo x86_64').succeeded:
+            return 'x86_64'
+        elif run('uname -a | grep -qo i386').succeeded:
+            return 'i386'
+        elif run('uname -a | grep -qo i686').succeeded:
+            return 'i686'
+        else:
+            return 'NA'

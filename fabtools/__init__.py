@@ -9,6 +9,7 @@ import fabtools.nodejs
 import fabtools.openvz
 import fabtools.python
 import fabtools.python_distribute
+import fabtools.rpm
 import fabtools.service
 import fabtools.shorewall
 import fabtools.supervisor

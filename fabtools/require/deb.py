@@ -41,7 +41,7 @@ def ppa(name):
     """
     Require a `PPA`_ package source.
 
-    ::
+    Example::
 
         from fabtools import require
 
@@ -65,7 +65,7 @@ def package(pkg_name, update=False):
     """
     Require a deb package to be installed.
 
-    ::
+    Example::
 
         from fabtools import require
 
@@ -79,7 +79,7 @@ def packages(pkg_list, update=False):
     """
     Require several deb packages to be installed.
 
-    ::
+    Example::
 
         from fabtools import require
 
@@ -98,7 +98,7 @@ def nopackage(pkg_name):
     """
     Require a deb package to be uninstalled.
 
-    ::
+    Example::
 
         from fabtools import require
 
@@ -112,7 +112,7 @@ def nopackages(pkg_list):
     """
     Require several deb packages to be uninstalled.
 
-    ::
+    Example::
 
         from fabtools import require
 
