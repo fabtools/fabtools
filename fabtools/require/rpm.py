@@ -2,19 +2,14 @@
 Rpm packages
 ===============
 
-This module provides high-level tools for managing CentOS/RHEL/SL/Fedora packages
+This module provides high-level tools for managing CentOS/RHEL/SL packages
 and repositories.
 
 """
 from __future__ import with_statement
 
-from fabric.utils import puts
-
-from fabtools.files import is_file, watch
 from fabtools.system import get_arch
 from fabtools.rpm import *
-
-import fabtools.require
 
 
 def package(pkg_name, repos=None, yes=None, options=None):
@@ -49,6 +44,7 @@ def packages(pkg_list, repos=None, yes=None, options=None):
     if pkg_list:
         install(pkg_list, repos, yes, options)
 
+
 def nopackage(pkg_name, options=None):
     """
     Require a rpm package to be uninstalled.
@@ -81,6 +77,7 @@ def nopackages(pkg_list, options=None):
     if pkg_list:
         uninstall(pkg_list, options)
 
+
 def repository(name):
     """
     Require a repository. Aimed for 3rd party repositories.
@@ -101,15 +98,15 @@ def repository(name):
     rpmforge_version = '0.5.2-2'
     arch = get_arch()
     try:
-      release = int(str(distrib_release()))
+        release = int(str(distrib_release()))
     except ValueError:
-      release = int(float(str(distrib_release())))
+        release = int(float(str(distrib_release())))
     if release == 6:
-      epel_version = '6-8'
+        epel_version = '6-8'
     elif release == 5:
-      epel_version = '5-4'
+        epel_version = '5-4'
     if name == 'rpmforge' and arch == 'i386':
-      arch = 'i686'
+        arch = 'i686'
     supported = {
       'rpmforge': {'%(arch)s' % locals(): {
         '6': '%(rpmforge_url)s-%(rpmforge_version)s.el6.rf.i686.rpm' % locals(),
@@ -125,5 +122,5 @@ def repository(name):
     repo = supported[name][str(arch)][str(release)]
     key = keys[name]
     with settings(hide('warnings'), warn_only=True):
-      sudo('rpm --import %(key)s' % locals())
-      sudo('rpm -Uh %(repo)s' % locals())
+        sudo('rpm --import %(key)s' % locals())
+        sudo('rpm -Uh %(repo)s' % locals())

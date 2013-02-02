@@ -14,6 +14,7 @@ from fabtools.files import is_file
 
 MANAGER = 'yum -y --color=never'
 
+
 def update(kernel=False):
     """
     Upgrade all packages, skip obsoletes if ``obsoletes=0`` in ``yum.conf``.
@@ -39,6 +40,7 @@ def upgrade(kernel=False):
     cmd = cmds[manager][kernel]
     sudo("%(manager)s %(cmd)s" % locals())
 
+
 def groupupdate(group, options=None):
     """
     Update an existing software group, skip obsoletes if ``obsoletes=1`` in ``yum.conf``.
@@ -54,6 +56,7 @@ def groupupdate(group, options=None):
     options = " ".join(options)
     sudo('%(manager)s %(options)s groupupdate "%(group)s"' % locals())
 
+
 def is_installed(pkg_name):
     """
     Check if a *package* is installed.
@@ -63,7 +66,7 @@ def is_installed(pkg_name):
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = run("%(manager)s list installed %(pkg_name)s" % locals())
         if res.succeeded:
-          return True
+            return True
         return False
 
 
@@ -192,12 +195,13 @@ def distrib_codename():
         from fabtools.rpm import distrib_codename
 
         if distrib_codename() == 'Final':
-            print('%s is running final version of %s %s.' 
+            print('%s is running final version of %s %s.'
               % (env.host, distrib_id(), distrib_release)
 
     """
     with settings(hide('running', 'stdout')):
         return run('lsb_release --codename --short')
+
 
 def distrib_desc():
     """
@@ -206,8 +210,9 @@ def distrib_desc():
     """
     with settings(hide('running', 'stdout')):
         if not is_file('/etc/redhat-release'):
-          return run('lsb_release --desc --short')
+            return run('lsb_release --desc --short')
         return run('cat /etc/redhat-release')
+
 
 def distrib_release():
     """
@@ -222,7 +227,8 @@ def distrib_release():
 
     """
     with settings(hide('running', 'stdout')):
-      return run('lsb_release -r --short')
+        return run('lsb_release -r --short')
+
 
 def repolist(status='', media=None):
     """
@@ -243,7 +249,7 @@ def repolist(status='', media=None):
     manager = MANAGER
     with settings(hide('running', 'stdout')):
         if media:
-          repos = sudo("%(manager)s repolist %(status)s | sed '$d' | sed -n '/repo id/,$p'" % locals())
+            repos = sudo("%(manager)s repolist %(status)s | sed '$d' | sed -n '/repo id/,$p'" % locals())
         else:
-          repos = sudo("%(manager)s repolist %(status)s | sed '/Media\|Debug/d' | sed '$d' | sed -n '/repo id/,$p'" % locals())
+            repos = sudo("%(manager)s repolist %(status)s | sed '/Media\|Debug/d' | sed '$d' | sed -n '/repo id/,$p'" % locals())
         return map(lambda line: line.split(' ')[0], repos.splitlines()[1:])
