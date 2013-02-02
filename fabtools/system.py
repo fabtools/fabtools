@@ -72,4 +72,4 @@ def get_arch():
     """
     with settings(hide('running', 'stdout')):
         arch = run('uname -p')
-            return arch
+        return arch
