@@ -104,7 +104,7 @@ def install(packages, repos=None, yes=None, options=None):
     options = " ".join(options)
     if isinstance(yes, str):
         sudo('yes %(yes)s | %(manager)s %(options)s install %(packages)s' % locals())
-     else:
+    else:
         sudo('%(manager)s %(options)s install %(packages)s' % locals())
 
 
