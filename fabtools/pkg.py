@@ -130,7 +130,7 @@ def smartos_build():
 def smartos_image():
     """
     Get the SmartOS image. Useful to determine the image/dataset for example.
-    Returns 'NA' if it can't be determined.
+    Returns None if it can't be determined.
 
     Example::
 
@@ -144,4 +144,4 @@ def smartos_image():
         if is_file('/etc/product'):
             return run('cat /etc/product | head -n 2 | tail -n 1 | awk \'{ print $2 " " $3 }\'')
         else:
-            return 'NA'
+            return None
