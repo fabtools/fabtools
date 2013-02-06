@@ -93,6 +93,7 @@ def repository(name):
 
 
     """
+    name = name.lower()
     epel_url = 'http://download.fedoraproject.org/pub/epel'
     rpmforge_url = 'http://packages.sw.be/rpmforge-release/rpmforge-release'
     rpmforge_version = '0.5.2-2'
@@ -105,7 +106,7 @@ def repository(name):
         epel_version = '6-8'
     elif release == 5:
         epel_version = '5-4'
-    if name == 'rpmforge' and arch == 'i386':
+    if name.lower() == 'rpmforge' and arch == 'i386':
         arch = 'i686'
     supported = {
       'rpmforge': {'%(arch)s' % locals(): {
