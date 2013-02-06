@@ -106,7 +106,7 @@ def repository(name):
         epel_version = '6-8'
     elif release == 5:
         epel_version = '5-4'
-    if name.lower() == 'rpmforge' and arch == 'i386':
+    if name == 'rpmforge' and arch == 'i386':
         arch = 'i686'
     supported = {
       'rpmforge': {'%(arch)s' % locals(): {
