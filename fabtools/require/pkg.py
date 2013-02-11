@@ -1,6 +1,6 @@
 """
 SmartOS packages
-===============
+================
 
 This module provides high-level tools for managing SmartOS packages.
 

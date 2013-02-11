@@ -11,10 +11,12 @@ fabtools.require
    nginx
    nodejs
    openvz
+   pkg
    postfix
    postgres
    python
    redis
+   rpm
    service
    shorewall
    supervisor

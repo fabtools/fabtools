@@ -1,6 +1,6 @@
 """
-Rpm packages
-===============
+RPM packages
+============
 
 This module provides high-level tools for managing CentOS/RHEL/SL packages
 and repositories.

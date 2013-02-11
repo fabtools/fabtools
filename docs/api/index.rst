@@ -12,9 +12,11 @@ fabtools
    network
    nodejs
    openvz
+   pkg
    postgres
    python
    python_distribute
+   rpm
    service
    shorewall
    supervisor

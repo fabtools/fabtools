@@ -1,6 +1,6 @@
 """
-Rpm packages
-===============
+RPM packages
+============
 
 This module provides tools to manage CentOS/RHEL/SL/Fedora packages
 and repositories.
@@ -179,7 +179,7 @@ def distrib_id():
         from fabtools.rpm import distrib_id
 
         if distrib_id() == 'CentOS':
-            print('%s is not running RHEL.' % (env.host)
+            print('%s is not running RHEL.' % (env.host))
 
     """
     with settings(hide('running', 'stdout')):
@@ -196,7 +196,7 @@ def distrib_codename():
 
         if distrib_codename() == 'Final':
             print('%s is running final version of %s %s.'
-              % (env.host, distrib_id(), distrib_release)
+              % (env.host, distrib_id(), distrib_release))
 
     """
     with settings(hide('running', 'stdout')):
@@ -222,7 +222,7 @@ def distrib_release():
 
         from fabtools.rpm import distrib_release
 
-        if distrib_release() == '6.1' and distrib_id == 'CentOS:
+        if distrib_release() == '6.1' and distrib_id == 'CentOS':
             print('CentOS 6.2 has been released. Please update.')
 
     """

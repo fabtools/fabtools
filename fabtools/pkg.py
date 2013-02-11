@@ -1,6 +1,6 @@
 """
 SmartOS packages
-===============
+================
 
 This module provides tools to manage SmartOS packages.
 
@@ -137,7 +137,7 @@ def smartos_image():
         from fabtools.pkg import smartos_image
 
         if smartos_image().startswith('percona'):
-            sudo('mysql -uroot -psecretpassword -e 'show databases;'')
+            sudo("mysql -uroot -psecretpassword -e 'show databases;'")
 
     """
     with settings(hide('running', 'stdout')):
