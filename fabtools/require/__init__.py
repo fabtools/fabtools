@@ -6,6 +6,7 @@ import fabtools.require.postgres
 import fabtools.require.mysql
 import fabtools.require.nodejs
 import fabtools.require.openvz
+import fabtools.require.pkg
 import fabtools.require.python
 import fabtools.require.redis
 import fabtools.require.service

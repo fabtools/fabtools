@@ -7,6 +7,7 @@ import fabtools.mysql
 import fabtools.network
 import fabtools.nodejs
 import fabtools.openvz
+import fabtools.pkg
 import fabtools.python
 import fabtools.python_distribute
 import fabtools.service

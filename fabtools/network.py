@@ -5,14 +5,18 @@ Network
 from __future__ import with_statement
 
 from fabric.api import *
+from fabtools.files import is_file
 
 
 def interfaces():
     """
-    Get the list of network interfaces.
+    Get the list of network interfaces. Will return all datalinks on SmartOS.
     """
     with settings(hide('running', 'stdout')):
-        res = run('/sbin/ifconfig -s')
+        if is_file('/usr/sbin/dladm'):
+            res = run('/usr/sbin/dladm show-link')
+        else:
+            res = run('/sbin/ifconfig -s')
     return map(lambda line: line.split(' ')[0], res.splitlines()[1:])
 
 
@@ -30,8 +34,11 @@ def address(interface):
 
     """
     with settings(hide('running', 'stdout')):
-        res = run("/sbin/ifconfig %(interface)s | grep 'inet addr'" % locals())
-    return res.split()[1].split(':')[1]
+        res = run("/sbin/ifconfig %(interface)s | grep 'inet '" % locals())
+    if 'addr' in res:
+        return res.split()[1].split(':')[1]
+    else:
+        return res.split()[1]
 
 
 def nameservers():
