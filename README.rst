@@ -82,7 +82,10 @@ Supported targets
 * Ubuntu 10.04 (lucid)
 * Ubuntu 12.04 (precise)
 
-* SmartOS (Joyent)
+* RHEL 5/6
+* CentOS 5/6
+* Scientific Linux 5/6
 
+* SmartOS (Joyent)
 
 Contributions to help support other Unix/Linux distributions are welcome!
