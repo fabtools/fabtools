@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.10.0 (2013-02-12)
+---------------------------
+
+* Enable/disable nginx sites (thanks to Sébastien Béal)
+* Add support for SmartOS (thanks to Anthony Scalisi)
+* Add support for RHEL/CentOS/SL (thanks to Anthony Scalisi)
+
 Version 0.9.4 (2013-01-10)
 --------------------------
 
