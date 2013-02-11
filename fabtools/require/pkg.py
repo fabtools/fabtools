@@ -14,6 +14,7 @@ from fabtools.files import is_file
 from fabtools.pkg import *
 import fabtools.require
 
+
 def package(pkg_name, update=False, yes=None):
     """
     Require a SmartOS package to be installed.
@@ -26,6 +27,7 @@ def package(pkg_name, update=False, yes=None):
     """
     if not is_installed(pkg_name):
         install(pkg_name, update, yes)
+
 
 def packages(pkg_list, update=False):
     """
@@ -45,6 +47,7 @@ def packages(pkg_list, update=False):
     if pkg_list:
         install(pkg_list, update)
 
+
 def nopackage(pkg_name, orphan=True):
     """
     Require a SmartOS package to be uninstalled.
@@ -57,6 +60,7 @@ def nopackage(pkg_name, orphan=True):
     """
     if is_installed(pkg_name):
         uninstall(pkg_name, orphan)
+
 
 def nopackages(pkg_list, orphan=True):
     """

@@ -112,6 +112,7 @@ def uninstall(packages, orphan=False, options=None):
         sudo('%(manager)s -y ar' % locals())
     sudo('%(manager)s %(options)s remove %(packages)s' % locals())
 
+
 def smartos_build():
     """
     Get the build of SmartOS. Useful to determine provider for example.
@@ -126,6 +127,7 @@ def smartos_build():
     """
     with settings(hide('running', 'stdout')):
         return run('uname -v')
+
 
 def smartos_image():
     """
