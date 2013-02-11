@@ -12,10 +12,12 @@ from __future__ import with_statement
 
 from fabric.api import *
 from fabric.colors import red
+from fabtools.nginx import *
 from fabtools.files import upload_template, is_link
 from fabtools.require.deb import package
 from fabtools.require.files import template_file
 from fabtools.require.service import started
+import fabtools
 
 
 def server():
@@ -30,6 +32,26 @@ def server():
     """
     package('nginx')
     started('nginx')
+
+
+def enabled(config):
+    """
+    Ensure link to /etc/nginx/sites-available/config exists and reload nginx
+    configuration if needed.
+    """
+    enable(config)
+
+    fabtools.service.reload('nginx')
+
+
+def disabled(config):
+    """
+    Ensure link to /etc/nginx/sites-available/config doesn't exist and reload
+    nginx configuration if needed.
+    """
+    disable(config)
+
+    fabtools.service.reload('nginx')
 
 
 def site(server_name, template_contents=None, template_source=None, enabled=True, check_config=True, **kwargs):
@@ -87,7 +109,7 @@ def site(server_name, template_contents=None, template_source=None, enabled=True
         if is_link(link_filename):
             sudo("rm %(link_filename)s" % locals())
 
-    sudo("/etc/init.d/nginx reload")
+    fabtools.service.reload('nginx')
 
 
 PROXIED_SITE_TEMPLATE = """\
