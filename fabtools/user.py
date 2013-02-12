@@ -125,6 +125,8 @@ def modify(name, comment=None, home=None, move_current_home=False, group=None,
         args.append('-s %s' % quote(shell))
     if uid:
         args.append('-u %s' % quote(uid))
-    args.append(name)
-    args = ' '.join(args)
-    sudo('usermod %s' % args)
+
+    if args:
+        args.append(name)
+        args = ' '.join(args)
+        sudo('usermod %s' % args)
