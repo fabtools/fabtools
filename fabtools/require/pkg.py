@@ -8,11 +8,7 @@ This module provides high-level tools for managing SmartOS packages.
 
 from __future__ import with_statement
 
-from fabric.utils import puts
-
-from fabtools.files import is_file
 from fabtools.pkg import *
-import fabtools.require
 
 
 def package(pkg_name, update=False, yes=None):
