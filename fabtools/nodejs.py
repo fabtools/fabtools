@@ -23,7 +23,7 @@ from fabric.api import run, cd, settings, hide
 from fabtools.utils import run_as_root
 
 
-DEFAULT_VERSION = '0.8.16'
+DEFAULT_VERSION = '0.8.19'
 
 
 def install_from_source(version=DEFAULT_VERSION):
