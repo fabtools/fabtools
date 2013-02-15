@@ -6,7 +6,7 @@ from __future__ import with_statement
 
 from contextlib import contextmanager
 import hashlib
-import os.path
+import os
 import posixpath
 import tempfile
 
@@ -17,9 +17,6 @@ from fabric.api import (
     settings,
     sudo,
     )
-from fabric.state import default_channel
-from fabric.utils import error
-
 from fabric.operations import (
     _AttributeString,
     _execute,
@@ -28,6 +25,8 @@ from fabric.operations import (
     _shell_wrap,
     _sudo_prefix,
     )
+from fabric.state import default_channel
+from fabric.utils import error
 import fabric.operations
 import fabric.sftp
 

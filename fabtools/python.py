@@ -13,7 +13,7 @@ from __future__ import with_statement
 
 from contextlib import contextmanager
 from distutils.version import StrictVersion as V
-import os.path
+import os
 import posixpath
 
 from fabric.api import *

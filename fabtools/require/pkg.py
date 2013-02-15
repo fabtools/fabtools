@@ -5,7 +5,6 @@ SmartOS packages
 This module provides high-level tools for managing SmartOS packages.
 
 """
-
 from __future__ import with_statement
 
 from fabtools.pkg import *

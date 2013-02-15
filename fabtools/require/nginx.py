@@ -13,8 +13,8 @@ from __future__ import with_statement
 from fabric.api import *
 from fabric.colors import red
 
-from fabtools.nginx import *
 from fabtools.files import is_link
+from fabtools.nginx import *
 from fabtools.require.deb import package
 from fabtools.require.files import template_file
 from fabtools.require.service import started

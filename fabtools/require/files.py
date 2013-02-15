@@ -9,7 +9,7 @@ directories.
 from __future__ import with_statement
 
 import hashlib
-import os, os.path
+import os
 from tempfile import mkstemp
 from urlparse import urlparse
 

@@ -8,6 +8,7 @@ This module provides high-level tools for managing the Postfix_ email server.
 
 """
 from fabric.api import *
+
 from fabtools.deb import is_installed, preseed_package, install
 from fabtools.require.service import started
 

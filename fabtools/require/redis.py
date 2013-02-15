@@ -9,8 +9,8 @@ This module provides high-level tools for managing `Redis`_ instances.
 """
 from __future__ import with_statement
 
-from fabtools.files import is_file, watch
 from fabtools.deb import *
+from fabtools.files import is_file, watch
 from fabtools.utils import run_as_root
 import fabtools.supervisor
 

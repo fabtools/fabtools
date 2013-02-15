@@ -8,8 +8,8 @@ and repositories.
 """
 from __future__ import with_statement
 
-from fabtools.system import get_arch
 from fabtools.rpm import *
+from fabtools.system import get_arch
 from fabtools.utils import run_as_root
 
 

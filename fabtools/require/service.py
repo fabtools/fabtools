@@ -11,6 +11,7 @@ support both `upstart`_ services and traditional SysV-style
 
 """
 from fabric.api import *
+
 from fabtools.service import *
 
 

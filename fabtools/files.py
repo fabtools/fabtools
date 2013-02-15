@@ -4,7 +4,7 @@ Files and directories
 """
 from __future__ import with_statement
 
-import os.path
+import os
 
 from fabric.api import *
 from fabric.contrib.files import upload_template as _upload_template

@@ -10,9 +10,8 @@ from __future__ import with_statement
 
 from fabric.utils import puts
 
-from fabtools.files import is_file, watch
 from fabtools.deb import *
-
+from fabtools.files import is_file, watch
 from fabtools.utils import run_as_root
 import fabtools.require
 

@@ -8,8 +8,8 @@ and creating MySQL users and databases.
 """
 from __future__ import with_statement
 
-from fabtools.mysql import *
 from fabtools.deb import is_installed, preseed_package
+from fabtools.mysql import *
 from fabtools.require.deb import package
 from fabtools.require.service import started
 
