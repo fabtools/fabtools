@@ -44,7 +44,7 @@ def is_installed(pkg_name):
     Check if a package is installed.
     """
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        res = run("pkgin list | grep -qio %(pkg_name)s" % locals())
+        res = run("yes 'y' | pkgin list | awk '{print $1}' | egrep -qio \"^%(pkg_name)s\"" % locals())
         if res.succeeded:
             return True
         return False
