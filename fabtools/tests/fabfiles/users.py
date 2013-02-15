@@ -42,6 +42,9 @@ def require_users():
     assert fabtools.user.exists('req1')
     assert not fabtools.files.is_dir('/home/req1')
 
+    # require again
+    require.user('req1')
+
     # require that a user exist, with default home directory
     require.user('req2', create_home=True)
     assert fabtools.user.exists('req2')
