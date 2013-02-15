@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Version 0.11.0 (2013-02-15)
+---------------------------
+
+* Fix requiring an existing user (thanks to JonPeel)
+* Upgrade default Redis version to 2.6.10
+* Upgrade default Node.js version to 0.8.19
+* Better support for remote hosts where sudo is not installed
+
 Version 0.10.0 (2013-02-12)
 ---------------------------
 
