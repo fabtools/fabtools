@@ -27,6 +27,15 @@ def users():
     assert not fabtools.files.is_dir('/home/user3')
     assert fabtools.files.is_dir('/tmp/user3')
 
+    # create system user (default: no home directory)
+    fabtools.user.create('user4', system=True)
+    assert not fabtools.files.is_dir('/home/user3')
+
+    # create system user with home directory
+    fabtools.user.create('user5', system=True,
+        create_home=True, home='/var/lib/foo')
+    assert fabtools.files.is_dir('/var/lib/foo')
+
 
 @task
 def require_users():

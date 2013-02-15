@@ -38,11 +38,23 @@ def _crypt_password(password):
     return crypted_password
 
 
-def create(name, comment=None, home=None, create_home=True, skeleton_dir=None,
-    group=None, create_group=True, extra_groups=None,password=None,
+def create(name, comment=None, home=None, create_home=None, skeleton_dir=None,
+    group=None, create_group=True, extra_groups=None, password=None,
     system=False, shell=None, uid=None):
     """
     Create a new user and its home directory.
+
+    If *create_home* is ``None`` (the default), a home directory will be
+    created for normal users, but not for system users.
+    You can override the default behaviour by setting *create_home* to
+    ``True`` or ``False``.
+
+    If *system* is ``True``, the user will be a system account. Its UID
+    will be chosen in a specific range, and it will not have a home
+    directory, unless you explicitely set *create_home* to ``True``.
+
+    If *shell* is ``None``, the user's login shell will be the system's
+    default login shell (usually ``/bin/sh``).
 
     Example::
 
@@ -73,10 +85,16 @@ def create(name, comment=None, home=None, create_home=True, skeleton_dir=None,
     if extra_groups:
         groups = ','.join(quote(group) for group in extra_groups)
         args.append('-G %s' % groups)
-    if create_home:
+
+    if create_home is None:
+        create_home = not system
+    if create_home is True:
         args.append('-m')
-        if skeleton_dir:
-            args.append('-k %s' % quote(skeleton_dir))
+    elif create_home is False:
+        args.append('-M')
+
+    if skeleton_dir:
+        args.append('-k %s' % quote(skeleton_dir))
     if password:
         crypted_password = _crypt_password(password)
         args.append('-p %s' % quote(crypted_password))

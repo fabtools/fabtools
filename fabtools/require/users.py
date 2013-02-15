@@ -15,6 +15,9 @@ def user(name, comment=None, home=None, create_home=True, skeleton_dir=None,
     """
     Require a user and its home directory.
 
+    See :func:`fabtools.user.create` for a detailed description of
+    arguments.
+
     ::
 
         from fabtools import require
@@ -24,6 +27,9 @@ def user(name, comment=None, home=None, create_home=True, skeleton_dir=None,
 
         # Sometimes we don't need a home directory
         require.user('mydaemon', create_home=False)
+
+        # Require a user without shell access
+        require.user('nologin', shell='/bin/false')
 
     .. note:: This function can be accessed directly from the
               ``fabtools.require`` module for convenience.
