@@ -6,6 +6,8 @@ from __future__ import with_statement
 
 from fabric.api import *
 
+from fabtools.utils import run_as_root
+
 
 def get_hostname():
     """
@@ -19,9 +21,9 @@ def set_hostname(hostname, persist=True):
     """
     Set the hostname.
     """
-    sudo('hostname %s' % hostname)
+    run_as_root('hostname %s' % hostname)
     if persist:
-        sudo('echo %s >/etc/hostname' % hostname)
+        run_as_root('echo %s >/etc/hostname' % hostname)
 
 
 def get_sysctl(key):
@@ -36,7 +38,7 @@ def get_sysctl(key):
 
     """
     with settings(hide('running', 'stdout')):
-        return sudo('/sbin/sysctl -n -e %(key)s' % locals())
+        return run_as_root('/sbin/sysctl -n -e %(key)s' % locals())
 
 
 def set_sysctl(key, value):
@@ -51,7 +53,7 @@ def set_sysctl(key, value):
         fabtools.system.set_sysctl('net.ipv4.tcp_syncookies', 1)
 
     """
-    sudo('/sbin/sysctl -n -e -w %(key)s=%(value)s' % locals())
+    run_as_root('/sbin/sysctl -n -e -w %(key)s=%(value)s' % locals())
 
 
 def supported_locales():

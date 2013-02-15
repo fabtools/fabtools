@@ -14,7 +14,9 @@ from tempfile import mkstemp
 from urlparse import urlparse
 
 from fabric.api import *
+
 from fabtools.files import is_file, is_dir, md5sum
+from fabtools.utils import run_as_root
 import fabtools.files
 
 
@@ -35,7 +37,7 @@ def directory(path, use_sudo=False, owner='', group='', mode=''):
               ``fabtools.require`` module for convenience.
 
     """
-    func = use_sudo and sudo or run
+    func = use_sudo and run_as_root or run
 
     if not is_dir(path):
         func('mkdir -p "%(path)s"' % locals())
@@ -87,7 +89,7 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
               ``fabtools.require`` module for convenience.
 
     """
-    func = use_sudo and sudo or run
+    func = use_sudo and run_as_root or run
 
     # 1) Only a path is given
     if path and not (contents or source or url):

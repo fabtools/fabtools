@@ -19,6 +19,8 @@ import posixpath
 from fabric.api import *
 from fabric.utils import puts
 
+from fabtools.utils import run_as_root
+
 
 def is_pip_installed(version=None):
     """
@@ -57,7 +59,7 @@ def install_pip():
     """
     with cd('/tmp'):
         run('curl --silent -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py')
-        sudo('python get-pip.py')
+        run_as_root('python get-pip.py')
 
 
 def is_installed(package):

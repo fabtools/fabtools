@@ -6,6 +6,8 @@ from functools import partial
 
 from fabric.api import *
 
+from fabtools.utils import run_as_root
+
 
 @task
 def files():
@@ -74,7 +76,7 @@ def directories():
 
     with cd('/tmp'):
 
-        sudo('rm -rf dir1 dir2')
+        run_as_root('rm -rf dir1 dir2')
 
         # Test directory creation
 

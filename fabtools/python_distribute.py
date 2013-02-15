@@ -12,6 +12,8 @@ from __future__ import with_statement
 
 from fabric.api import *
 
+from fabtools.utils import run_as_root
+
 
 def is_distribute_installed():
     """
@@ -40,7 +42,7 @@ def install_distribute():
     """
     with cd("/tmp"):
         run("curl --silent -O http://python-distribute.org/distribute_setup.py")
-        sudo("python distribute_setup.py")
+        run_as_root("python distribute_setup.py")
 
 
 def install(packages, upgrade=False, use_sudo=False):
@@ -62,7 +64,7 @@ def install(packages, upgrade=False, use_sudo=False):
               which uses ``pip`` to install packages.
 
     """
-    func = use_sudo and sudo or run
+    func = use_sudo and run_as_root or run
     if not isinstance(packages, basestring):
         packages = " ".join(packages)
     options = []

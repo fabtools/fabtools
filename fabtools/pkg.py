@@ -8,7 +8,9 @@ This module provides tools to manage SmartOS packages.
 from __future__ import with_statement
 
 from fabric.api import *
+
 from fabtools.files import is_file
+from fabtools.utils import run_as_root
 
 
 MANAGER = 'pkgin'
@@ -21,10 +23,10 @@ def update_index(force=False):
     manager = MANAGER
     if force:
         with quiet():
-            sudo("%(manager)s cl" % locals())
-        sudo("%(manager)s -f up" % locals())
+            run_as_root("%(manager)s cl" % locals())
+        run_as_root("%(manager)s -f up" % locals())
     else:
-        sudo("%(manager)s up" % locals())
+        run_as_root("%(manager)s up" % locals())
 
 
 def upgrade(full=False):
@@ -34,7 +36,7 @@ def upgrade(full=False):
     manager = MANAGER
     cmds = {'pkgin': {False: 'ug', True: 'fug'}}
     cmd = cmds[manager][full]
-    sudo("%(manager)s -y %(cmd)s" % locals())
+    run_as_root("%(manager)s -y %(cmd)s" % locals())
 
 
 def is_installed(pkg_name):
@@ -85,9 +87,9 @@ def install(packages, update=False, yes=None, options=None):
     options.append("-y")
     options = " ".join(options)
     if isinstance(yes, str):
-        sudo('yes %(yes)s | %(manager)s %(options)s in %(packages)s' % locals())
+        run_as_root('yes %(yes)s | %(manager)s %(options)s in %(packages)s' % locals())
     else:
-        sudo('%(manager)s %(options)s in %(packages)s' % locals())
+        run_as_root('%(manager)s %(options)s in %(packages)s' % locals())
 
 
 def uninstall(packages, orphan=False, options=None):
@@ -109,8 +111,8 @@ def uninstall(packages, orphan=False, options=None):
     options.append("-y")
     options = " ".join(options)
     if orphan:
-        sudo('%(manager)s -y ar' % locals())
-    sudo('%(manager)s %(options)s remove %(packages)s' % locals())
+        run_as_root('%(manager)s -y ar' % locals())
+    run_as_root('%(manager)s %(options)s remove %(packages)s' % locals())
 
 
 def smartos_build():

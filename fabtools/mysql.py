@@ -9,6 +9,8 @@ from __future__ import with_statement
 
 from fabric.api import *
 
+from fabtools.utils import run_as_root
+
 
 def prompt_password(user='root'):
     """
@@ -21,7 +23,7 @@ def _query(query, use_sudo=True, **kwargs):
     """
     Run a MySQL query.
     """
-    func = use_sudo and sudo or run
+    func = use_sudo and run_as_root or run
 
     user = kwargs.get('mysql_user') or env.get('mysql_user')
     password = kwargs.get('mysql_password') or env.get('mysql_password')

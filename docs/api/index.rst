@@ -22,4 +22,5 @@ fabtools
    supervisor
    system
    user
+   utils
    vagrant

@@ -18,7 +18,9 @@ try:
 except ImportError:
     import simplejson as json
 
-from fabric.api import run, sudo, cd, settings, hide
+from fabric.api import run, cd, settings, hide
+
+from fabtools.utils import run_as_root
 
 
 DEFAULT_VERSION = '0.8.16'
@@ -59,7 +61,7 @@ def install_from_source(version=DEFAULT_VERSION):
     with cd(foldername):
         run('./configure')
         run('make -j%d' % (cpus + 1))
-        sudo('make install')
+        run_as_root('make install')
     run('rm -rf %(filename)s %(foldername)s' % locals())
 
 
@@ -100,7 +102,7 @@ def install_package(package, version=None, local=False):
     if local:
         run('npm install -l %s' % package)
     else:
-        sudo('HOME=/root npm install -g %s' % package)
+        run_as_root('HOME=/root npm install -g %s' % package)
 
 
 def install_dependencies():
@@ -157,7 +159,7 @@ def update_package(package, local=False):
     if local:
         run('npm update -l %s' % package)
     else:
-        sudo('HOME=/root npm update -g %s' % package)
+        run_as_root('HOME=/root npm update -g %s' % package)
 
 
 def uninstall_package(package, version=None, local=False):
@@ -183,4 +185,4 @@ def uninstall_package(package, version=None, local=False):
     if local:
         run('npm uninstall -l %s' % package)
     else:
-        sudo('HOME=/root npm uninstall -g %s' % package)
+        run_as_root('HOME=/root npm uninstall -g %s' % package)

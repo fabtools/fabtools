@@ -12,12 +12,14 @@ from __future__ import with_statement
 
 from fabric.api import *
 
+from fabtools.utils import run_as_root
+
 
 def reload_config():
     """
     Reload supervisor configuration.
     """
-    sudo("supervisorctl reload")
+    run_as_root("supervisorctl reload")
 
 
 def update_config():
@@ -27,7 +29,7 @@ def update_config():
     Less heavy-handed than a full reload, as it doesn't restart the
     backend supervisor process and all managed processes.
     """
-    sudo("supervisorctl update")
+    run_as_root("supervisorctl update")
 
 
 def process_status(name):
@@ -35,7 +37,7 @@ def process_status(name):
     Get the status of a supervisor process.
     """
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        res = sudo("supervisorctl status %(name)s" % locals())
+        res = run_as_root("supervisorctl status %(name)s" % locals())
         if res.startswith("No such process"):
             return None
         else:
@@ -46,18 +48,18 @@ def start_process(name):
     """
     Start a supervisor process
     """
-    sudo("supervisorctl start %(name)s" % locals())
+    run_as_root("supervisorctl start %(name)s" % locals())
 
 
 def stop_process(name):
     """
     Stop a supervisor process
     """
-    sudo("supervisorctl stop %(name)s" % locals())
+    run_as_root("supervisorctl stop %(name)s" % locals())
 
 
 def restart_process(name):
     """
     Restart a supervisor process
     """
-    sudo("supervisorctl restart %(name)s" % locals())
+    run_as_root("supervisorctl restart %(name)s" % locals())

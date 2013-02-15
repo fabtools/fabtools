@@ -15,6 +15,7 @@ from fabtools.system import (
     get_sysctl, set_sysctl,
     supported_locales,
     )
+from fabtools.utils import run_as_root
 
 
 def sysctl(key, value, persist=True):
@@ -32,7 +33,7 @@ def sysctl(key, value, persist=True):
                 contents='%(key)s = %(value)s\n' % locals(),
                 use_sudo=True)
         if config.changed:
-            sudo('service procps start')
+            run_as_root('service procps start')
 
 
 def hostname(name):
@@ -68,7 +69,7 @@ def locales(names):
                 warn('Unsupported locale name "%s"' % name)
 
     if config.changed:
-        sudo('dpkg-reconfigure --frontend=noninteractive locales')
+        run_as_root('dpkg-reconfigure --frontend=noninteractive locales')
 
 
 def locale(name):

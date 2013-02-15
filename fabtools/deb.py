@@ -10,6 +10,8 @@ from __future__ import with_statement
 
 from fabric.api import *
 
+from fabtools.utils import run_as_root
+
 
 MANAGER = 'apt-get'
 
@@ -19,7 +21,7 @@ def update_index(quiet=True):
     Update APT package definitions.
     """
     options = "-q -q" if quiet else ""
-    sudo("%s %s update" % (MANAGER, options))
+    run_as_root("%s %s update" % (MANAGER, options))
 
 
 def upgrade(safe=True):
@@ -30,7 +32,7 @@ def upgrade(safe=True):
     cmds = {'apt-get': {False: 'dist-upgrade', True: 'upgrade'},
             'aptitude': {False: 'full-upgrade', True: 'safe-upgrade'}}
     cmd = cmds[manager][safe]
-    sudo("%(manager)s --assume-yes %(cmd)s" % locals())
+    run_as_root("%(manager)s --assume-yes %(cmd)s" % locals())
 
 
 def is_installed(pkg_name):
@@ -80,7 +82,7 @@ def install(packages, update=False, options=None):
     options.append("--quiet")
     options.append("--assume-yes")
     options = " ".join(options)
-    sudo('%(manager)s install %(options)s %(packages)s' % locals())
+    run_as_root('%(manager)s install %(options)s %(packages)s' % locals())
 
 
 def uninstall(packages, purge=False, options=None):
@@ -100,7 +102,7 @@ def uninstall(packages, purge=False, options=None):
         packages = " ".join(packages)
     options.append("--assume-yes")
     options = " ".join(options)
-    sudo('%(manager)s %(command)s %(options)s %(packages)s' % locals())
+    run_as_root('%(manager)s %(command)s %(options)s %(packages)s' % locals())
 
 
 def preseed_package(pkg_name, preseed):
@@ -123,7 +125,7 @@ def preseed_package(pkg_name, preseed):
     """
     for q_name, _ in preseed.items():
         q_type, q_answer = _
-        sudo('echo "%(pkg_name)s %(q_name)s %(q_type)s %(q_answer)s" | debconf-set-selections' % locals())
+        run_as_root('echo "%(pkg_name)s %(q_name)s %(q_type)s %(q_answer)s" | debconf-set-selections' % locals())
 
 
 def get_selections():
@@ -133,7 +135,7 @@ def get_selections():
     Returns a dict with state => [packages].
     """
     with settings(hide('stdout')):
-        res = sudo('dpkg --get-selections')
+        res = run_as_root('dpkg --get-selections')
     selections = dict()
     for line in res.splitlines():
         package, status = line.split()
@@ -173,6 +175,6 @@ def add_apt_key(filename, update=True):
         fabtools.deb.add_apt_key('rabbitmq-signing-key-public.asc')
 
     """
-    sudo('apt-key add %(filename)s' % locals())
+    run_as_root('apt-key add %(filename)s' % locals())
     if update:
         update_index()

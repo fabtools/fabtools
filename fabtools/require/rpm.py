@@ -10,6 +10,7 @@ from __future__ import with_statement
 
 from fabtools.system import get_arch
 from fabtools.rpm import *
+from fabtools.utils import run_as_root
 
 
 def package(pkg_name, repos=None, yes=None, options=None):
@@ -123,5 +124,5 @@ def repository(name):
     repo = supported[name][str(arch)][str(release)]
     key = keys[name]
     with settings(hide('warnings'), warn_only=True):
-        sudo('rpm --import %(key)s' % locals())
-        sudo('rpm -Uh %(repo)s' % locals())
+        run_as_root('rpm --import %(key)s' % locals())
+        run_as_root('rpm -Uh %(repo)s' % locals())

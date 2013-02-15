@@ -11,6 +11,7 @@ from __future__ import with_statement
 
 from fabtools.files import is_file, watch
 from fabtools.deb import *
+from fabtools.utils import run_as_root
 import fabtools.supervisor
 
 
@@ -54,8 +55,8 @@ def installed_from_source(version=VERSION):
                 run('make')
 
                 for filename in BINARIES:
-                    sudo('cp -pf src/%(filename)s %(dest_dir)s/' % locals())
-                    sudo('chown redis: %(dest_dir)s/%(filename)s' % locals())
+                    run_as_root('cp -pf src/%(filename)s %(dest_dir)s/' % locals())
+                    run_as_root('chown redis: %(dest_dir)s/%(filename)s' % locals())
 
 
 def instance(name, version=VERSION, **kwargs):

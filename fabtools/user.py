@@ -14,6 +14,7 @@ from fabtools.group import (
     exists as _group_exists,
     create as _group_create,
 )
+from fabtools.utils import run_as_root
 
 
 def exists(name):
@@ -87,7 +88,7 @@ def create(name, comment=None, home=None, create_home=True, skeleton_dir=None,
         args.append('-u %s' % quote(uid))
     args.append(name)
     args = ' '.join(args)
-    sudo('useradd %s' % args)
+    run_as_root('useradd %s' % args)
 
 
 def modify(name, comment=None, home=None, move_current_home=False, group=None,
@@ -129,4 +130,4 @@ def modify(name, comment=None, home=None, move_current_home=False, group=None,
     if args:
         args.append(name)
         args = ' '.join(args)
-        sudo('usermod %s' % args)
+        run_as_root('usermod %s' % args)

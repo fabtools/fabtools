@@ -8,7 +8,9 @@ This module provides tools for managing Nginx config files.
 from pipes import quote
 
 from fabric.api import *
+
 from fabtools.files import is_link
+from fabtools.utils import run_as_root
 
 
 def enable(config):
@@ -28,7 +30,7 @@ def enable(config):
     link_filename = '/etc/nginx/sites-enabled/%s' % config
 
     if not is_link(link_filename):
-        sudo("ln -s %(config_filename)s %(link_filename)s" % {
+        run_as_root("ln -s %(config_filename)s %(link_filename)s" % {
                 'config_filename': quote(config_filename),
                 'link_filename': quote(link_filename),
         })
@@ -50,4 +52,4 @@ def disable(config):
     link_filename = '/etc/nginx/sites-enabled/%s' % config
 
     if is_link(link_filename):
-        sudo("rm %(link_filename)s" % locals())
+        run_as_root("rm %(link_filename)s" % locals())

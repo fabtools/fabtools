@@ -6,6 +6,8 @@ from __future__ import with_statement
 
 from fabric.api import *
 
+from fabtools.utils import run_as_root
+
 
 def create(ctid, ostemplate=None, config=None, private=None,
            root=None, ipadd=None, hostname=None, **kwargs):
@@ -92,12 +94,12 @@ def exec2(ctid_or_name, command):
     .. warning:: the command will be run as **root**.
 
     """
-    return sudo("vzctl exec2 %s '%s'" % (ctid_or_name, command))
+    return run_as_root("vzctl exec2 %s '%s'" % (ctid_or_name, command))
 
 
 def _vzctl(command, ctid_or_name, **kwargs):
     args = _expand_args(**kwargs)
-    return sudo('vzctl %s %s %s' % (command, ctid_or_name, args))
+    return run_as_root('vzctl %s %s %s' % (command, ctid_or_name, args))
 
 
 def _expand_args(**kwargs):
@@ -139,7 +141,7 @@ def download_template(name=None, url=None):
         url = 'http://download.openvz.org/template/precreated/%s.tar.gz' % name
 
     with cd('/var/lib/vz/template/cache'):
-        sudo('wget --progress=dot:mega "%s"' % url)
+        run_as_root('wget --progress=dot:mega "%s"' % url)
 
 
 def list_ctids():
@@ -147,7 +149,7 @@ def list_ctids():
     Get the list of currently used CTIDs.
     """
     with settings(hide('running', 'stdout')):
-        res = sudo('vzlist -a -1')
+        res = run_as_root('vzlist -a -1')
     return map(int, res.splitlines())
 
 

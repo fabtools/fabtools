@@ -4,10 +4,12 @@ Shorewall firewall
 """
 from __future__ import with_statement
 
-from fabric.api import *
-
 from socket import gethostbyname
 import re
+
+from fabric.api import *
+
+from fabtools.utils import run_as_root
 
 
 def status():
@@ -15,7 +17,7 @@ def status():
     Get the firewall status.
     """
     with settings(hide('running', 'stdout', 'warnings'), warn_only=True):
-        res = sudo('shorewall status')
+        res = run_as_root('shorewall status')
     return re.search(r'\nShorewall is (\w+)', res).group(1)
 
 

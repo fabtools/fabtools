@@ -9,7 +9,9 @@ and repositories.
 from __future__ import with_statement
 
 from fabric.api import *
+
 from fabtools.files import is_file
+from fabtools.utils import run_as_root
 
 
 MANAGER = 'yum -y --color=never'
@@ -25,7 +27,7 @@ def update(kernel=False):
     manager = MANAGER
     cmds = {'yum -y --color=never': {False: '--exclude=kernel* update', True: 'update'}}
     cmd = cmds[manager][kernel]
-    sudo("%(manager)s %(cmd)s" % locals())
+    run_as_root("%(manager)s %(cmd)s" % locals())
 
 
 def upgrade(kernel=False):
@@ -38,7 +40,7 @@ def upgrade(kernel=False):
     manager = MANAGER
     cmds = {'yum -y --color=never': {False: '--exclude=kernel* upgrade', True: 'upgrade'}}
     cmd = cmds[manager][kernel]
-    sudo("%(manager)s %(cmd)s" % locals())
+    run_as_root("%(manager)s %(cmd)s" % locals())
 
 
 def groupupdate(group, options=None):
@@ -54,7 +56,7 @@ def groupupdate(group, options=None):
     elif isinstance(options, str):
         options = [options]
     options = " ".join(options)
-    sudo('%(manager)s %(options)s groupupdate "%(group)s"' % locals())
+    run_as_root('%(manager)s %(options)s groupupdate "%(group)s"' % locals())
 
 
 def is_installed(pkg_name):
@@ -107,9 +109,9 @@ def install(packages, repos=None, yes=None, options=None):
             options.append('--enablerepo=%(repo)s' % locals())
     options = " ".join(options)
     if isinstance(yes, str):
-        sudo('yes %(yes)s | %(manager)s %(options)s install %(packages)s' % locals())
+        run_as_root('yes %(yes)s | %(manager)s %(options)s install %(packages)s' % locals())
     else:
-        sudo('%(manager)s %(options)s install %(packages)s' % locals())
+        run_as_root('%(manager)s %(options)s install %(packages)s' % locals())
 
 
 def groupinstall(group, options=None):
@@ -133,7 +135,7 @@ def groupinstall(group, options=None):
     elif isinstance(options, str):
         options = [options]
     options = " ".join(options)
-    sudo('%(manager)s %(options)s groupinstall "%(group)s"' % locals())
+    run_as_root('%(manager)s %(options)s groupinstall "%(group)s"' % locals())
 
 
 def uninstall(packages, options=None):
@@ -151,7 +153,7 @@ def uninstall(packages, options=None):
     if not isinstance(packages, basestring):
         packages = " ".join(packages)
     options = " ".join(options)
-    sudo('%(manager)s %(options)s remove %(packages)s' % locals())
+    run_as_root('%(manager)s %(options)s remove %(packages)s' % locals())
 
 
 def groupuninstall(group, options=None):
@@ -167,7 +169,7 @@ def groupuninstall(group, options=None):
     elif isinstance(options, str):
         options = [options]
     options = " ".join(options)
-    sudo('%(manager)s %(options)s groupremove "%(group)s"' % locals())
+    run_as_root('%(manager)s %(options)s groupremove "%(group)s"' % locals())
 
 
 def distrib_id():
@@ -249,7 +251,7 @@ def repolist(status='', media=None):
     manager = MANAGER
     with settings(hide('running', 'stdout')):
         if media:
-            repos = sudo("%(manager)s repolist %(status)s | sed '$d' | sed -n '/repo id/,$p'" % locals())
+            repos = run_as_root("%(manager)s repolist %(status)s | sed '$d' | sed -n '/repo id/,$p'" % locals())
         else:
-            repos = sudo("%(manager)s repolist %(status)s | sed '/Media\|Debug/d' | sed '$d' | sed -n '/repo id/,$p'" % locals())
+            repos = run_as_root("%(manager)s repolist %(status)s | sed '/Media\|Debug/d' | sed '$d' | sed -n '/repo id/,$p'" % locals())
         return map(lambda line: line.split(' ')[0], repos.splitlines()[1:])
