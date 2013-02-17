@@ -54,6 +54,16 @@ def install_from_oracle_site(version=DEFAULT_VERSION):
         run('tar -xzvf /tmp/%s' % jdk_filename)
         run('ln -s %s jdk' % jdk_dir)
 
+    create_profile_d_file()
+
+def create_profile_d_file():
+    """
+    Create profile.d file with Java environment variables set.
+    """
+    run_as_root('echo "export JAVA_HOME=/opt/jdk" > /etc/profile.d/java.sh')
+    run_as_root('echo "export PATH=$JAVA_HOME/bin:$PATH" >> /etc/profile.d/java.sh')
+    run_as_root('chmod +x /etc/profile.d/java.sh')
+
 def version():
     """
     Get the version of JDK currently installed.
@@ -61,7 +71,7 @@ def version():
     Returns ``None`` if it is not installed.
     """
     with settings(hide('running', 'stdout'), warn_only=True):
-        res = run('/opt/jdk/bin/java -version')
+        res = run('java -version')
     if res.failed:
         return None
     else:
