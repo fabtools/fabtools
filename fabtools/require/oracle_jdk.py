@@ -12,13 +12,13 @@ from fabtools import oracle_jdk
 
 def installed(version=oracle_jdk.DEFAULT_VERSION):
     """
-    Require Oracle JDK to be installed from binary.
+    Require Oracle JDK to be installed.
 
     ::
 
         from fabtools import require
 
-        require.oracle_jdk.installed_from_binary()
+        require.oracle_jdk.installed()
 
     """
     if oracle_jdk.version() != version:

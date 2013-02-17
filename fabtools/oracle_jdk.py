@@ -1,6 +1,6 @@
 """
 Oracle JDK
-=======
+===========
 
 This module provides tools for installing `Oracle JDK`_
 
@@ -54,9 +54,9 @@ def install_from_oracle_site(version=DEFAULT_VERSION):
         run('tar -xzvf /tmp/%s' % jdk_filename)
         run('ln -s %s jdk' % jdk_dir)
 
-    create_profile_d_file()
+    _create_profile_d_file()
 
-def create_profile_d_file():
+def _create_profile_d_file():
     """
     Create profile.d file with Java environment variables set.
     """
@@ -66,7 +66,7 @@ def create_profile_d_file():
 
 def version():
     """
-    Get the version of JDK currently installed.
+    Get the version of currently installed JDK.
 
     Returns ``None`` if it is not installed.
     """
