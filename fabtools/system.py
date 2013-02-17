@@ -73,5 +73,5 @@ def get_arch():
 
     """
     with settings(hide('running', 'stdout')):
-        arch = run('uname -p')
+        arch = run('uname -m')
         return arch
