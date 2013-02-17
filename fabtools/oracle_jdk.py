@@ -29,7 +29,7 @@ def install_from_oracle_site(version=DEFAULT_VERSION):
         import fabtools
 
         # Install Oracle JDK
-        fabtools.oralce_jdk.install()
+        fabtools.oralce_jdk.install_from_oracle_site()
 
     """
 
