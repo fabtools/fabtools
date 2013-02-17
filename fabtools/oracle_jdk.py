@@ -13,15 +13,16 @@ from fabric.api import run, cd, settings, hide
 
 from fabtools.utils import run_as_root
 
-from fabtools import system, require
+from fabtools import system
+from fabtools.require.files import directory as require_directory
 
 import re
 
 DEFAULT_VERSION = '7u13-b20'
 
-def install_from_binary(version=DEFAULT_VERSION):
+def install_from_oracle_site(version=DEFAULT_VERSION):
     """
-    Install Oracle JDK from binary.
+    Download tarball from Oracle site and install JDK.
 
     ::
 
@@ -47,7 +48,7 @@ def install_from_binary(version=DEFAULT_VERSION):
         run('rm -rf %s' % jdk_filename)
         run('wget %(jdk_url)s --no-cookies --header="Cookie: gpw_e24=a" --progress=dot:mega' % locals())
 
-    require.directory('/opt', mode='777',use_sudo=True)
+    require_directory('/opt', mode='777',use_sudo=True)
     with cd('/opt'):
         run('tar -xzvf /tmp/%s' % jdk_filename)
         run('ln -s %s jdk' % jdk_dir)
