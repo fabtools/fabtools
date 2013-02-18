@@ -14,6 +14,7 @@ from fabric.api import run, cd, settings, hide
 
 from fabtools import system
 from fabtools.require.files import directory as require_directory
+from fabtools.require.files import file as require_file
 from fabtools.utils import run_as_root
 
 DEFAULT_VERSION = '7u13-b20'
@@ -63,11 +64,10 @@ def _create_profile_d_file():
     """
     Create profile.d file with Java environment variables set.
     """
-    run_as_root('echo "export JAVA_HOME=/opt/jdk" > ' +
-                '/etc/profile.d/java.sh')
-    run_as_root('echo "export PATH=$JAVA_HOME/bin:$PATH" >> ' +
-                '/etc/profile.d/java.sh')
-    run_as_root('chmod +x /etc/profile.d/java.sh')
+    require_file('/etc/profile.d/java.sh', contents=
+                'export JAVA_HOME="/opt/jdk"\n' +
+                'export PATH="$JAVA_HOME/bin:$PATH"\n',
+                 mode='0755', use_sudo=True)
 
 
 def version():
