@@ -8,15 +8,13 @@ This module provides tools for installing `Oracle JDK`_
 
 """
 from __future__ import with_statement
+import re
 
 from fabric.api import run, cd, settings, hide
 
-from fabtools.utils import run_as_root
-
 from fabtools import system
 from fabtools.require.files import directory as require_directory
-
-import re
+from fabtools.utils import run_as_root
 
 DEFAULT_VERSION = '7u13-b20'
 
