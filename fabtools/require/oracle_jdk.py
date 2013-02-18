@@ -23,5 +23,3 @@ def installed(version=oracle_jdk.DEFAULT_VERSION):
     """
     if oracle_jdk.version() != version:
         oracle_jdk.install_from_oracle_site(version)
-
-

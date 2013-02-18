@@ -4,6 +4,7 @@ import unittest
 
 from fabtools.oracle_jdk import _required_jdk_arch, _extract_jdk_version
 
+
 class OracleJdkTestCase(unittest.TestCase):
 
     @mock.patch('fabtools.system.get_arch')

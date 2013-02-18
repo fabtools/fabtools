@@ -7,6 +7,7 @@ from fabric.api import *
 
 from fabtools.vagrant import vagrant
 
+
 @task
 def require_oracle_jdk():
     """
