@@ -4,17 +4,20 @@ from fabric.api import task
 
 import fabtools
 
+
 @task
 def should_create_user_without_home_directory():
     fabtools.user.create('user1', create_home=False)
     assert fabtools.user.exists('user1')
     assert not fabtools.files.is_dir('/home/user1')
 
+
 @task
 def should_create_user_with_default_home_directory():
     fabtools.user.create('user2')
     assert fabtools.user.exists('user2')
     assert fabtools.files.is_dir('/home/user2')
+
 
 @task
 def should_create_user_without_home_directory():
@@ -23,10 +26,12 @@ def should_create_user_without_home_directory():
     assert not fabtools.files.is_dir('/home/user3')
     assert fabtools.files.is_dir('/tmp/user3')
 
+
 @task
 def should_create_system_user_without_home_directory():
     fabtools.user.create('user4', system=True)
     assert not fabtools.files.is_dir('/home/user4')
+
 
 @task
 def should_create_system_user_with_home_directory():
