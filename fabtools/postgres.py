@@ -84,3 +84,13 @@ def create_database(name, owner, template='template0', encoding='UTF8', locale='
     """
     _run_as_pg('''createdb --owner %(owner)s --template %(template)s --encoding=%(encoding)s\
  --lc-ctype=%(locale)s --lc-collate=%(locale)s %(name)s''' % locals())
+
+def create_schema(name, database, owner=None):
+    '''
+    Create a schema within a database.
+    '''
+    
+    if owner:
+        _run_as_pg('''psql %(database)s -c "CREATE SCHEMA %(name)s AUTHORIZATION %(owner)s"''' % locals())
+    else:
+        _run_as_pg('''psql %(database)s -c "CREATE SCHEMA %(name)s"''' % locals())
