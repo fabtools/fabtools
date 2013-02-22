@@ -37,15 +37,20 @@ def _query(query, use_sudo=True, **kwargs):
     })
 
 
-def user_exists(name, **kwargs):
+def user_exists(name, host='localhost', **kwargs):
     """
     Check if a MySQL user exists.
     """
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        res = _query("use mysql; SELECT User FROM user WHERE User = '%(name)s';" % {
-            'name': name
-        }, **kwargs)
-    return res.succeeded and (res == name)
+        res = _query("""
+            use mysql;
+            SELECT COUNT(*) FROM user
+                WHERE User = '%(name)s' AND Host = '%(host)s';
+            """ % {
+                'name': name,
+                'host': host,
+            }, **kwargs)
+    return res.succeeded and (int(res) == 1)
 
 
 def create_user(name, password, host='localhost', **kwargs):

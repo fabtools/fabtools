@@ -16,6 +16,12 @@ def mysql():
 
     with settings(mysql_user='root', mysql_password='s3cr3t'):
 
+        fabtools.mysql.create_user('bob', 'password', host='host1')
+        fabtools.mysql.create_user('bob', 'password', host='host2')
+        assert fabtools.mysql.user_exists('bob', host='host1')
+        assert fabtools.mysql.user_exists('bob', host='host2')
+        assert not fabtools.mysql.user_exists('bob', host='localhost')
+
         require.mysql.user('myuser', 'foo')
         assert fabtools.mysql.user_exists('myuser')
 
