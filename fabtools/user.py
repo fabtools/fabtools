@@ -40,7 +40,7 @@ def _crypt_password(password):
 
 def create(name, comment=None, home=None, create_home=None, skeleton_dir=None,
     group=None, create_group=True, extra_groups=None, password=None,
-    system=False, shell=None, uid=None):
+    system=False, shell=None, uid=None, non_unique=None):
     """
     Create a new user and its home directory.
 
@@ -104,13 +104,16 @@ def create(name, comment=None, home=None, create_home=None, skeleton_dir=None,
         args.append('-s %s' % quote(shell))
     if uid:
         args.append('-u %s' % quote(uid))
+        if non_unique:
+            args.append('-o')
     args.append(name)
     args = ' '.join(args)
     run_as_root('useradd %s' % args)
 
 
 def modify(name, comment=None, home=None, move_current_home=False, group=None,
-    extra_groups=None, login_name=None, password=None, shell=None, uid=None):
+    extra_groups=None, login_name=None, password=None, shell=None, uid=None,
+    non_unique=None):
     """
     Modify an existing user.
 
@@ -144,6 +147,8 @@ def modify(name, comment=None, home=None, move_current_home=False, group=None,
         args.append('-s %s' % quote(shell))
     if uid:
         args.append('-u %s' % quote(uid))
+        if non_unique:
+            args.append('-o')        
 
     if args:
         args.append(name)
