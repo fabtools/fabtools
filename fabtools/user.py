@@ -170,7 +170,6 @@ def authorize_key(name, key):
             fabtools.user.authorize_key('alice','ssh-rsa AAAAB3NzaC1y')
     """
 
-
     user_home = _get_user_home(name)
     _require_directory(user_home + '/.ssh',
                        mode='700', owner=name, use_sudo=True)

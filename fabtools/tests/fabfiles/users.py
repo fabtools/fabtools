@@ -45,7 +45,8 @@ def should_create_system_user_with_home_directory():
 def should_add_authorized_key_only_once():
     fabtools.user.create('user6', home='/tmp/user6')
 
-    test_user_keys = re.split(r'(\r|\n|\r\n)', run('cat ~/.ssh/authorized_keys'),
+    test_user_keys = re.split(r'(\r|\n|\r\n)',
+                              run('cat ~/.ssh/authorized_keys'),
                               re.MULTILINE | re.DOTALL)
 
     test_user_keys = [key for key in test_user_keys if key.strip()]
@@ -57,7 +58,7 @@ def should_add_authorized_key_only_once():
 
     keys_size = 0
 
-    with settings(host_string = 'user6@' + host, abort_on_prompts = True):
+    with settings(host_string='user6@' + host, abort_on_prompts=True):
         keys_size = int(run('cat ~/.ssh/authorized_keys | wc -c'))
         assert keys_size > 0
 
@@ -65,7 +66,7 @@ def should_add_authorized_key_only_once():
     for key in test_user_keys:
         fabtools.user.authorize_key('user6', key)
 
-    with settings(host_string = 'user6@' + host, abort_on_prompts = True):
+    with settings(host_string='user6@' + host, abort_on_prompts=True):
         assert keys_size == int(run('cat ~/.ssh/authorized_keys | wc -c'))
 
 
