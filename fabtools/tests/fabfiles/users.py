@@ -70,7 +70,7 @@ def require_users():
 
 
 @task
-def should_add_authorized_keys_for_rquired_user():
+def should_add_authorized_keys_for_required_user():
     from fabtools import require
 
     get('~/.ssh/authorized_keys', 'keys.tmp')
