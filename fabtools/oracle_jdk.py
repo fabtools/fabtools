@@ -65,8 +65,8 @@ def _create_profile_d_file():
     Create profile.d file with Java environment variables set.
     """
     require_file('/etc/profile.d/java.sh', contents=
-                'export JAVA_HOME="/opt/jdk"\n' +
-                'export PATH="$JAVA_HOME/bin:$PATH"\n',
+                 'export JAVA_HOME="/opt/jdk"\n' +
+                 'export PATH="$JAVA_HOME/bin:$PATH"\n',
                  mode='0755', use_sudo=True)
 
 
