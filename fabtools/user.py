@@ -168,12 +168,13 @@ def authorize_keys(name, keys_file):
     """
     Add  public keys from specified file to user authorized keys.
 
-    Example:
+    Example::
 
         import fabtools
 
         if fabtools.user.exists('alice'):
-            fabtools.user.authorize_keys('alice','~/.ssh/id_rsa.pub')
+            fabtools.user.authorize_keys('alice', '~/.ssh/id_rsa.pub')
+
     """
 
     user_home = _get_user_home(name)
