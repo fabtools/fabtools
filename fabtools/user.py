@@ -150,3 +150,33 @@ def modify(name, comment=None, home=None, move_current_home=False, group=None,
         args.append(name)
         args = ' '.join(args)
         run_as_root('usermod %s' % args)
+
+
+from fabtools.require.files import (
+    directory as _require_directory,
+    file as _require_file,
+)
+
+
+def authorize_key(name, key):
+    """
+    Add specified public key to user authorized keys.
+
+    Example:
+
+        import fabtools
+
+        if fabtools.user.exists('alice'):
+            fabtools.user.authorize_key('alice','ssh-rsa AAAAB3NzaC1y')
+    """
+
+
+    user_home = _get_user_home(name)
+    _require_directory(user_home + '/.ssh',
+                       mode='700', owner=name, use_sudo=True)
+    _require_file(user_home + '/.ssh/authorized_keys', mode=600, owner=name,
+                  contents=key, use_sudo=True)
+
+
+def _get_user_home(name):
+    return run('echo ~' + name)

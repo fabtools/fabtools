@@ -1,6 +1,7 @@
 from __future__ import with_statement
+import re
 
-from fabric.api import task
+from fabric.api import task, run, env, settings
 
 import fabtools
 
@@ -38,6 +39,34 @@ def should_create_system_user_with_home_directory():
     fabtools.user.create('user5', system=True,
                          create_home=True, home='/var/lib/foo')
     assert fabtools.files.is_dir('/var/lib/foo')
+
+
+@task
+def should_add_authorized_key_only_once():
+    fabtools.user.create('user6', home='/tmp/user6')
+
+    test_user_keys = re.split(r'(\r|\n|\r\n)', run('cat ~/.ssh/authorized_keys'),
+                              re.MULTILINE | re.DOTALL)
+
+    test_user_keys = [key for key in test_user_keys if key.strip()]
+
+    for key in test_user_keys:
+        fabtools.user.authorize_key('user6', key)
+
+    host = env.host_string.split('@')[1]
+
+    keys_size = 0
+
+    with settings(host_string = 'user6@' + host, abort_on_prompts = True):
+        keys_size = int(run('cat ~/.ssh/authorized_keys | wc -c'))
+        assert keys_size > 0
+
+    # let's try add same keys second time
+    for key in test_user_keys:
+        fabtools.user.authorize_key('user6', key)
+
+    with settings(host_string = 'user6@' + host, abort_on_prompts = True):
+        assert keys_size == int(run('cat ~/.ssh/authorized_keys | wc -c'))
 
 
 @task
