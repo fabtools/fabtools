@@ -11,7 +11,7 @@ import fabtools.require
 
 def user(name, comment=None, home=None, create_home=True, skeleton_dir=None,
     group=None, create_group=True, extra_groups=None, password=None,
-    system=False, shell=None, uid=None, non_unique=None):
+    system=False, shell=None, uid=None, non_unique=False):
     """
     Require a user and its home directory.
 
