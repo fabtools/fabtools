@@ -40,7 +40,7 @@ def _crypt_password(password):
 
 def create(name, comment=None, home=None, create_home=None, skeleton_dir=None,
            group=None, create_group=True, extra_groups=None, password=None,
-           system=False, shell=None, uid=None):
+           system=False, shell=None, uid=None, keys_file=None):
     """
     Create a new user and its home directory.
 
@@ -108,10 +108,13 @@ def create(name, comment=None, home=None, create_home=None, skeleton_dir=None,
     args = ' '.join(args)
     run_as_root('useradd %s' % args)
 
+    if keys_file:
+        authorize_keys(name, keys_file)
+
 
 def modify(name, comment=None, home=None, move_current_home=False, group=None,
            extra_groups=None, login_name=None, password=None, shell=None,
-           uid=None):
+           uid=None, keys_file=None):
     """
     Modify an existing user.
 
@@ -150,6 +153,9 @@ def modify(name, comment=None, home=None, move_current_home=False, group=None,
         args.append(name)
         args = ' '.join(args)
         run_as_root('usermod %s' % args)
+
+    if keys_file:
+        authorize_keys(name, keys_file)
 
 
 from fabtools.require.files import (

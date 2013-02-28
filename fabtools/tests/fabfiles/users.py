@@ -42,31 +42,6 @@ def should_create_system_user_with_home_directory():
 
 
 @task
-def should_add_authorized_key_only_once():
-    fabtools.user.create('user6', home='/tmp/user6')
-
-    get('~/.ssh/authorized_keys', 'keys.tmp')
-
-    fabtools.user.authorize_keys('user6', 'keys.tmp')
-
-    host = env.host_string.split('@')[1]
-
-    keys_size = 0
-
-    with settings(host_string='user6@' + host, abort_on_prompts=True):
-        keys_size = int(run('cat ~/.ssh/authorized_keys | wc -c'))
-        assert keys_size > 0
-
-    # let's try add same keys second time
-    fabtools.user.authorize_keys('user6', 'keys.tmp')
-
-    with settings(host_string='user6@' + host, abort_on_prompts=True):
-        assert keys_size == int(run('cat ~/.ssh/authorized_keys | wc -c'))
-
-    local('rm -f keys.tmp')
-
-
-@task
 def require_users():
     """
     Check user creation and modification using fabtools.require
@@ -93,3 +68,29 @@ def require_users():
     assert fabtools.user.exists('req3')
     assert not fabtools.files.is_dir('/home/req3')
     assert fabtools.files.is_dir('/home/other')
+
+
+@task
+def should_add_authorized_keys_for_rquired_user():
+    from fabtools import require
+    import fabtools
+
+    get('~/.ssh/authorized_keys', 'keys.tmp')
+
+    require.user('req4', home='/tmp/req4', keys_file='keys.tmp')
+
+    host = env.host_string.split('@')[1]
+
+    keys_size = 0
+
+    with settings(host_string='req4@' + host, abort_on_prompts=True):
+        keys_size = int(run('cat ~/.ssh/authorized_keys | wc -c'))
+        assert keys_size > 0
+
+    # let's try add same keys second time
+    require.user('req4', home='/tmp/req4', keys_file='keys.tmp')
+
+    with settings(host_string='req4@' + host, abort_on_prompts=True):
+        assert keys_size == int(run('cat ~/.ssh/authorized_keys | wc -c'))
+
+    local('rm -f keys.tmp')
