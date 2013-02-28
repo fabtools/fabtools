@@ -17,7 +17,7 @@ from fabtools.require.files import directory as require_directory
 from fabtools.require.files import file as require_file
 from fabtools.utils import run_as_root
 
-DEFAULT_VERSION = '7u13-b20'
+DEFAULT_VERSION = '7u15-b03'
 
 
 def install_from_oracle_site(version=DEFAULT_VERSION):
