@@ -1,5 +1,4 @@
 from __future__ import with_statement
-import re
 
 from fabric.api import task, run, env, settings, get, local
 
@@ -73,7 +72,6 @@ def require_users():
 @task
 def should_add_authorized_keys_for_rquired_user():
     from fabtools import require
-    import fabtools
 
     get('~/.ssh/authorized_keys', 'keys.tmp')
 
