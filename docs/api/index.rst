@@ -7,6 +7,7 @@ fabtools
    cron
    deb
    files
+   git
    group
    mysql
    network

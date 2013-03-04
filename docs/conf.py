@@ -28,10 +28,11 @@ import sys, os, re
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
+    'sphinx.ext.intersphinx',
 ]
 
 # Preserve source order in API documentation
-autodoc_member_order = 'bysource' 
+autodoc_member_order = 'bysource'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -250,3 +251,7 @@ texinfo_documents = [
 
 # How to display URL addresses: 'footnote', 'no', or 'inline'.
 #texinfo_show_urls = 'footnote'
+
+intersphinx_mapping = {
+    'fabric': ('http://fabric.readthedocs.org/en/latest/', None),
+}
