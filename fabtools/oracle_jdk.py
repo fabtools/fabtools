@@ -17,7 +17,7 @@ from fabtools.require.files import directory as require_directory
 from fabtools.require.files import file as require_file
 from fabtools.utils import run_as_root
 
-DEFAULT_VERSION = '7u13-b20'
+DEFAULT_VERSION = '7u15-b03'
 
 
 def install_from_oracle_site(version=DEFAULT_VERSION):
@@ -65,8 +65,8 @@ def _create_profile_d_file():
     Create profile.d file with Java environment variables set.
     """
     require_file('/etc/profile.d/java.sh', contents=
-                'export JAVA_HOME="/opt/jdk"\n' +
-                'export PATH="$JAVA_HOME/bin:$PATH"\n',
+                 'export JAVA_HOME="/opt/jdk"\n' +
+                 'export PATH="$JAVA_HOME/bin:$PATH"\n',
                  mode='0755', use_sudo=True)
 
 

@@ -1,10 +1,20 @@
 Changelog
 =========
 
+Version 0.12.0 (2013-03-04)
+---------------------------
+
+* Do not create home directory for system users
+* Fix ``pkg.is_installed`` on SmartOS (thanks to Anthony Scalisi)
+* Fix ``system.get_arch`` (thanks to Kamil Chmielewski)
+* Add support for installing Oracle JDK (thanks to Kamil Chmielewski)
+* Add support for creating Postgres schemas (thanks to Michael Bommarito)
+* Fix ``mysql.user_exists`` (thanks to Serge Travin)
+
 Version 0.11.0 (2013-02-15)
 ---------------------------
 
-* Fix requiring an existing user (thanks to JonPeel)
+* Fix requiring an existing user (thanks to Jonathan Peel)
 * Upgrade default Redis version to 2.6.10
 * Upgrade default Node.js version to 0.8.19
 * Better support for remote hosts where sudo is not installed

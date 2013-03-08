@@ -5,8 +5,6 @@ from __future__ import with_statement
 
 from fabric.api import *
 
-from fabtools.vagrant import vagrant
-
 
 @task
 def require_oracle_jdk():
