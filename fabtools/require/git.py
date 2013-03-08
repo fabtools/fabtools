@@ -16,8 +16,11 @@ from fabtools.files import is_dir
 
 def working_copy(remote_url, path=None, branch="master", update=True,
                  use_sudo=False, user=None):
-    """ Require a working copy of the repository from the ``remote_url``.
-        Clones or pulls from the repository under ``remote_url`` and checks out ``branch``.
+    """
+    Require a working copy of the repository from the ``remote_url``.
+
+    Clones or pulls from the repository under ``remote_url`` and checks out
+    ``branch``.
 
     :param remote_url: URL of the remote repository (e.g.
                        https://github.com/ronnix/fabtools.git).  The given URL
@@ -53,7 +56,7 @@ def working_copy(remote_url, path=None, branch="master", update=True,
 
     if is_dir(path, use_sudo=use_sudo) and update:
         # git pull
-        git.pull(path=None, use_sudo=False, user=None)
+        git.pull(path=path, use_sudo=use_sudo, user=user)
 
     elif is_dir(path, use_sudo=use_sudo) and not update:
         # do nothing
@@ -61,9 +64,11 @@ def working_copy(remote_url, path=None, branch="master", update=True,
 
     elif not is_dir(path, use_sudo=use_sudo):
         # git clone
-        git.clone(remote_url, path=None, use_sudo=False, user=None)
+        git.clone(remote_url, path=path, use_sudo=use_sudo, user=user)
+        if path is None:
+            path = remote_url.split('/')[-1].replace('.git', '')
 
     else:
         raise ValueError("Invalid combination of parameters.")
 
-    git.checkout(path=None, branch="master", use_sudo=False, user=None)
+    git.checkout(path=path, branch=branch, use_sudo=use_sudo, user=user)

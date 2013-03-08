@@ -43,13 +43,12 @@ def clone(remote_url, path=None, use_sudo=False, user=None):
     if path is not None:
         cmd = cmd + ' %s' % path
 
-    with cd(path):
-        if use_sudo and user is None:
-            run_as_root(cmd)
-        elif use_sudo:
-            sudo(cmd, user=user)
-        else:
-            run(cmd)
+    if use_sudo and user is None:
+        run_as_root(cmd)
+    elif use_sudo:
+        sudo(cmd, user=user)
+    else:
+        run(cmd)
 
 
 def pull(path, use_sudo=False, user=None):
