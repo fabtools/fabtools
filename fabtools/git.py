@@ -3,7 +3,7 @@ Git
 ===
 
 This module provides low-level tools for managing `Git`_ repositories.  You
-should normally not use these directly but rather use the high-level wrapper
+should normally not use them directly but rather use the high-level wrapper
 :func:`fabtools.require.git.working_copy` instead.
 
 .. _Git: http://git-scm.com/

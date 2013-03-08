@@ -17,32 +17,13 @@ from fabtools.files import is_dir
 from fabtools.files import owner
 
 
-
 remote_url = "https://github.com/disko/fabtools.git"
 
 
 @task
-def git():
-    """ Test low level git tools. """
-
-    require.deb.package('git')
-
-    from fabtools.git import clone
-    from fabtools.git import checkout
-    from fabtools.git import pull
-
-    with cd('/tmp'):
-        # clean up...
-        sudo('rm -rf *')
-
-        # clone(remote_url, path=None, use_sudo=False, user=None)
-        # pull(path, use_sudo=False, user=None)
-        # checkout(path, branch="master", use_sudo=False, user=None)
-
-
-@task
 def git_require():
-    """ Test high level git tools. """
+    """ Test high level git tools.  These tests should also cover the low level
+        tools as all of them are called indirectly. """
 
     require.deb.package('git')
 
