@@ -3,10 +3,8 @@ System users
 ============
 """
 from fabtools.files import is_file
-from fabtools.user import *
+from fabtools.user import create, exists, modify
 from fabtools.utils import run_as_root
-
-import fabtools.require
 
 
 def user(name, comment=None, home=None, create_home=True, skeleton_dir=None,
@@ -36,6 +34,8 @@ def user(name, comment=None, home=None, create_home=True, skeleton_dir=None,
 
     """
 
+    from fabtools.require import directory as require_directory
+
     # Make sure the user exists
     if not exists(name):
         create(name, comment=comment, home=home, create_home=create_home,
@@ -49,7 +49,7 @@ def user(name, comment=None, home=None, create_home=True, skeleton_dir=None,
 
     # Make sure the home directory exists and is owned by user
     if home:
-        fabtools.require.directory(home, owner=name, use_sudo=True)
+        require_directory(home, owner=name, use_sudo=True)
 
 
 def sudoer(username, hosts="ALL", operators="ALL", passwd=False, commands="ALL"):

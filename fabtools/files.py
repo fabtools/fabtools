@@ -6,7 +6,7 @@ from __future__ import with_statement
 
 import os
 
-from fabric.api import *
+from fabric.api import abort, hide, run, settings, sudo, warn
 from fabric.contrib.files import upload_template as _upload_template
 from fabric.contrib.files import exists
 

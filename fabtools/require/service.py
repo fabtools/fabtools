@@ -10,9 +10,8 @@ support both `upstart`_ services and traditional SysV-style
 .. _upstart: http://upstart.ubuntu.com/
 
 """
-from fabric.api import *
 
-from fabtools.service import *
+from fabtools.service import is_running, restart, start, stop
 
 
 def started(service):

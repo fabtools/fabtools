@@ -8,7 +8,7 @@ from pipes import quote
 import random
 import string
 
-from fabric.api import *
+from fabric.api import hide, run, settings
 
 from fabtools.group import (
     exists as _group_exists,

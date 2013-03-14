@@ -10,10 +10,15 @@ from __future__ import with_statement
 
 from fabric.utils import puts
 
-from fabtools.deb import *
+from fabtools.deb import (
+    distrib_codename,
+    install,
+    is_installed,
+    uninstall,
+    update_index,
+)
 from fabtools.files import is_file, watch
 from fabtools.utils import run_as_root
-import fabtools.require
 
 
 def source(name, uri, distribution, *components):
@@ -28,11 +33,14 @@ def source(name, uri, distribution, *components):
         require.deb.source('mongodb', 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart', 'dist', '10gen')
 
     """
+
+    from fabtools.require import file as require_file
+
     path = '/etc/apt/sources.list.d/%(name)s.list' % locals()
     components = ' '.join(components)
     source_line = 'deb %(uri)s %(distribution)s %(components)s\n' % locals()
     with watch(path) as config:
-        fabtools.require.file(path=path, contents=source_line, use_sudo=True)
+        require_file(path=path, contents=source_line, use_sudo=True)
     if config.changed:
         puts('Added APT repository: %s' % source_line)
         update_index()

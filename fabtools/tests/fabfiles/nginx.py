@@ -1,6 +1,6 @@
 from __future__ import with_statement
 
-from fabric.api import *
+from fabric.api import task
 
 
 @task
@@ -9,7 +9,6 @@ def nginx():
     Check nginx server, enabling and disabling sites.
     """
 
-    import fabtools
     from fabtools import require
     from fabtools.files import is_link
 

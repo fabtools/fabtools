@@ -7,7 +7,11 @@ This module provides high-level tools for managing SmartOS packages.
 """
 from __future__ import with_statement
 
-from fabtools.pkg import *
+from fabtools.pkg import (
+    install,
+    is_installed,
+    uninstall,
+)
 
 
 def package(pkg_name, update=False, yes=None):

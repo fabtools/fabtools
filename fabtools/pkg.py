@@ -7,7 +7,7 @@ This module provides tools to manage SmartOS packages.
 """
 from __future__ import with_statement
 
-from fabric.api import *
+from fabric.api import hide, quiet, run, settings
 
 from fabtools.files import is_file
 from fabtools.utils import run_as_root

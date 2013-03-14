@@ -4,7 +4,7 @@ import os
 from tempfile import mkstemp
 from functools import partial
 
-from fabric.api import *
+from fabric.api import cd, env, run, task
 
 from fabtools.utils import run_as_root
 

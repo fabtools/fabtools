@@ -7,7 +7,7 @@ This module provides tools for creating MySQL users and databases.
 """
 from __future__ import with_statement
 
-from fabric.api import *
+from fabric.api import env, hide, prompt, puts, run, settings
 
 from fabtools.utils import run_as_root
 

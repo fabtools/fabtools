@@ -2,7 +2,7 @@ from __future__ import with_statement
 
 import hashlib
 
-from fabric.api import *
+from fabric.api import cd, run, task
 
 
 @task

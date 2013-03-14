@@ -48,9 +48,13 @@ def process(name, **kwargs):
 
     .. _supervisor documentation: http://supervisord.org/configuration.html#program-x-section-values
     """
-    from fabtools import require
-    require.deb.package('supervisor')
-    require.service.started('supervisor')
+
+    from fabtools.require.deb import package as require_package
+    from fabtools.require import file as require_file
+    from fabtools.require.service import started as require_started
+
+    require_package('supervisor')
+    require_started('supervisor')
 
     # Set default parameters
     params = {}
@@ -67,7 +71,7 @@ def process(name, **kwargs):
     # Upload config file
     filename = '/etc/supervisor/conf.d/%(name)s.conf' % locals()
     with watch(filename, callback=update_config, use_sudo=True):
-        require.file(filename, contents='\n'.join(lines), use_sudo=True)
+        require_file(filename, contents='\n'.join(lines), use_sudo=True)
 
     # Start the process if needed
     if process_status(name) == 'STOPPED':

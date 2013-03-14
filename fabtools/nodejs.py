@@ -18,7 +18,7 @@ try:
 except ImportError:
     import simplejson as json
 
-from fabric.api import run, cd, settings, hide
+from fabric.api import cd, hide, run, settings
 
 from fabtools.utils import run_as_root
 
@@ -40,8 +40,11 @@ def install_from_source(version=DEFAULT_VERSION):
     .. note:: This function may not work for old versions of Node.js.
 
     """
-    from fabtools import require
-    require.deb.packages([
+
+    from fabtools.require.deb import packages as require_packages
+    from fabtools.require import file as require_file
+
+    require_packages([
         'build-essential',
         'python',
         'libssl-dev',
@@ -53,7 +56,7 @@ def install_from_source(version=DEFAULT_VERSION):
     res = run('python -c "import multiprocessing ; print(multiprocessing.cpu_count())"')
     cpus = int(res)
 
-    require.file(url='http://nodejs.org/dist/v%(version)s/%(filename)s' % {
+    require_file(url='http://nodejs.org/dist/v%(version)s/%(filename)s' % {
         'version': version,
         'filename': filename,
     })

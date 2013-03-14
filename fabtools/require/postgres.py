@@ -4,8 +4,14 @@ PostgreSQL users and databases
 """
 from __future__ import with_statement
 
+from fabric.api import cd, hide, run, settings
 from fabtools.files import is_file, watch
-from fabtools.postgres import *
+from fabtools.postgres import (
+    create_database,
+    create_user,
+    database_exists,
+    user_exists,
+)
 from fabtools.require.deb import package
 from fabtools.require.service import started, restarted
 from fabtools.require.system import locale as require_locale

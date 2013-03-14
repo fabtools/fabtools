@@ -11,10 +11,17 @@ and installing packages using `pip`_.
 """
 import posixpath
 
+from fabric.api import run, sudo
+
 from fabtools.files import is_file
-from fabtools.python import *
+from fabtools.python import (
+    install,
+    install_pip,
+    install_requirements,
+    is_installed,
+    is_pip_installed,
+)
 from fabtools.python_distribute import is_distribute_installed, install_distribute
-from fabtools.require import deb
 
 
 DEFAULT_PIP_VERSION = '1.2.1'
@@ -26,7 +33,10 @@ def distribute():
 
     .. _distribute: http://packages.python.org/distribute/
     """
-    deb.packages([
+
+    from fabtools.require.deb import packages as require_packages
+
+    require_packages([
         'curl',
         'python-dev',
     ])

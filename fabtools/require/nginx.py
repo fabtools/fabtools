@@ -10,16 +10,16 @@ web server and managing the configuration of web sites.
 """
 from __future__ import with_statement
 
-from fabric.api import *
+from fabric.api import hide, settings
 from fabric.colors import red
 
 from fabtools.files import is_link
-from fabtools.nginx import *
+from fabtools.nginx import disable, enable
 from fabtools.require.deb import package
 from fabtools.require.files import template_file
-from fabtools.require.service import started
+from fabtools.require.service import started as require_started
+from fabtools.service import reload as reload_service
 from fabtools.utils import run_as_root
-import fabtools
 
 
 def server():
@@ -33,7 +33,7 @@ def server():
         require.nginx.server()
     """
     package('nginx')
-    started('nginx')
+    require_started('nginx')
 
 
 def enabled(config):
@@ -42,8 +42,7 @@ def enabled(config):
     configuration if needed.
     """
     enable(config)
-
-    fabtools.service.reload('nginx')
+    reload_service('nginx')
 
 
 def disabled(config):
@@ -52,8 +51,7 @@ def disabled(config):
     nginx configuration if needed.
     """
     disable(config)
-
-    fabtools.service.reload('nginx')
+    reload_service('nginx')
 
 
 def site(server_name, template_contents=None, template_source=None, enabled=True, check_config=True, **kwargs):
@@ -111,7 +109,7 @@ def site(server_name, template_contents=None, template_source=None, enabled=True
         if is_link(link_filename):
             run_as_root("rm %(link_filename)s" % locals())
 
-    fabtools.service.reload('nginx')
+    reload_service('nginx')
 
 
 PROXIED_SITE_TEMPLATE = """\

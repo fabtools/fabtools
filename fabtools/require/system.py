@@ -14,7 +14,7 @@ from fabtools.system import (
     get_hostname, set_hostname,
     get_sysctl, set_sysctl,
     supported_locales,
-    )
+)
 from fabtools.utils import run_as_root
 
 
@@ -26,12 +26,14 @@ def sysctl(key, value, persist=True):
         set_sysctl(key, value)
 
     if persist:
-        from fabtools import require
+
+        from fabtools.require import file as require_file
+
         filename = '/etc/sysctl.d/60-%s.conf' % key
         with watch(filename, use_sudo=True) as config:
-            require.file(filename,
-                contents='%(key)s = %(value)s\n' % locals(),
-                use_sudo=True)
+            require_file(filename,
+                         contents='%(key)s = %(value)s\n' % locals(),
+                         use_sudo=True)
         if config.changed:
             run_as_root('service procps start')
 
@@ -84,11 +86,11 @@ def default_locale(name):
     """
     Require the locale to be the default.
     """
-    from fabtools import require
+    from fabtools.require import file as require_file
 
     # Ensure the locale is available
     locale(name)
 
     # Make it the default
     contents = 'LANG="%s"\n' % name
-    require.file('/etc/default/locale', contents, use_sudo=True)
+    require_file('/etc/default/locale', contents, use_sudo=True)

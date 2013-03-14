@@ -7,8 +7,6 @@ This module provides tools for managing Nginx config files.
 """
 from pipes import quote
 
-from fabric.api import *
-
 from fabtools.files import is_link
 from fabtools.utils import run_as_root
 

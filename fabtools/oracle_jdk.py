@@ -15,7 +15,7 @@ from fabric.api import run, cd, settings, hide
 from fabtools import system
 from fabtools.require.files import directory as require_directory
 from fabtools.require.files import file as require_file
-from fabtools.utils import run_as_root
+
 
 DEFAULT_VERSION = '7u15-b03'
 

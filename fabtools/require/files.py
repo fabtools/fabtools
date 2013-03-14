@@ -13,7 +13,7 @@ import os
 from tempfile import mkstemp
 from urlparse import urlparse
 
-from fabric.api import *
+from fabric.api import hide, put, run, settings
 
 from fabtools.files import is_file, is_dir, md5sum
 from fabtools.utils import run_as_root

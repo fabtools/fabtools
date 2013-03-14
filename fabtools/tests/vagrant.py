@@ -1,14 +1,13 @@
 from __future__ import with_statement
 
 import os
-import os.path
 
 try:
     import unittest2 as unittest
 except ImportError:
     import unittest
 
-from fabric.api import *
+from fabric.api import env, hide, lcd, local, settings, shell_env
 from fabric.state import connections
 
 import fabtools

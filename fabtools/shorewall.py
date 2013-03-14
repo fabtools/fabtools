@@ -7,7 +7,7 @@ from __future__ import with_statement
 from socket import gethostbyname
 import re
 
-from fabric.api import *
+from fabric.api import hide, settings
 
 from fabtools.utils import run_as_root
 

@@ -8,8 +8,16 @@ and creating MySQL users and databases.
 """
 from __future__ import with_statement
 
+from fabric.api import hide, settings
+
 from fabtools.deb import is_installed, preseed_package
-from fabtools.mysql import *
+from fabtools.mysql import (
+    create_database,
+    create_user,
+    database_exists,
+    prompt_password,
+    user_exists,
+)
 from fabtools.require.deb import package
 from fabtools.require.service import started
 

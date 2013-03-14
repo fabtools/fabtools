@@ -10,7 +10,7 @@ processes using `supervisord`_.
 """
 from __future__ import with_statement
 
-from fabric.api import *
+from fabric.api import hide, settings
 
 from fabtools.utils import run_as_root
 

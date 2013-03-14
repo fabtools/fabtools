@@ -16,7 +16,7 @@ from distutils.version import StrictVersion as V
 import os
 import posixpath
 
-from fabric.api import *
+from fabric.api import cd, hide, prefix, run, settings, sudo
 from fabric.utils import puts
 
 from fabtools.utils import run_as_root

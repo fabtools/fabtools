@@ -10,5 +10,19 @@ and containers.
 .. warning:: The remote host needs a patched kernel with OpenVZ support.
 
 """
-from fabtools.openvz.operations import *
+from fabtools.openvz.operations import (
+    create,
+    destroy,
+    set,
+    start,
+    stop,
+    restart,
+    status,
+    running,
+    exists,
+    exec2,
+    download_template,
+    list_ctids,
+    get_available_ctid,
+)
 from fabtools.openvz.contextmanager import guest

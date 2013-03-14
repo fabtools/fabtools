@@ -4,11 +4,20 @@ Shorewall firewall
 """
 from __future__ import with_statement
 
+from fabric.api import hide, puts, settings, shell_env
 from fabric.contrib.files import sed
 
 from fabtools.files import watch
 from fabtools.service import start, stop, restart
-from fabtools.shorewall import *
+from fabtools.shorewall import (
+    Ping,
+    SSH,
+    HTTP,
+    HTTPS,
+    SMTP,
+    is_started,
+    is_stopped,
+)
 
 from fabtools.require.deb import package
 from fabtools.require.files import file

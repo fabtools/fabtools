@@ -4,7 +4,7 @@ Vagrant helpers
 """
 from __future__ import with_statement
 
-from fabric.api import *
+from fabric.api import env, hide, local, settings, task
 
 
 def ssh_config(name=''):
