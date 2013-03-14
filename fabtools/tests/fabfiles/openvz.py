@@ -124,7 +124,7 @@ def setup_firewall():
 def setup_containers():
 
     from fabtools import require
-    from fabtools.openvz import guest
+    from fabtools.openvz import guest, list_ctids
     from fabtools.require.openvz import container
     import fabtools
 
@@ -163,7 +163,7 @@ def setup_containers():
             assert sudo('whoami', user='nobody') == 'nobody'
 
         # Check put
-        with guest(name):
+        with guest(NAME):
             local('echo "toto" > /tmp/toto')
             put('/tmp/toto', '/tmp/toto')
             assert run('test -f /tmp/toto').succeeded
@@ -202,11 +202,11 @@ def setup_containers():
             assert fabtools.files.is_file('/etc/redis/test.conf')
             assert run('echo PING | /opt/redis-2.4.15/redis-cli') == 'PONG'
 
-    assert 'debian' in openvz.list_ctids()
+    assert 'debian' in list_ctids()
 
     # Stop and destroy container
     with container(NAME, TEMPLATE, hostname=NAME, ipadd=IPADD) as ct:
         ct.stop()
         ct.destroy()
 
-    assert 'debian' not in openvz.list_ctids()
+    assert 'debian' not in list_ctids()
