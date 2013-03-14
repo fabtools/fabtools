@@ -34,7 +34,7 @@ def install_nodejs():
 
     nodejs.uninstall_package('underscore')
 
-    assert nodejs.package_version('underscore') == None
+    assert nodejs.package_version('underscore') is None
     assert not is_file('/usr/local/lib/node_modules/underscore/underscore.js')
 
     # Install / uninstall local package
@@ -46,7 +46,7 @@ def install_nodejs():
 
     nodejs.uninstall_package('underscore', local=True)
 
-    assert nodejs.package_version('underscore', local=True) == None
+    assert nodejs.package_version('underscore', local=True) is None
     assert not is_file('node_modules/underscore/underscore.js')
 
     # Install dependencies from package.json file
