@@ -17,7 +17,7 @@ from fabtools.require.files import directory as require_directory
 from fabtools.require.files import file as require_file
 
 
-DEFAULT_VERSION = '7u15-b03'
+DEFAULT_VERSION = '7u17-b02'
 
 
 def install_from_oracle_site(version=DEFAULT_VERSION):
@@ -29,7 +29,7 @@ def install_from_oracle_site(version=DEFAULT_VERSION):
         import fabtools
 
         # Install Oracle JDK
-        fabtools.oralce_jdk.install_from_oracle_site()
+        fabtools.oracle_jdk.install_from_oracle_site()
 
     """
 
