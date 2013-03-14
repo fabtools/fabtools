@@ -19,11 +19,6 @@ def install_nodejs():
     from fabtools import require
     from fabtools.files import is_file
 
-    # Upload local copy of source archive to speed up tests
-    local_cache = '~/.vagrant.d/cache/fabtools/node-v%s.tar.gz' % nodejs.DEFAULT_VERSION
-    if os.path.exists(local_cache):
-        put(local_cache)
-
     # Install Node.js from source
     if nodejs.version() != nodejs.DEFAULT_VERSION:
         nodejs.install_from_source()
@@ -81,11 +76,6 @@ def require_nodejs():
     from fabtools import nodejs
     from fabtools import require
     from fabtools.files import is_file
-
-    # Upload local copy of source archive to speed up tests
-    local_cache = '~/.vagrant.d/cache/fabtools/node-v%s.tar.gz' % nodejs.DEFAULT_VERSION
-    if os.path.exists(local_cache):
-        put(local_cache)
 
     # Require Node.js
 

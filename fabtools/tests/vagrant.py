@@ -182,7 +182,9 @@ class VagrantTestCase(unittest.TestCase):
         Run the test case within a Fabric context manager
         """
         with self._suite.settings():
-            unittest.TestCase.run(self, result)
+            http_proxy = os.environ.get('FABTOOLS_HTTP_PROXY', '')
+            with shell_env(http_proxy=http_proxy):
+                unittest.TestCase.run(self, result)
 
     def runTest(self):
         self._callable()

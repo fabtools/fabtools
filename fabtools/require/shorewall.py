@@ -282,7 +282,7 @@ def firewall(zones=None, interfaces=None, policy=None, rules=None,
         if is_started():
             restart('shorewall')
 
-    with settings(hide('running')):
+    with settings(hide('running'), shell_env()):
         sed('/etc/default/shorewall', 'startup=0', 'startup=1', use_sudo=True)
 
 

@@ -6,7 +6,7 @@ from __future__ import with_statement
 
 from re import escape
 
-from fabric.api import warn
+from fabric.api import warn, shell_env
 from fabric.contrib.files import append, uncomment
 
 from fabtools.files import is_file, watch
@@ -63,8 +63,9 @@ def locales(names):
             if name in supported:
                 charset = supported[name]
                 locale = "%s %s" % (name, charset)
-                uncomment(config_file, escape(locale), use_sudo=True)
-                append(config_file, locale, use_sudo=True)
+                with shell_env():
+                    uncomment(config_file, escape(locale), use_sudo=True)
+                    append(config_file, locale, use_sudo=True)
             else:
                 warn('Unsupported locale name "%s"' % name)
 

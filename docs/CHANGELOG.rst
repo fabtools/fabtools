@@ -6,6 +6,7 @@ Version 0.13.0dev (unreleased)
 
 * Add support for managing remote git repositories (Andreas Kaiser)
 * Add intersphinx to docs (Andreas Kaiser)
+* Add HTTP proxy support to speed up functional tests
 
 Version 0.12.0 (2013-03-04)
 ---------------------------
