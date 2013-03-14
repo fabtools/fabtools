@@ -253,5 +253,5 @@ def repolist(status='', media=None):
         if media:
             repos = run_as_root("%(manager)s repolist %(status)s | sed '$d' | sed -n '/repo id/,$p'" % locals())
         else:
-            repos = run_as_root("%(manager)s repolist %(status)s | sed '/Media\|Debug/d' | sed '$d' | sed -n '/repo id/,$p'" % locals())
+            repos = run_as_root("%(manager)s repolist %(status)s | sed '/Media\\|Debug/d' | sed '$d' | sed -n '/repo id/,$p'" % locals())
         return map(lambda line: line.split(' ')[0], repos.splitlines()[1:])

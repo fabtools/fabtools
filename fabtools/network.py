@@ -55,5 +55,5 @@ def nameservers():
 
     """
     with settings(hide('running', 'stdout')):
-        res = run("cat /etc/resolv.conf | grep 'nameserver' | cut -d\  -f2")
+        res = run(r"cat /etc/resolv.conf | grep 'nameserver' | cut -d\  -f2")
     return res.splitlines()

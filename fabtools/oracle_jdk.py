@@ -106,7 +106,7 @@ def _extract_jdk_version(java_version_out):
     Extracts JDK version in format like '7u13-b20'
     from 'java -version' command output.
     """
-    re_build = re.search('Runtime Environment \(build (.*?)\)',
+    re_build = re.search(r'Runtime Environment \(build (.*?)\)',
                          java_version_out).group(1)
     version, build = re_build.split('-')
     release = version.split('_')[0].split('.')[1]
