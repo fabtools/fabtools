@@ -8,6 +8,7 @@ Version 0.13.0dev (unreleased)
 * Add intersphinx to docs (Andreas Kaiser)
 * Add HTTP proxy support to speed up functional tests
 * Upgrade default Node.js version to 0.10.0
+* Upgrade default Redis version to 2.6.11
 
 Version 0.12.0 (2013-03-04)
 ---------------------------
