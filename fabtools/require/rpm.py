@@ -116,16 +116,22 @@ def repository(name):
     if name == 'rpmforge' and arch == 'i386':
         arch = 'i686'
     supported = {
-      'rpmforge': {'%(arch)s' % locals(): {
-        '6': '%(rpmforge_url)s-%(rpmforge_version)s.el6.rf.i686.rpm' % locals(),
-        '5': '%(rpmforge_url)s-%(rpmforge_version)s.el5.rf.x86_64.rpm' % locals()},
-      'epel': { '%(arch)s' % locals(): {
-        '6': '%(epel_url)s/6/%(arch)s/epel-release-%(epel_version)s.noarch.rpm' % locals(),
-        '5': '%(epel_url)s/5/%(arch)s/epel-release-%(epel_version)s.noarch.rpm' % locals()}}
-        }}
+        'rpmforge': {
+            '%(arch)s' % locals(): {
+                '6': '%(rpmforge_url)s-%(rpmforge_version)s.el6.rf.i686.rpm' % locals(),
+                '5': '%(rpmforge_url)s-%(rpmforge_version)s.el5.rf.x86_64.rpm' % locals(),
+            },
+        },
+        'epel': {
+            '%(arch)s' % locals(): {
+                '6': '%(epel_url)s/6/%(arch)s/epel-release-%(epel_version)s.noarch.rpm' % locals(),
+                '5': '%(epel_url)s/5/%(arch)s/epel-release-%(epel_version)s.noarch.rpm' % locals(),
+            }
+        },
+    }
     keys = {
-    'rpmforge': 'http://apt.sw.be/RPM-GPG-KEY.dag.txt',
-    'epel': '%(epel_url)s/RPM-GPG-KEY-EPEL-%(release)s' % locals()
+        'rpmforge': 'http://apt.sw.be/RPM-GPG-KEY.dag.txt',
+        'epel': '%(epel_url)s/RPM-GPG-KEY-EPEL-%(release)s' % locals(),
     }
     repo = supported[name][str(arch)][str(release)]
     key = keys[name]
