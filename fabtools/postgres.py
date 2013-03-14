@@ -28,8 +28,8 @@ def user_exists(name):
 
 
 def create_user(name, password, superuser=False, createdb=False,
-    createrole=False, inherit=True, login=True, connection_limit=None,
-    encrypted_password=False):
+                createrole=False, inherit=True, login=True,
+                connection_limit=None, encrypted_password=False):
     """
     Create a PostgreSQL user.
 
@@ -65,11 +65,13 @@ def database_exists(name):
     """
     Check if a PostgreSQL database exists.
     """
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(hide('running', 'stdout', 'stderr', 'warnings'),
+                  warn_only=True):
         return _run_as_pg('''psql -d %(name)s -c ""''' % locals()).succeeded
 
 
-def create_database(name, owner, template='template0', encoding='UTF8', locale='en_US.UTF-8'):
+def create_database(name, owner, template='template0', encoding='UTF8',
+                    locale='en_US.UTF-8'):
     """
     Create a PostgreSQL database.
 
@@ -82,14 +84,15 @@ def create_database(name, owner, template='template0', encoding='UTF8', locale='
             fabtools.postgres.create_database('myapp', owner='dbuser')
 
     """
-    _run_as_pg('''createdb --owner %(owner)s --template %(template)s --encoding=%(encoding)s\
- --lc-ctype=%(locale)s --lc-collate=%(locale)s %(name)s''' % locals())
+    _run_as_pg('''createdb --owner %(owner)s --template %(template)s \
+                  --encoding=%(encoding)s --lc-ctype=%(locale)s \
+                  --lc-collate=%(locale)s %(name)s''' % locals())
+
 
 def create_schema(name, database, owner=None):
-    '''
+    """
     Create a schema within a database.
-    '''
-    
+    """
     if owner:
         _run_as_pg('''psql %(database)s -c "CREATE SCHEMA %(name)s AUTHORIZATION %(owner)s"''' % locals())
     else:

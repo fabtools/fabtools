@@ -96,10 +96,10 @@ def guest(name_or_ctid):
 
         # Run host command as root
         return _run_host_command(host_command, shell=shell, pty=pty,
-            combine_stderr=combine_stderr)
+                                 combine_stderr=combine_stderr)
 
-    def put_guest(self, local_path, remote_path, use_sudo, mirror_local_mode, mode,
-        local_is_path):
+    def put_guest(self, local_path, remote_path, use_sudo, mirror_local_mode,
+                  mode, local_is_path):
         """
         Upload file to a guest container
         """
@@ -139,8 +139,9 @@ def guest(name_or_ctid):
 
         # Copy file to the guest container
         with settings(hide('everything'), cwd=""):
-            _orig_run_command("cat \"%s\" | vzctl exec \"%s\" 'cat - > \"%s\"'"
-                % (host_path, name_or_ctid, guest_path), sudo=True)
+            cmd = "cat \"%s\" | vzctl exec \"%s\" 'cat - > \"%s\"'" \
+                % (host_path, name_or_ctid, guest_path)
+            _orig_run_command(cmd, sudo=True)
 
         # Revert to original remote_path for return value's sake
         remote_path = guest_path
@@ -193,7 +194,7 @@ def _run_host_command(command, shell=True, pty=True, combine_stderr=True):
 
     # Actual execution, stdin/stdout/stderr handling, and termination
     stdout, stderr, status = _execute(default_channel(), wrapped_command, pty,
-        combine_stderr)
+                                      combine_stderr)
 
     # Assemble output string
     out = _AttributeString(stdout)

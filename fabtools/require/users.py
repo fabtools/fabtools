@@ -8,8 +8,8 @@ from fabtools.utils import run_as_root
 
 
 def user(name, comment=None, home=None, create_home=True, skeleton_dir=None,
-    group=None, create_group=True, extra_groups=None, password=None,
-    system=False, shell=None, uid=None):
+         group=None, create_group=True, extra_groups=None, password=None,
+         system=False, shell=None, uid=None):
     """
     Require a user and its home directory.
 
@@ -39,13 +39,13 @@ def user(name, comment=None, home=None, create_home=True, skeleton_dir=None,
     # Make sure the user exists
     if not exists(name):
         create(name, comment=comment, home=home, create_home=create_home,
-            skeleton_dir=skeleton_dir, group=group, create_group=create_group,
-            extra_groups=extra_groups, password=password, system=system,
-            shell=shell, uid=uid)
+               skeleton_dir=skeleton_dir, group=group,
+               create_group=create_group, extra_groups=extra_groups,
+               password=password, system=system, shell=shell, uid=uid)
     else:
         modify(name, comment=comment, home=home, group=group,
-            extra_groups=extra_groups, password=password,
-            shell=shell, uid=uid)
+               extra_groups=extra_groups, password=password,
+               shell=shell, uid=uid)
 
     # Make sure the home directory exists and is owned by user
     if home:

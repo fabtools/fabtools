@@ -254,7 +254,7 @@ CONFIG_FILES = [
 
 
 def firewall(zones=None, interfaces=None, policy=None, rules=None,
-    routestopped=None, masq=None):
+             routestopped=None, masq=None):
     """
     Ensure that a firewall is configured.
 

@@ -33,7 +33,7 @@ def users():
 
     # create system user with home directory
     fabtools.user.create('user5', system=True,
-        create_home=True, home='/var/lib/foo')
+                         create_home=True, home='/var/lib/foo')
     assert fabtools.files.is_dir('/var/lib/foo')
 
 

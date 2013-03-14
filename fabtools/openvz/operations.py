@@ -15,7 +15,8 @@ def create(ctid, ostemplate=None, config=None, private=None,
     Create an OpenVZ container.
     """
     return _vzctl('create', ctid, ostemplate=ostemplate, config=config,
-        private=private, root=root, ipadd=ipadd, hostname=hostname, **kwargs)
+                  private=private, root=root, ipadd=ipadd, hostname=hostname,
+                  **kwargs)
 
 
 def destroy(ctid_or_name):
@@ -55,7 +56,8 @@ def restart(ctid_or_name, wait=True, force=False, fast=False, **kwargs):
     """
     Restart the container.
     """
-    return _vzctl('restart', ctid_or_name, wait=wait, force=force, fast=fast, **kwargs)
+    return _vzctl('restart', ctid_or_name, wait=wait, force=force, fast=fast,
+                  **kwargs)
 
 
 def status(ctid_or_name):

@@ -74,7 +74,8 @@ def is_installed(package):
     return (package in packages)
 
 
-def install(packages, upgrade=False, use_mirrors=True, use_sudo=False, user=None, download_cache=None):
+def install(packages, upgrade=False, use_mirrors=True, use_sudo=False,
+            user=None, download_cache=None):
     """
     Install Python package(s) using `pip`_.
 
@@ -108,7 +109,8 @@ def install(packages, upgrade=False, use_mirrors=True, use_sudo=False, user=None
         run(command)
 
 
-def install_requirements(filename, upgrade=False, use_mirrors=True, use_sudo=False, user=None, download_cache=None):
+def install_requirements(filename, upgrade=False, use_mirrors=True,
+                         use_sudo=False, user=None, download_cache=None):
     """
     Install Python packages from a pip `requirements file`_.
 

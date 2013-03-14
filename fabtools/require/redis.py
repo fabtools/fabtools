@@ -50,7 +50,8 @@ def installed_from_source(version=VERSION):
 
             # Download and unpack the tarball
             tarball = 'redis-%(version)s.tar.gz' % locals()
-            require_file(tarball, url='http://redis.googlecode.com/files/' + tarball)
+            url = 'http://redis.googlecode.com/files/' + tarball
+            require_file(tarball, url=url)
             run('tar xzf %(tarball)s' % locals())
 
             # Compile and install binaries

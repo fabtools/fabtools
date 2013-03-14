@@ -21,7 +21,10 @@ from fabtools.python import (
     is_installed,
     is_pip_installed,
 )
-from fabtools.python_distribute import is_distribute_installed, install_distribute
+from fabtools.python_distribute import (
+    install_distribute,
+    is_distribute_installed,
+)
 
 
 DEFAULT_PIP_VERSION = '1.2.1'
@@ -100,7 +103,7 @@ def requirements(filename, **kwargs):
 
 
 def virtualenv(directory, system_site_packages=False, python=None,
-    use_sudo=False, user=None, clear=False):
+               use_sudo=False, user=None, clear=False):
     """
     Require a Python `virtual environment`_.
 

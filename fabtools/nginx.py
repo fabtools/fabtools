@@ -29,8 +29,8 @@ def enable(config):
 
     if not is_link(link_filename):
         run_as_root("ln -s %(config_filename)s %(link_filename)s" % {
-                'config_filename': quote(config_filename),
-                'link_filename': quote(link_filename),
+            'config_filename': quote(config_filename),
+            'link_filename': quote(link_filename),
         })
 
 

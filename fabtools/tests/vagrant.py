@@ -107,7 +107,7 @@ class VagrantTestSuite(unittest.BaseTestSuite):
         with lcd(os.path.dirname(__file__)):
 
             if not os.path.exists('Vagrantfile') \
-            or not os.environ.get('FABTOOLS_TEST_NODESTROY'):
+               or not os.environ.get('FABTOOLS_TEST_NODESTROY'):
 
                 # Create a fresh vagrant config file
                 local('rm -f Vagrantfile')

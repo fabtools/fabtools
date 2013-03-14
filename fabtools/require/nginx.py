@@ -54,7 +54,8 @@ def disabled(config):
     reload_service('nginx')
 
 
-def site(server_name, template_contents=None, template_source=None, enabled=True, check_config=True, **kwargs):
+def site(server_name, template_contents=None, template_source=None,
+         enabled=True, check_config=True, **kwargs):
     """
     Require an nginx site.
 
@@ -159,4 +160,5 @@ def proxied_site(server_name, enabled=True, **kwargs):
             docroot='/path/to/myapp/static',
         )
     """
-    site(server_name, template_contents=PROXIED_SITE_TEMPLATE, enabled=enabled, **kwargs)
+    site(server_name, template_contents=PROXIED_SITE_TEMPLATE,
+         enabled=enabled, **kwargs)

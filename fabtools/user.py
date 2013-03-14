@@ -39,8 +39,8 @@ def _crypt_password(password):
 
 
 def create(name, comment=None, home=None, create_home=None, skeleton_dir=None,
-    group=None, create_group=True, extra_groups=None, password=None,
-    system=False, shell=None, uid=None):
+           group=None, create_group=True, extra_groups=None, password=None,
+           system=False, shell=None, uid=None):
     """
     Create a new user and its home directory.
 
@@ -110,7 +110,8 @@ def create(name, comment=None, home=None, create_home=None, skeleton_dir=None,
 
 
 def modify(name, comment=None, home=None, move_current_home=False, group=None,
-    extra_groups=None, login_name=None, password=None, shell=None, uid=None):
+           extra_groups=None, login_name=None, password=None, shell=None,
+           uid=None):
     """
     Modify an existing user.
 

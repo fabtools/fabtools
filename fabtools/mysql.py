@@ -87,7 +87,8 @@ def database_exists(name, **kwargs):
     return res.succeeded and (res == name)
 
 
-def create_database(name, owner=None, owner_host='localhost', charset='utf8', collate='utf8_general_ci', **kwargs):
+def create_database(name, owner=None, owner_host='localhost', charset='utf8',
+                    collate='utf8_general_ci', **kwargs):
     """
     Create a MySQL database.
 

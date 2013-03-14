@@ -116,7 +116,7 @@ def setup_firewall():
         interfaces=interfaces,
         policy=policy,
         masq=masq,
-        )
+    )
 
     require.shorewall.started()
 

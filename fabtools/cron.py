@@ -39,10 +39,10 @@ def add_task(name, timespec, user, command):
         script.write('%(timespec)s %(user)s %(command)s\n' % locals())
         script.flush()
         upload_template('/etc/cron.d/%(name)s' % locals(),
-            script.name,
-            context={},
-            chown=True,
-            use_sudo=True)
+                        script.name,
+                        context={},
+                        chown=True,
+                        use_sudo=True)
 
 
 def add_daily(name, user, command):

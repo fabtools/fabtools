@@ -17,8 +17,10 @@ def firewall():
             fabtools.shorewall.HTTP(),
             fabtools.shorewall.HTTPS(),
             fabtools.shorewall.SMTP(),
-            fabtools.shorewall.rule(port=1234,
-                source=fabtools.shorewall.hosts(['example.com'])),
+            fabtools.shorewall.rule(
+                port=1234,
+                source=fabtools.shorewall.hosts(['example.com']),
+            ),
         ]
     )
 
