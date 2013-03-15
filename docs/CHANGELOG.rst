@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Version 0.13.0dev (unreleased)
-------------------------------
+Version 0.13.0 (2013-03-15)
+---------------------------
 
 * Add support for managing remote git repositories (Andreas Kaiser)
 * Add intersphinx to docs (Andreas Kaiser)
