@@ -5,6 +5,7 @@ Vagrant helpers
 from __future__ import with_statement
 
 from fabric.api import env, hide, local, settings, task
+import re
 
 
 def ssh_config(name=''):
@@ -29,7 +30,7 @@ def _settings_dict(config):
     port = config['Port']
 
     settings['host_string'] = "%s@%s:%s" % (user, hostname, port)
-    settings['key_filename'] = config['IdentityFile']
+    settings['key_filename'] = re.sub(r'^"|"$', '', config['IdentityFile']) # strip leading and trailing double quotes, if present
     settings['forward_agent'] = (config.get('ForwardAgent', 'no') == 'yes')
     settings['disable_known_hosts'] = True
 
