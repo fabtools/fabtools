@@ -24,12 +24,15 @@ def ssh_config(name=''):
 def _settings_dict(config):
     settings = {}
 
+    # Build host string
     user = config['User']
     hostname = config['HostName']
     port = config['Port']
-
     settings['host_string'] = "%s@%s:%s" % (user, hostname, port)
-    settings['key_filename'] = config['IdentityFile']).strip('"') # strip leading and trailing double quotes introduced by vagrant 1.1
+
+    # Strip leading and trailing double quotes introduced by vagrant 1.1
+    settings['key_filename'] = config['IdentityFile'].strip('"')
+
     settings['forward_agent'] = (config.get('ForwardAgent', 'no') == 'yes')
     settings['disable_known_hosts'] = True
 

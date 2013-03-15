@@ -160,7 +160,7 @@ class VagrantTestSuite(unittest.BaseTestSuite):
 
         kwargs['host_string'] = "%s@%s:%s" % (user, hostname, port)
         kwargs['user'] = user
-        kwargs['key_filename'] = config['IdentityFile']
+        kwargs['key_filename'] = config['IdentityFile'].strip('"')
         kwargs['disable_known_hosts'] = True
 
         return settings(*args, **kwargs)
