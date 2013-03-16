@@ -29,6 +29,6 @@ def python_package():
 
     require.python.virtualenv('/tmp/venv')
     with fabtools.python.virtualenv('/tmp/venv'):
-        require.python.package('fabric', download_cache='/var/cache/pip')
+        require.python.package('fabric')
 
     assert fabtools.files.is_file('/tmp/venv/bin/fab')
