@@ -27,7 +27,7 @@ from fabtools.python_distribute import (
 )
 
 
-DEFAULT_PIP_VERSION = '1.2.1'
+DEFAULT_PIP_VERSION = '1.3.1'
 
 
 def distribute():
