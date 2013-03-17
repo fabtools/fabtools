@@ -6,7 +6,102 @@ from __future__ import with_statement
 
 from fabric.api import hide, run, settings
 
+from fabtools.files import is_file
 from fabtools.utils import run_as_root
+
+
+def distrib_id():
+    """
+    Get the OS distribution ID.
+
+    Returns one of ``"Debian"``, ``"Ubuntu"``, ``"RHEL"``, ``"CentOS"``,
+    ``"Fedora"``...
+
+    Example::
+
+        from fabtools.system import distrib_id
+
+        if distrib_id() != 'Debian':
+            abort(u"Distribution is not supported")
+
+    """
+    # lsb_release works on Ubuntu and Debian >= 6.0
+    # but is not always included in other distros
+    if is_file('/usr/bin/lsb_release'):
+        with settings(hide('running', 'stdout')):
+            return run('lsb_release --id --short')
+    else:
+        if is_file('/etc/debian_version'):
+            return "Debian"
+        elif is_file('/etc/fedora-release'):
+            return "Fedora"
+        elif is_file('/etc/redhat-release'):
+            release = run('cat /etc/redhat-release')
+            if release.startswith('Red Hat Enterprise Linux'):
+                return "RHEL"
+            elif release.startswith('CentOS'):
+                return "CentOS"
+            elif release.startswith('Scientific Linux'):
+                return "SLES"
+
+
+def distrib_release():
+    """
+    Get the release number of the Linux distribution.
+
+    Example::
+
+        from fabtools.system import distrib_id, distrib_release
+
+        if distrib_id() == 'CentOS' and distrib_release() == '6.1':
+            print(u"CentOS 6.2 has been released. Please upgrade.")
+
+    """
+    with settings(hide('running', 'stdout')):
+        return run('lsb_release -r --short')
+
+
+def distrib_codename():
+    """
+    Get the codename of the Linux distribution.
+
+    Example::
+
+        from fabtools.deb import distrib_codename
+
+        if distrib_codename() == 'precise':
+            print(u"Ubuntu 12.04 LTS detected")
+
+    """
+    with settings(hide('running', 'stdout')):
+        return run('lsb_release --codename --short')
+
+
+def distrib_desc():
+    """
+    Get the description of the Linux distribution.
+
+    For example: ``Debian GNU/Linux 6.0.7 (squeeze)``.
+    """
+    with settings(hide('running', 'stdout')):
+        if not is_file('/etc/redhat-release'):
+            return run('lsb_release --desc --short')
+        return run('cat /etc/redhat-release')
+
+
+def distrib_family():
+    """
+    Get the distribution family.
+
+    Returns one of ``debian``, ``redhat``, ``other``.
+    """
+    distrib = distrib_id()
+    if distrib in ['Debian', 'Ubuntu']:
+        return 'debian'
+    elif distrib in ['RHEL', 'CentOS', 'Fedora']:
+        return 'redhat'
+    else:
+        return 'other'
 
 
 def get_hostname():

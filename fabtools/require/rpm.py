@@ -10,12 +10,11 @@ from __future__ import with_statement
 
 from fabric.api import hide, settings
 from fabtools.rpm import (
-    distrib_release,
     install,
     is_installed,
     uninstall,
 )
-from fabtools.system import get_arch
+from fabtools.system import get_arch, distrib_release
 from fabtools.utils import run_as_root
 
 

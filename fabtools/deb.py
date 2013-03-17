@@ -145,22 +145,6 @@ def get_selections():
     return selections
 
 
-def distrib_codename():
-    """
-    Get the codename of the distrib.
-
-    Example::
-
-        from fabtools.deb import distrib_codename
-
-        if distrib_codename() == 'precise':
-            print('Ubuntu 12.04 LTS')
-
-    """
-    with settings(hide('running', 'stdout')):
-        return run('lsb_release --codename --short')
-
-
 def add_apt_key(filename, update=True):
     """
     Trust packages signed with this public key.

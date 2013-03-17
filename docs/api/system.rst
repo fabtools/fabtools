@@ -5,6 +5,15 @@
 
 .. automodule:: fabtools.system
 
+    OS detection
+    ~~~~~~~~~~~~
+
+    .. autofunction:: distrib_id
+    .. autofunction:: distrib_family
+    .. autofunction:: distrib_release
+    .. autofunction:: distrib_codename
+    .. autofunction:: distrib_desc
+
     Hardware detection
     ~~~~~~~~~~~~~~~~~~
 
