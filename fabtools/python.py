@@ -59,7 +59,7 @@ def install_pip():
     """
     with cd('/tmp'):
         run('curl --silent -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py')
-        run_as_root('python get-pip.py')
+        run_as_root('python get-pip.py', pty=False)
 
 
 def is_installed(package):
@@ -75,7 +75,7 @@ def is_installed(package):
 
 
 def install(packages, upgrade=False, use_mirrors=True, use_sudo=False,
-            user=None, download_cache=None):
+            user=None, download_cache=None, quiet=False):
     """
     Install Python package(s) using `pip`_.
 
@@ -101,16 +101,19 @@ def install(packages, upgrade=False, use_mirrors=True, use_sudo=False,
         options.append('--upgrade')
     if download_cache:
         options.append('--download-cache="%s"' % download_cache)
+    if quiet:
+        options.append('--quiet')
     options = ' '.join(options)
     command = 'pip install %(options)s %(packages)s' % locals()
     if use_sudo:
-        sudo(command, user=user)
+        sudo(command, user=user, pty=False)
     else:
-        run(command)
+        run(command, pty=False)
 
 
 def install_requirements(filename, upgrade=False, use_mirrors=True,
-                         use_sudo=False, user=None, download_cache=None):
+                         use_sudo=False, user=None, download_cache=None,
+                         quiet=False):
     """
     Install Python packages from a pip `requirements file`_.
 
@@ -129,12 +132,14 @@ def install_requirements(filename, upgrade=False, use_mirrors=True,
         options.append('--upgrade')
     if download_cache:
         options.append('--download-cache="%s"' % download_cache)
+    if quiet:
+        options.append('--quiet')
     options = ' '.join(options)
     command = 'pip install %(options)s -r %(filename)s' % locals()
     if use_sudo:
-        sudo(command, user=user)
+        sudo(command, user=user, pty=False)
     else:
-        run(command)
+        run(command, pty=False)
 
 
 @contextmanager

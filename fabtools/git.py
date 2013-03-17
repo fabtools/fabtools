@@ -39,7 +39,7 @@ def clone(remote_url, path=None, use_sudo=False, user=None):
     :type user: str
     """
 
-    cmd = 'git clone %s' % remote_url
+    cmd = 'git clone --quiet %s' % remote_url
     if path is not None:
         cmd = cmd + ' %s' % path
 

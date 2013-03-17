@@ -76,7 +76,7 @@ def version():
 
     Returns ``None`` if it is not installed.
     """
-    with settings(hide('running', 'stdout'), warn_only=True):
+    with settings(hide('running', 'stdout', 'warnings'), warn_only=True):
         res = run('java -version')
     if res.failed:
         return None

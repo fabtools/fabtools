@@ -13,14 +13,14 @@ from fabric.api import hide, run, settings
 from fabtools.utils import run_as_root
 
 
-MANAGER = 'apt-get'
+MANAGER = 'DEBIAN_FRONTEND=noninteractive apt-get'
 
 
 def update_index(quiet=True):
     """
     Update APT package definitions.
     """
-    options = "-q -q" if quiet else ""
+    options = "--quiet --quiet" if quiet else ""
     run_as_root("%s %s update" % (MANAGER, options))
 
 
@@ -32,7 +32,7 @@ def upgrade(safe=True):
     cmds = {'apt-get': {False: 'dist-upgrade', True: 'upgrade'},
             'aptitude': {False: 'full-upgrade', True: 'safe-upgrade'}}
     cmd = cmds[manager][safe]
-    run_as_root("%(manager)s --assume-yes %(cmd)s" % locals())
+    run_as_root("%(manager)s --assume-yes %(cmd)s" % locals(), pty=False)
 
 
 def is_installed(pkg_name):
@@ -82,7 +82,8 @@ def install(packages, update=False, options=None):
     options.append("--quiet")
     options.append("--assume-yes")
     options = " ".join(options)
-    run_as_root('%(manager)s install %(options)s %(packages)s' % locals())
+    cmd = '%(manager)s install %(options)s %(packages)s' % locals()
+    run_as_root(cmd, pty=False)
 
 
 def uninstall(packages, purge=False, options=None):
@@ -102,7 +103,8 @@ def uninstall(packages, purge=False, options=None):
         packages = " ".join(packages)
     options.append("--assume-yes")
     options = " ".join(options)
-    run_as_root('%(manager)s %(command)s %(options)s %(packages)s' % locals())
+    cmd = '%(manager)s %(command)s %(options)s %(packages)s' % locals()
+    run_as_root(cmd, pty=False)
 
 
 def preseed_package(pkg_name, preseed):

@@ -66,7 +66,7 @@ def ppa(name):
 
     if not is_file(source):
         package('python-software-properties')
-        run_as_root('add-apt-repository %s' % name)
+        run_as_root('add-apt-repository %s' % name, pty=False)
         update_index()
 
 
