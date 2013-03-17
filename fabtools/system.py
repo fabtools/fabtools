@@ -69,9 +69,32 @@ def supported_locales():
 
 def get_arch():
     """
-    Get the current architecture.
+    Get the CPU architecture.
+
+    Example::
+
+        from fabtools.system import get_arch
+
+        if get_arch() == 'x86_64':
+            print(u"Running on a 64-bit Intel/AMD system")
 
     """
     with settings(hide('running', 'stdout')):
         arch = run('uname -m')
         return arch
+
+
+def cpus():
+    """
+    Get the number of CPU cores.
+
+    Example::
+
+        from fabtools.system import cpus
+
+        nb_workers = 2 * cpus() + 1
+
+    """
+    with settings(hide('running', 'stdout')):
+        res = run('python -c "import multiprocessing ; print(multiprocessing.cpu_count())"')
+        return int(res)

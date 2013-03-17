@@ -5,6 +5,12 @@
 
 .. automodule:: fabtools.system
 
+    Hardware detection
+    ~~~~~~~~~~~~~~~~~~
+
+    .. autofunction:: get_arch
+    .. autofunction:: cpus
+
     Hostname
     ~~~~~~~~
 

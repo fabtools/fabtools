@@ -20,6 +20,7 @@ except ImportError:
 
 from fabric.api import cd, hide, run, settings
 
+from fabtools.system import cpus
 from fabtools.utils import run_as_root
 
 
@@ -53,9 +54,6 @@ def install_from_source(version=DEFAULT_VERSION):
     filename = 'node-v%s.tar.gz' % version
     foldername = filename[0:-7]
 
-    res = run('python -c "import multiprocessing ; print(multiprocessing.cpu_count())"')
-    cpus = int(res)
-
     require_file(url='http://nodejs.org/dist/v%(version)s/%(filename)s' % {
         'version': version,
         'filename': filename,
@@ -63,7 +61,7 @@ def install_from_source(version=DEFAULT_VERSION):
     run('tar -xzf %s' % filename)
     with cd(foldername):
         run('./configure')
-        run('make -j%d' % (cpus + 1))
+        run('make -j%d' % (cpus() + 1))
         run_as_root('make install')
     run('rm -rf %(filename)s %(foldername)s' % locals())
 
