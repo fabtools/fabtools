@@ -5,6 +5,7 @@ Version 0.14.0dev (unreleased)
 ------------------------------
 
 * Upgrade default pip version to 1.3.1
+* Add support for Vagrant 1.1 providers in functional tests
 
 Version 0.13.0 (2013-03-15)
 ---------------------------

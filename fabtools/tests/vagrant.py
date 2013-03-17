@@ -104,6 +104,14 @@ class VagrantTestSuite(unittest.BaseTestSuite):
         """
         Spin up a new vagrant box
         """
+
+        # Support for Vagrant 1.1 providers
+        if ':' in self.current_box:
+            box_name, provider = self.current_box.split(':', 1)
+        else:
+            box_name = self.current_box
+            provider = None
+
         with lcd(os.path.dirname(__file__)):
 
             if not os.path.exists('Vagrantfile') \
@@ -111,14 +119,20 @@ class VagrantTestSuite(unittest.BaseTestSuite):
 
                 # Create a fresh vagrant config file
                 local('rm -f Vagrantfile')
-                local('vagrant init %s' % self.current_box)
+                local('vagrant init %s' % box_name)
 
                 # Clean up
                 halt_and_destroy()
 
+            if provider:
+                options = ' --provider %s' % provider
+            else:
+                options = ''
+
             # Spin up the box
             # (retry as it sometimes fails for no good reason)
-            local('vagrant up || vagrant up')
+            cmd = 'vagrant up%s' % options
+            local('%s || %s' % (cmd, cmd))
 
     def ssh_config(self):
         """
