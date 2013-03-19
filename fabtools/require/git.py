@@ -19,7 +19,7 @@ def working_copy(remote_url, path=None, branch="master", update=True,
     """
     Require a working copy of the repository from the ``remote_url``.
 
-    Clones or pulls from the repository under ``remote_url`` and checks out
+    Clones or fetchs from the repository under ``remote_url`` and checks out
     ``branch``.
 
     :param remote_url: URL of the remote repository (e.g.
@@ -31,16 +31,16 @@ def working_copy(remote_url, path=None, branch="master", update=True,
                  filesystem.  If this directory doesn't exist yet, a new
                  working copy is created through ``git clone``.  If the
                  directory does exist *and* ``update == True``, a
-                 ``git pull`` is issued.  If ``path is None`` the ``git clone``
-                 is issued in the current working directory and the directory
-                 name of the working copy is created by ``git``.
+                 ``git fetch`` is issued.  If ``path is None`` the
+                 ``git clone`` is issued in the current working directory and
+                 the directory name of the working copy is created by ``git``.
     :type path: str
 
-    :param branch: Branch to switch to after cloning or pulling.
+    :param branch: Branch to switch to after cloning or fetching.
     :type branch: str
 
     :param update: Whether or not to update an existing working copy via
-                   ``git pull``.
+                   ``git fetch``.
     :type update: bool
 
     :param use_sudo: If ``True`` execute ``git`` with
@@ -55,20 +55,20 @@ def working_copy(remote_url, path=None, branch="master", update=True,
     """
 
     if is_dir(path, use_sudo=use_sudo) and update:
-        # git pull
+        # git fetch
+        git.fetch(path=path, use_sudo=use_sudo, user=user)
+        git.checkout(path=path, branch=branch, use_sudo=use_sudo, user=user)
         git.pull(path=path, use_sudo=use_sudo, user=user)
 
     elif is_dir(path, use_sudo=use_sudo) and not update:
-        # do nothing
-        return
+        git.checkout(path=path, branch=branch, use_sudo=use_sudo, user=user)
 
     elif not is_dir(path, use_sudo=use_sudo):
         # git clone
         git.clone(remote_url, path=path, use_sudo=use_sudo, user=user)
         if path is None:
             path = remote_url.split('/')[-1].replace('.git', '')
+        git.checkout(path=path, branch=branch, use_sudo=use_sudo, user=user)
 
     else:
         raise ValueError("Invalid combination of parameters.")
-
-    git.checkout(path=path, branch=branch, use_sudo=use_sudo, user=user)
