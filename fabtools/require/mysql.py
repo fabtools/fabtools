@@ -61,9 +61,11 @@ def user(name, password, **kwargs):
 
     Example::
 
+        from fabric.api import settings
         from fabtools import require
 
-        require.mysql.user('dbuser', 'somerandomstring')
+        with settings(mysql_user='root', mysql_password='s3cr3t'):
+            require.mysql.user('dbuser', 'somerandomstring')
 
     """
     if not user_exists(name, **kwargs):
@@ -78,9 +80,11 @@ def database(name, **kwargs):
 
     Example::
 
+        from fabric.api import settings
         from fabtools import require
 
-        require.mysql.database('myapp', owner='dbuser')
+        with settings(mysql_user='root', mysql_password='s3cr3t'):
+            require.mysql.database('myapp', owner='dbuser')
 
     """
     if not database_exists(name, **kwargs):
