@@ -9,6 +9,7 @@ Version 0.14.0dev (unreleased)
 * Add ``fabtools.system.cpus`` to get the host's CPU count
 * Less verbose output
 * Move OS detection functions to ``fabtools.system``
+* Better support for Red Hat based systems
 
 Version 0.13.0 (2013-03-15)
 ---------------------------

@@ -126,9 +126,11 @@ def setup_containers():
     from fabtools import require
     from fabtools.openvz import guest, list_ctids
     from fabtools.require.openvz import container
+    from fabtools.system import distrib_family
     import fabtools
 
-    require.deb.package('vzctl')
+    if distrib_family() == 'debian':
+        require.deb.package('vzctl')
 
     NAME = 'debian'
     TEMPLATE = 'debian-6.0-x86_64'

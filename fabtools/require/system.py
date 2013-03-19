@@ -11,6 +11,7 @@ from fabric.contrib.files import append, uncomment
 
 from fabtools.files import is_file, watch
 from fabtools.system import (
+    distrib_family,
     get_hostname, set_hostname,
     get_sysctl, set_sysctl,
     supported_locales,
@@ -35,7 +36,8 @@ def sysctl(key, value, persist=True):
                          contents='%(key)s = %(value)s\n' % locals(),
                          use_sudo=True)
         if config.changed:
-            run_as_root('service procps start')
+            if distrib_family() == 'debian':
+                run_as_root('service procps start')
 
 
 def hostname(name):

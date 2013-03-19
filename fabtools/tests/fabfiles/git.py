@@ -7,14 +7,7 @@ Created on 2013-03-04
 
 from __future__ import with_statement
 
-from fabric.api import cd
-from fabric.api import sudo
 from fabric.api import task
-
-from fabtools import require
-from fabtools.files import group
-from fabtools.files import is_dir
-from fabtools.files import owner
 
 
 remote_url = "https://github.com/disko/fabtools.git"
@@ -25,9 +18,19 @@ def git_require():
     """ Test high level git tools.  These tests should also cover the low level
         tools as all of them are called indirectly. """
 
-    require.deb.package('git')
+    from fabric.api import cd, sudo
+
+    from fabtools import require
+    from fabtools.files import group, is_dir, owner
+    from fabtools.system import distrib_family
 
     from fabtools.require.git import working_copy
+
+    family = distrib_family()
+    if family == 'debian':
+        require.deb.package('git-core')
+    elif family == 'redhat':
+        require.rpm.package('git')
 
     with cd('/tmp'):
         # clean up...
@@ -107,4 +110,7 @@ def git_require():
             branch = sudo('git branch')
             assert branch == '* master'
         assert owner('wc_nobody') == 'nobody'
-        assert group('wc_nobody') == 'nogroup'
+        if family == 'debian':
+            assert group('wc_nobody') == 'nogroup'
+        elif family == 'redhat':
+            assert group('wc_nobody') == 'nobody'

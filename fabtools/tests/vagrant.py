@@ -92,7 +92,8 @@ class VagrantTestSuite(unittest.BaseTestSuite):
 
             # Make sure the package index is up to date
             with self.settings():
-                fabtools.deb.update_index()
+                if fabtools.system.distrib_family() == 'debian':
+                    fabtools.deb.update_index()
 
             # Run the test suite
             unittest.BaseTestSuite.run(self, result)

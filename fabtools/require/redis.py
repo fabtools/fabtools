@@ -12,6 +12,7 @@ from __future__ import with_statement
 from fabric.api import cd, run, settings
 
 from fabtools.files import is_file, watch
+from fabtools.system import distrib_family
 from fabtools.utils import run_as_root
 import fabtools.supervisor
 
@@ -37,9 +38,24 @@ def installed_from_source(version=VERSION):
     from fabtools.require import directory as require_directory
     from fabtools.require import file as require_file
     from fabtools.require import user as require_user
-    from fabtools.require.deb import package as require_package
+    from fabtools.require.deb import packages as require_deb_packages
+    from fabtools.require.rpm import packages as require_rpm_packages
 
-    require_user('redis', home='/var/lib/redis')
+    family = distrib_family()
+
+    if family == 'debian':
+        require_deb_packages([
+            'build-essential',
+        ])
+
+    elif family == 'redhat':
+        require_rpm_packages([
+            'gcc',
+            'make',
+        ])
+
+    require_user('redis', home='/var/lib/redis', system=True)
+    require_directory('/var/lib/redis', owner='redis', use_sudo=True)
 
     dest_dir = '/opt/redis-%(version)s' % locals()
     require_directory(dest_dir, use_sudo=True, owner='redis')
@@ -55,7 +71,6 @@ def installed_from_source(version=VERSION):
             run('tar xzf %(tarball)s' % locals())
 
             # Compile and install binaries
-            require_package('build-essential')
             with cd('redis-%(version)s' % locals()):
                 run('make')
 

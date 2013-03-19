@@ -60,7 +60,7 @@ def require_users():
     assert fabtools.files.is_dir('/home/req2')
 
     # require that a user exist, with custom home directory
-    require.user('req3', home='/tmp/req3')
+    require.user('req3', home='/home/other')
     assert fabtools.user.exists('req3')
     assert not fabtools.files.is_dir('/home/req3')
-    assert fabtools.files.is_dir('/tmp/req3')
+    assert fabtools.files.is_dir('/home/other')
