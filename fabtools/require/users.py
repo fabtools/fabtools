@@ -7,7 +7,7 @@ from fabtools.user import create, exists, modify
 from fabtools.utils import run_as_root
 
 
-def user(name, comment=None, home=None, create_home=True, skeleton_dir=None,
+def user(name, comment=None, home=None, create_home=None, skeleton_dir=None,
          group=None, create_group=True, extra_groups=None, password=None,
          system=False, shell=None, uid=None):
     """
