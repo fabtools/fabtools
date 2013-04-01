@@ -80,7 +80,7 @@ def database_exists(name, **kwargs):
     Check if a MySQL database exists.
     """
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        res = _query("use mysql; SELECT Db FROM db WHERE Db = '%(name)s';" % {
+        res = _query("SHOW DATABASES LIKE '%(name)s';" % {
             'name': name
         }, **kwargs)
 
