@@ -19,8 +19,18 @@ def working_copy(remote_url, path=None, branch="master", update=True,
     """
     Require a working copy of the repository from the ``remote_url``.
 
-    Clones or fetchs from the repository under ``remote_url`` and checks out
-    ``branch``.
+    The ``path`` is optional, and defaults to the last segment of the
+    remote repository URL, without its ``.git`` suffix.
+
+    If the ``path`` does not exist, this will clone the remote
+    repository and check out the specified branch.
+
+    If the ``path`` exists and ``update`` is ``True``, it will fetch
+    changes from the remote repository, check out the specified branch,
+    then merge the remote changes into the working copy.
+
+    If the ``path`` exists and ``update`` is ``False``, it will only
+    check out the specified branch, without fetching remote changesets.
 
     :param remote_url: URL of the remote repository (e.g.
                        https://github.com/ronnix/fabtools.git).  The given URL
@@ -36,11 +46,10 @@ def working_copy(remote_url, path=None, branch="master", update=True,
                  the directory name of the working copy is created by ``git``.
     :type path: str
 
-    :param branch: Branch to switch to after cloning or fetching.
+    :param branch: Branch to check out.
     :type branch: str
 
-    :param update: Whether or not to update an existing working copy via
-                   ``git fetch``.
+    :param update: Whether or not to fetch and merge remote changesets.
     :type update: bool
 
     :param use_sudo: If ``True`` execute ``git`` with

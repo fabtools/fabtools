@@ -20,7 +20,8 @@ from fabtools.utils import run_as_root
 
 
 def clone(remote_url, path=None, use_sudo=False, user=None):
-    """ Clone a remote Git repository into a non existing directory.
+    """
+    Clone a remote Git repository into a new directory.
 
     :param remote_url: URL of the remote repository to clone.
     :type remote_url: str
@@ -52,7 +53,11 @@ def clone(remote_url, path=None, use_sudo=False, user=None):
 
 
 def fetch(path, use_sudo=False, user=None):
-    """ Fetch from a remote Git repository on an existing working copy.
+    """
+    Fetch changes from the default remote repository.
+
+    This will fetch new changesets, but will not update the contents of
+    the working tree unless yo do a merge or rebase.
 
     :param path: Path of the working copy directory.  This directory must exist
                  and be a Git working copy with a default remote to fetch from.
@@ -85,7 +90,8 @@ def fetch(path, use_sudo=False, user=None):
 
 
 def pull(path, use_sudo=False, user=None):
-    """ Pull from a remote Git repository on an existing working copy.
+    """
+    Fetch changes from the default remote repository and merge them.
 
     :param path: Path of the working copy directory.  This directory must exist
                  and be a Git working copy with a default remote to pull from.
@@ -118,7 +124,8 @@ def pull(path, use_sudo=False, user=None):
 
 
 def checkout(path, branch="master", use_sudo=False, user=None):
-    """ Checkout an existing branch of an existing Git working copy.
+    """
+    Checkout a branch to the working directory.
 
     :param path: Path of the working copy directory.  This directory must exist
                  and be a Git working copy.
