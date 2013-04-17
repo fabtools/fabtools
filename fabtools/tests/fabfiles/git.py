@@ -21,6 +21,7 @@ def git_require():
     from fabtools.files import (
         group,
         is_dir,
+        md5sum,
         owner,
     )
     from fabtools.system import distrib_family
@@ -64,10 +65,10 @@ def git_require():
 
         # Test that nothing is updated
         sudo('tar cf wc_old.tar wc')
-        old_md5 = sudo('md5sum wc_old.tar').split(' ')[0]
+        old_md5 = md5sum('wc_old.tar', use_sudo=True)
         working_copy(REMOTE_URL, path='wc', update=False)
         sudo('tar cf wc_new.tar wc')
-        new_md5 = sudo('md5sum wc_new.tar').split(' ')[0]
+        new_md5 = md5sum('wc_new.tar', use_sudo=True)
         assert old_md5 == new_md5
 
         # Test checkout of a branch
