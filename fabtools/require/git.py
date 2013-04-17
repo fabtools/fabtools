@@ -63,6 +63,9 @@ def working_copy(remote_url, path=None, branch="master", update=True,
     :type user: str
     """
 
+    if path is None:
+        path = remote_url.split('/')[-1].rstrip('.git')
+
     if is_dir(path, use_sudo=use_sudo) and update:
         git.fetch(path=path, use_sudo=use_sudo, user=user)
         git.checkout(path=path, branch=branch, use_sudo=use_sudo, user=user)
@@ -73,8 +76,6 @@ def working_copy(remote_url, path=None, branch="master", update=True,
 
     elif not is_dir(path, use_sudo=use_sudo):
         git.clone(remote_url, path=path, use_sudo=use_sudo, user=user)
-        if path is None:
-            path = remote_url.split('/')[-1].replace('.git', '')
         git.checkout(path=path, branch=branch, use_sudo=use_sudo, user=user)
 
     else:
