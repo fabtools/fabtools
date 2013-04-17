@@ -55,7 +55,6 @@ def working_copy(remote_url, path=None, branch="master", update=True,
     """
 
     if is_dir(path, use_sudo=use_sudo) and update:
-        # git fetch
         git.fetch(path=path, use_sudo=use_sudo, user=user)
         git.checkout(path=path, branch=branch, use_sudo=use_sudo, user=user)
         git.pull(path=path, use_sudo=use_sudo, user=user)
@@ -64,7 +63,6 @@ def working_copy(remote_url, path=None, branch="master", update=True,
         git.checkout(path=path, branch=branch, use_sudo=use_sudo, user=user)
 
     elif not is_dir(path, use_sudo=use_sudo):
-        # git clone
         git.clone(remote_url, path=path, use_sudo=use_sudo, user=user)
         if path is None:
             path = remote_url.split('/')[-1].replace('.git', '')
