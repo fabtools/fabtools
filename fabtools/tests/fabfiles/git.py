@@ -15,7 +15,7 @@ def git_require():
     level tools as all of them are called indirectly.
     """
 
-    from fabric.api import cd, sudo
+    from fabric.api import cd, run, sudo
 
     from fabtools import require
     from fabtools.files import (
@@ -44,11 +44,11 @@ def git_require():
         assert is_dir('fabtools')
         assert is_dir('fabtools/.git')
         with cd('fabtools'):
-            remotes = sudo('git remote -v')
+            remotes = run('git remote -v')
             assert remotes == \
                 'origin\thttps://github.com/disko/fabtools.git (fetch)\r\n' \
                 'origin\thttps://github.com/disko/fabtools.git (push)'
-            branch = sudo('git branch')
+            branch = run('git branch')
             assert branch == '* master'
 
         # Test with remote URL and path
@@ -56,19 +56,19 @@ def git_require():
         assert is_dir('wc')
         assert is_dir('wc/.git')
         with cd('wc'):
-            remotes = sudo('git remote -v')
+            remotes = run('git remote -v')
             assert remotes == \
                 'origin\thttps://github.com/disko/fabtools.git (fetch)\r\n' \
                 'origin\thttps://github.com/disko/fabtools.git (push)'
-            branch = sudo('git branch')
+            branch = run('git branch')
             assert branch == '* master'
 
         # Test that nothing is updated
-        sudo('tar cf wc_old.tar wc')
-        old_md5 = md5sum('wc_old.tar', use_sudo=True)
+        run('tar cf wc_old.tar wc')
+        old_md5 = md5sum('wc_old.tar')
         working_copy(REMOTE_URL, path='wc', update=False)
-        sudo('tar cf wc_new.tar wc')
-        new_md5 = md5sum('wc_new.tar', use_sudo=True)
+        run('tar cf wc_new.tar wc')
+        new_md5 = md5sum('wc_new.tar')
         assert old_md5 == new_md5
 
         # Test checkout of a branch
@@ -76,11 +76,11 @@ def git_require():
         assert is_dir('wc')
         assert is_dir('wc/.git')
         with cd('wc'):
-            remotes = sudo('git remote -v')
+            remotes = run('git remote -v')
             assert remotes == \
                 'origin\thttps://github.com/disko/fabtools.git (fetch)\r\n' \
                 'origin\thttps://github.com/disko/fabtools.git (push)'
-            branch = sudo('git branch')
+            branch = run('git branch')
             assert branch == 'master\r\n* test_git'
 
         # Test use_sudo without user
@@ -103,11 +103,11 @@ def git_require():
         assert is_dir('wc_nobody')
         assert is_dir('wc_nobody/.git')
         with cd('wc_nobody'):
-            remotes = sudo('git remote -v')
+            remotes = sudo('git remote -v', user='nobody')
             assert remotes == \
                 'origin\thttps://github.com/disko/fabtools.git (fetch)\r\n' \
                 'origin\thttps://github.com/disko/fabtools.git (push)'
-            branch = sudo('git branch')
+            branch = sudo('git branch', user='nobody')
             assert branch == '* master'
         assert owner('wc_nobody') == 'nobody'
         if family == 'debian':
