@@ -64,10 +64,10 @@ def git_require():
             assert branch == '* master'
 
         # Test that nothing is updated
-        run('tar cf wc_old.tar wc')
+        run('tar -c -f wc_old.tar --exclude .git wc')
         old_md5 = md5sum('wc_old.tar')
         working_copy(REMOTE_URL, path='wc', update=False)
-        run('tar cf wc_new.tar wc')
+        run('tar -c -f wc_new.tar --exclude .git wc')
         new_md5 = md5sum('wc_new.tar')
         assert old_md5 == new_md5
 
