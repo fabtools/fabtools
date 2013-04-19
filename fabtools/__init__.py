@@ -2,6 +2,7 @@
 import fabtools.cron
 import fabtools.deb
 import fabtools.files
+import fabtools.git
 import fabtools.group
 import fabtools.mysql
 import fabtools.network
