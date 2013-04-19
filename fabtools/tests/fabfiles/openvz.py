@@ -126,6 +126,7 @@ def setup_containers():
     from fabtools import require
     from fabtools.openvz import guest, list_ctids
     from fabtools.require.openvz import container
+    from fabtools.require.redis import VERSION as REDIS_VERSION
     from fabtools.system import distrib_family
     import fabtools
 
@@ -202,7 +203,7 @@ def setup_containers():
             # Install Redis
             require.redis.instance('test')
             assert fabtools.files.is_file('/etc/redis/test.conf')
-            assert run('echo PING | /opt/redis-2.4.15/redis-cli') == 'PONG'
+            assert run('echo PING | /opt/redis-%s/redis-cli' % REDIS_VERSION) == 'PONG'
 
     assert 'debian' in list_ctids()
 
