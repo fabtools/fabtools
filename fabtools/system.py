@@ -15,7 +15,7 @@ def distrib_id():
     Get the OS distribution ID.
 
     Returns one of ``"Debian"``, ``"Ubuntu"``, ``"RHEL"``, ``"CentOS"``,
-    ``"Fedora"``...
+    ``"Fedora"``, ``"Archlinux"``...
 
     Example::
 
@@ -35,6 +35,8 @@ def distrib_id():
             return "Debian"
         elif is_file('/etc/fedora-release'):
             return "Fedora"
+        elif is_file('/etc/arch-release'):
+            return "Archlinux"
         elif is_file('/etc/redhat-release'):
             release = run('cat /etc/redhat-release')
             if release.startswith('Red Hat Enterprise Linux'):
@@ -118,7 +120,10 @@ def set_hostname(hostname, persist=True):
     """
     run_as_root('hostname %s' % hostname)
     if persist:
-        run_as_root('echo %s >/etc/hostname' % hostname)
+        if distrib_id() == "Archlinux":
+            run_as_root('hostnamectl set-hostname "%s"' % hostname)
+        else:
+            run_as_root('echo %s >/etc/hostname' % hostname)
 
 
 def get_sysctl(key):
@@ -158,7 +163,10 @@ def supported_locales():
     Each locale is returned as a ``(locale, charset)`` tuple.
     """
     with settings(hide('running', 'stdout')):
-        res = run('grep -v "^#" /usr/share/i18n/SUPPORTED')
+        if distrib_id() == "Archlinux":
+            res = run('grep -v "^#" /etc/locale.gen')
+        else:
+            res = run('grep -v "^#" /usr/share/i18n/SUPPORTED')
     return [line.split(' ') for line in res.splitlines()]
 
 
