@@ -9,6 +9,7 @@ from fabric.api import hide, run, settings
 from fabtools.files import is_file
 from fabtools.utils import run_as_root
 
+import re
 
 def distrib_id():
     """
@@ -120,10 +121,7 @@ def set_hostname(hostname, persist=True):
     """
     run_as_root('hostname %s' % hostname)
     if persist:
-        if distrib_id() == "Archlinux":
-            run_as_root('hostnamectl set-hostname "%s"' % hostname)
-        else:
-            run_as_root('echo %s >/etc/hostname' % hostname)
+        run_as_root('echo %s >/etc/hostname' % hostname)
 
 
 def get_sysctl(key):
@@ -163,11 +161,14 @@ def supported_locales():
     Each locale is returned as a ``(locale, charset)`` tuple.
     """
     with settings(hide('running', 'stdout')):
+        slocale = re.compile(r'^#*([a-z]+_[A-Z].*? [A-Z0-9\-]+)')
         if distrib_id() == "Archlinux":
-            res = run('grep -v "^#" /etc/locale.gen')
+            res = run("cat /etc/locale.gen")
+            locales = [m.group(1).split(' ') for l in res.splitlines() for m in [slocale.search(l)] if m]
         else:
-            res = run('grep -v "^#" /usr/share/i18n/SUPPORTED')
-    return [line.split(' ') for line in res.splitlines()]
+            res = run('cat /usr/share/i18n/SUPPORTED')
+            locales = [m.group(1).split(' ') for l in res.splitlines() for m in [slocale.search(l)] if m]
+    return locales
 
 
 def get_arch():
