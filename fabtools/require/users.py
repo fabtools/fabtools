@@ -52,7 +52,8 @@ def user(name, comment=None, home=None, create_home=None, skeleton_dir=None,
         require_directory(home, owner=name, use_sudo=True)
 
 
-def sudoer(username, hosts="ALL", operators="ALL", passwd=False, commands="ALL"):
+def sudoer(username, hosts="ALL", operators="ALL", passwd=False,
+           commands="ALL"):
     """
     Require sudo permissions for a given user.
 
