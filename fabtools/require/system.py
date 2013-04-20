@@ -69,7 +69,7 @@ def locales(names):
                 locale = "%s %s" % (name, charset)
                 with shell_env():
                     uncomment(config_file, escape(locale), use_sudo=True)
-                    append(config_file, locale, use_sudo=True)
+                    append(config_file, locale, use_sudo=True, partial=True)
             else:
                 warn('Unsupported locale name "%s"' % name)
 
