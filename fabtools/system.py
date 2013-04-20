@@ -158,8 +158,8 @@ def supported_locales():
     Each locale is returned as a ``(locale, charset)`` tuple.
     """
     with settings(hide('running', 'stdout')):
-        res = run('grep -v "^#" /usr/share/i18n/SUPPORTED')
-    return [line.split(' ') for line in res.splitlines()]
+        res = run('cat /usr/share/i18n/SUPPORTED')
+    return [line.split(' ') for line in res.splitlines() if not line.startswith('#')]
 
 
 def get_arch():
