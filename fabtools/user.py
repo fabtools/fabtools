@@ -5,10 +5,11 @@ Users
 from __future__ import with_statement
 
 from pipes import quote
+import posixpath
 import random
 import string
 
-from fabric.api import hide, run, settings
+from fabric.api import hide, run, settings, sudo
 
 from fabtools.group import (
     exists as _group_exists,
@@ -40,7 +41,7 @@ def _crypt_password(password):
 
 def create(name, comment=None, home=None, create_home=None, skeleton_dir=None,
            group=None, create_group=True, extra_groups=None, password=None,
-           system=False, shell=None, uid=None, keys_file=None):
+           system=False, shell=None, uid=None, ssh_public_keys=None):
     """
     Create a new user and its home directory.
 
@@ -55,6 +56,10 @@ def create(name, comment=None, home=None, create_home=None, skeleton_dir=None,
 
     If *shell* is ``None``, the user's login shell will be the system's
     default login shell (usually ``/bin/sh``).
+
+    *ssh_public_keys* can be a (local) filename or a list of (local)
+    filenames of public keys that should be added to the user's SSH
+    authorized keys (see :py:func:`fabtools.user.add_ssh_public_keys`).
 
     Example::
 
@@ -108,15 +113,21 @@ def create(name, comment=None, home=None, create_home=None, skeleton_dir=None,
     args = ' '.join(args)
     run_as_root('useradd %s' % args)
 
-    if keys_file:
-        authorize_keys(name, keys_file)
+    if ssh_public_keys:
+        if isinstance(ssh_public_keys, basestring):
+            ssh_public_keys = [ssh_public_keys]
+        add_ssh_public_keys(name, ssh_public_keys)
 
 
 def modify(name, comment=None, home=None, move_current_home=False, group=None,
            extra_groups=None, login_name=None, password=None, shell=None,
-           uid=None, keys_file=None):
+           uid=None, ssh_public_keys=None):
     """
     Modify an existing user.
+
+    *ssh_public_keys* can be a (local) filename or a list of (local)
+    filenames of public keys that should be added to the user's SSH
+    authorized keys (see :py:func:`fabtools.user.add_ssh_public_keys`).
 
     Example::
 
@@ -154,35 +165,95 @@ def modify(name, comment=None, home=None, move_current_home=False, group=None,
         args = ' '.join(args)
         run_as_root('usermod %s' % args)
 
-    if keys_file:
-        authorize_keys(name, keys_file)
+    if ssh_public_keys:
+        if isinstance(ssh_public_keys, basestring):
+            ssh_public_keys = [ssh_public_keys]
+        add_ssh_public_keys(name, ssh_public_keys)
 
 
-from fabtools.require.files import (
-    directory as _require_directory,
-    file as _require_file,
-)
-
-
-def authorize_keys(name, keys_file):
+def home_directory(name):
     """
-    Add  public keys from specified file to user authorized keys.
+    Get the absolute path to the user's home directory
 
     Example::
 
         import fabtools
 
-        if fabtools.user.exists('alice'):
-            fabtools.user.authorize_keys('alice', '~/.ssh/id_rsa.pub')
+        home = fabtools.user.home_directory('alice')
+
+    """
+    with settings(hide('running', 'stdout')):
+        return run('echo ~' + name)
+
+
+def authorized_keys(name):
+    """
+    Get the list of authorized SSH public keys for the user
+    """
+
+    ssh_dir = posixpath.join(home_directory(name), '.ssh')
+    authorized_keys_filename = posixpath.join(ssh_dir, 'authorized_keys')
+
+    res = sudo('cat %s' % quote(authorized_keys_filename), quiet=True)
+    if res.succeeded:
+        return [line for line in res.splitlines() if line and not line.startswith('#')]
+    else:
+        return []
+
+
+def add_ssh_public_key(name, filename):
+    """
+    Add a public key to the user's authorized SSH keys.
+
+    *filename* must be the local filename of a public key that should be
+    added to the user's SSH authorized keys.
+
+    Example::
+
+        import fabtools
+
+        fabtools.user.add_ssh_public_key('alice', '~/.ssh/id_rsa.pub')
 
     """
 
-    user_home = _get_user_home(name)
-    _require_directory(user_home + '/.ssh',
-                       mode='700', owner=name, use_sudo=True)
-    _require_file(user_home + '/.ssh/authorized_keys', mode=600, owner=name,
-                  source=keys_file, use_sudo=True)
+    add_ssh_public_keys(name, [filename])
 
 
-def _get_user_home(name):
-    return run('echo ~' + name)
+def add_ssh_public_keys(name, filenames):
+    """
+    Add multiple public keys to the user's authorized SSH keys.
+
+    *filenames* must be a list of local filenames of public keys that
+    should be added to the user's SSH authorized keys.
+
+    Example::
+
+        import fabtools
+
+        fabtools.user.add_ssh_public_keys('alice', [
+            '~/.ssh/id1_rsa.pub',
+            '~/.ssh/id2_rsa.pub',
+        ])
+
+    """
+
+    from fabtools.require.files import (
+        directory as _require_directory,
+        file as _require_file,
+    )
+
+    ssh_dir = posixpath.join(home_directory(name), '.ssh')
+    _require_directory(ssh_dir, mode='700', owner=name, use_sudo=True)
+
+    authorized_keys_filename = posixpath.join(ssh_dir, 'authorized_keys')
+    _require_file(authorized_keys_filename, mode=600, owner=name, use_sudo=True)
+
+    for filename in filenames:
+
+        with open(filename) as public_key_file:
+            public_key = public_key_file.read().strip()
+
+        # we don't use fabric.contrib.files.append() as it's buggy
+        if public_key not in authorized_keys(name):
+            sudo('echo %s >>%s' % (quote(public_key),
+                                   quote(authorized_keys_filename)))

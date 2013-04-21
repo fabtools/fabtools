@@ -1,27 +1,39 @@
 from __future__ import with_statement
 
-from fabric.api import task, run, env, settings, get, local
+import os
 
-import fabtools
+from fabric.api import hide, sudo, task
 
 
 @task
 def should_create_user_without_home_directory():
+
+    import fabtools
+
     fabtools.user.create('user1', create_home=False)
+
     assert fabtools.user.exists('user1')
     assert not fabtools.files.is_dir('/home/user1')
 
 
 @task
 def should_create_user_with_default_home_directory():
+
+    import fabtools
+
     fabtools.user.create('user2')
+
     assert fabtools.user.exists('user2')
     assert fabtools.files.is_dir('/home/user2')
 
 
 @task
-def should_create_user_without_home_directory():
+def should_create_user_with_home_directory():
+
+    import fabtools
+
     fabtools.user.create('user3', home='/tmp/user3')
+
     assert fabtools.user.exists('user3')
     assert not fabtools.files.is_dir('/home/user3')
     assert fabtools.files.is_dir('/tmp/user3')
@@ -29,14 +41,22 @@ def should_create_user_without_home_directory():
 
 @task
 def should_create_system_user_without_home_directory():
+
+    import fabtools
+
     fabtools.user.create('user4', system=True)
+
     assert not fabtools.files.is_dir('/home/user4')
 
 
 @task
 def should_create_system_user_with_home_directory():
+
+    import fabtools
+
     fabtools.user.create('user5', system=True,
                          create_home=True, home='/var/lib/foo')
+
     assert fabtools.files.is_dir('/var/lib/foo')
 
 
@@ -70,25 +90,27 @@ def require_users():
 
 
 @task
-def should_add_authorized_keys_for_required_user():
+def require_ssh_public_keys():
+    """
+    Check addition of SSH public key
+    """
+
+    from fabtools.user import authorized_keys
     from fabtools import require
 
-    get('~/.ssh/authorized_keys', 'keys.tmp')
+    tests_dir = os.path.dirname(os.path.dirname(__file__))
+    public_key_filename = os.path.join(tests_dir, 'id_test.pub')
 
-    require.user('req4', home='/tmp/req4', keys_file='keys.tmp')
+    with open(public_key_filename) as public_key_file:
+        public_key = public_key_file.read().strip()
 
-    host = env.host_string.split('@')[1]
+    require.user('req4', home='/tmp/req4', ssh_public_keys=public_key_filename)
 
-    keys_size = 0
-
-    with settings(host_string='req4@' + host, abort_on_prompts=True):
-        keys_size = int(run('cat ~/.ssh/authorized_keys | wc -c'))
-        assert keys_size > 0
+    keys = authorized_keys('req4')
+    assert keys == [public_key], keys
 
     # let's try add same keys second time
-    require.user('req4', home='/tmp/req4', keys_file='keys.tmp')
+    require.user('req4', home='/tmp/req4', ssh_public_keys=public_key_filename)
 
-    with settings(host_string='req4@' + host, abort_on_prompts=True):
-        assert keys_size == int(run('cat ~/.ssh/authorized_keys | wc -c'))
-
-    local('rm -f keys.tmp')
+    keys = authorized_keys('req4')
+    assert keys == [public_key], keys
