@@ -10,7 +10,7 @@ the ``easy_install`` command provided by `distribute`_.
 """
 from __future__ import with_statement
 
-from fabric.api import cd, hide, run, settings
+from fabric.api import cd, run
 
 from fabtools.utils import run_as_root
 
@@ -21,9 +21,11 @@ def is_distribute_installed():
 
     .. _distribute: http://packages.python.org/distribute/
     """
-    with settings(hide('running', 'warnings', 'stderr', 'stdout'), warn_only=True):
-        res = run('easy_install --version')
-        return res.succeeded and (res.find('distribute') >= 0)
+    cmd = '''python -c "import pkg_resources;\
+                        print pkg_resources.get_distribution('distribute')"
+          '''
+    res = run(cmd, quiet=True)
+    return res.succeeded and (res.find('distribute') >= 0)
 
 
 def install_distribute():
