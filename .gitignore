@@ -11,7 +11,7 @@ include/
 lib/
 man/
 share/
-fabtools/tests/.vagrant
+.vagrant
 fabtools/tests/Vagrantfile
 *.pyc
 *.swp
