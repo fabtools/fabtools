@@ -98,4 +98,9 @@ def default_locale(name):
 
     # Make it the default
     contents = 'LANG="%s"\n' % name
-    require_file('/etc/default/locale', contents, use_sudo=True)
+    if distrib_id() == "Archlinux":
+        config_file = '/etc/locale.conf'
+        require_file(config_file, contents, use_sudo=True)
+    else:
+        config_file = '/etc/default/locale'
+        require_file(config_file, contents, use_sudo=True)
