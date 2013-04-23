@@ -29,9 +29,10 @@ def upgrade(safe=True):
     Upgrade all packages.
     """
     manager = MANAGER
-    cmds = {'apt-get': {False: 'dist-upgrade', True: 'upgrade'},
-            'aptitude': {False: 'full-upgrade', True: 'safe-upgrade'}}
-    cmd = cmds[manager][safe]
+    if safe:
+        cmd = 'upgrade'
+    else:
+        cmd = 'dist-upgrade'
     run_as_root("%(manager)s --assume-yes %(cmd)s" % locals(), pty=False)
 
 
