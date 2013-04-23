@@ -25,8 +25,7 @@ def partition_list(device):
     with settings(hide('running', 'stdout')):
         res = run_as_root('sfdisk -l %(device)s' % locals())
 
-        #
-        spart = re.compile('(%(device)s[0-9]+) +(\*?) +(.*?) +(.*?) +(.*?) +(.*?) +(.*?) +(.*)' % locals())
+        spart = re.compile(r'(%(device)s[0-9]+) +(\*?) +(.*?) +(.*?) +(.*?) +(.*?) +(.*?) +(.*)' % locals())
         lines = res.splitlines()
         for l in lines:
             m = spart.search(l)
@@ -120,7 +119,7 @@ def mkswap(device):
 
         from fabtools.disk import mkswap
 
-        mkfs('/dev/sda2')
+        mkswap('/dev/sda2')
     """
     if not ismounted('%(device)s' % locals()):
         run_as_root('mkswap %(device)s' % locals())
