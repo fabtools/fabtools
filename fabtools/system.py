@@ -11,6 +11,7 @@ from fabtools.utils import run_as_root
 
 import re
 
+
 def distrib_id():
     """
     Get the OS distribution ID.

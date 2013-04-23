@@ -4,9 +4,9 @@ Disk Tools
 """
 from fabric.api import hide, settings, abort
 from fabtools.utils import run_as_root
-from fabtools.system import distrib_id
 
 import re
+
 
 def partition_list(device):
     """
@@ -27,7 +27,7 @@ def partition_list(device):
 
         #
         spart = re.compile('(%(device)s[0-9]+) +(\*?) +(.*?) +(.*?) +(.*?) +(.*?) +(.*?) +(.*)' % locals())
-        lines = res.splitlines()  
+        lines = res.splitlines()
         for l in lines:
             m = spart.search(l)
             if m:
@@ -44,7 +44,7 @@ def mount(device, mountpoint):
 
         from fabtools.disk import mount
 
-        mount('/dev/sdb1','/mnt/usb_drive')        
+        mount('/dev/sdb1','/mnt/usb_drive')
     """
     if not ismounted('%(device)s' % locals()):
         run_as_root('mount %(device)s %(mountpoint)s' % locals())
@@ -58,7 +58,7 @@ def swapon(device):
 
         from fabtools.disk import swapon
 
-        swapon('/dev/sda1')        
+        swapon('/dev/sda1')
     """
     if not ismounted('%(device)s' % locals()):
         run_as_root('swapon %(device)s' % locals())
@@ -78,7 +78,7 @@ def ismounted(device):
     # Check filesystem
     with settings(hide('running', 'stdout')):
         res = run_as_root('mount')
-    lines = res.splitlines()  
+    lines = res.splitlines()
     for l in lines:
         m = re.search('^%(device)s ' % locals(), l)
         if m:
@@ -87,14 +87,14 @@ def ismounted(device):
     # Check swap
     with settings(hide('running', 'stdout')):
         res = run_as_root('swapon -s')
-    lines = res.splitlines()  
+    lines = res.splitlines()
     for l in lines:
         m = re.search('^%(device)s ' % locals(), l)
         if m:
             return True
 
-
     return False
+
 
 def mkfs(device, ftype):
     """
@@ -110,6 +110,7 @@ def mkfs(device, ftype):
         run_as_root('mkfs.%(ftype)s %(device)s' % locals())
     else:
         abort("Partition is mounted")
+
 
 def mkswap(device):
     """

@@ -100,20 +100,3 @@ def uninstall(packages, yaourt=False, options=None):
     options = " ".join(options)
     cmd = '%(manager)s -R %(options)s %(packages)s' % locals()
     run_as_root(cmd, pty=False)
-
-
-def get_selections():
-    """
-    Get the state of ``pacman`` selections.
-
-    Returns a dict with state => [packages].
-    """
-
-    manager = MANAGER
-    with settings(hide('stdout')):
-        res = run_as_root('%(manager) -Q')
-    selections = dict()
-    for line in res.splitlines():
-        package, version = line.split()
-        selections.setdefault(status, list()).append(package)
-    return selections
