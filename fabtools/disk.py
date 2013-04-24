@@ -10,7 +10,7 @@ import re
 
 def partition_list(device):
     """
-    Get a partition lis for a disk
+    Get a partition list for a disk
 
     Example::
 
@@ -18,7 +18,7 @@ def partition_list(device):
 
         res = partition_list('/dev/sda')
 
-        return [ ['/dev/sda1','Linux'], ['/dev/sda2','Linux Swap'']]
+        # res ==  [['/dev/sda1', 'Linux'], ['/dev/sda2', 'Linux Swap']]
     """
     # scan partition
     partitions = []
@@ -43,9 +43,9 @@ def mount(device, mountpoint):
 
         from fabtools.disk import mount
 
-        mount('/dev/sdb1','/mnt/usb_drive')
+        mount('/dev/sdb1', '/mnt/usb_drive')
     """
-    if not ismounted('%(device)s' % locals()):
+    if not ismounted(device):
         run_as_root('mount %(device)s %(mountpoint)s' % locals())
 
 
@@ -59,7 +59,7 @@ def swapon(device):
 
         swapon('/dev/sda1')
     """
-    if not ismounted('%(device)s' % locals()):
+    if not ismounted(device):
         run_as_root('swapon %(device)s' % locals())
 
 
@@ -121,7 +121,7 @@ def mkswap(device):
 
         mkswap('/dev/sda2')
     """
-    if not ismounted('%(device)s' % locals()):
+    if not ismounted(device):
         run_as_root('mkswap %(device)s' % locals())
     else:
         abort("swap partition is mounted")
@@ -139,8 +139,7 @@ def partition_type_exists(disk, device, ptype):
            Print ("This is correct for receive a linux install")
     """
     partitions = dict(partition_list(disk))
-    search = '%(device)s' % locals()
-    if search in partitions:
-        return partitions[search] == ptype
+    if device in partitions:
+        return partitions[device] == ptype
 
     return False

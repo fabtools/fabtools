@@ -11,7 +11,7 @@ from fabric.contrib.files import append, uncomment
 
 from fabtools.files import is_file, watch
 from fabtools.system import (
-    distrib_family,distrib_id,
+    distrib_family, distrib_id,
     get_hostname, set_hostname,
     get_sysctl, set_sysctl,
     supported_locales,

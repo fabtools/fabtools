@@ -45,9 +45,7 @@ def is_installed(pkg_name):
     manager = MANAGER
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = run("%(manager)s -Q %(pkg_name)s" % locals())
-        if res.return_code == 0:
-            return True
-        return False
+        return res.succeeded
 
 
 def install(packages, update=False, yaourt=False, options=None):
