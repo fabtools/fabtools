@@ -12,6 +12,7 @@ import re
 
 from fabric.api import run, cd, settings, hide
 
+import fabtools
 from fabtools import system
 from fabtools.require.files import directory as require_directory
 from fabtools.require.files import file as require_file
@@ -40,7 +41,10 @@ def install_from_oracle_site(version=DEFAULT_VERSION):
 
     jdk_arch = _required_jdk_arch()
 
-    jdk_filename = 'jdk-%(release)s-linux-%(jdk_arch)s.tar.gz' % locals()
+    if major == '6':
+        jdk_filename = 'jdk-%(release)s-linux-%(jdk_arch)s.bin' % locals()
+    else:
+        jdk_filename = 'jdk-%(release)s-linux-%(jdk_arch)s.tar.gz' % locals()
     jdk_dir = 'jdk1.%(major)s.0_%(update)s' % locals()
 
     jdk_url = 'http://download.oracle.com/otn-pub/java/jdk/' +\
@@ -54,7 +58,16 @@ def install_from_oracle_site(version=DEFAULT_VERSION):
 
     require_directory('/opt', mode='777', use_sudo=True)
     with cd('/opt'):
-        run('tar -xzvf /tmp/%s' % jdk_filename)
+        if major == '6':
+            run('chmod u+x /tmp/%s' % jdk_filename)
+            with cd('/tmp'):
+                run('./%s' % jdk_filename)
+                run('mv %s /opt/' % jdk_dir)
+        else:
+            run('tar -xzvf /tmp/%s' % jdk_filename)
+
+        if fabtools.files.is_link('jdk'):
+            run('rm -rf jdk')
         run('ln -s %s jdk' % jdk_dir)
 
     _create_profile_d_file()
