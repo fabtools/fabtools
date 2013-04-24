@@ -4,6 +4,7 @@ Files and directories
 """
 from __future__ import with_statement
 
+from pipes import quote
 import os
 
 from fabric.api import abort, hide, run, settings, sudo, warn
@@ -203,3 +204,16 @@ class watch(object):
                 break
         if self.changed and self.callback:
             self.callback()
+
+
+def uncommented_lines(filename, use_sudo=False):
+    """
+    Get the lines of a remote file, ignoring empty or commented ones
+    """
+    func = run_as_root if use_sudo else run
+    res = func('cat %s' % quote(filename), quiet=True)
+    if res.succeeded:
+        return [line for line in res.splitlines()
+                if line and not line.startswith('#')]
+    else:
+        return []

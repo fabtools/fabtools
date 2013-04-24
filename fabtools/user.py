@@ -15,6 +15,7 @@ from fabtools.group import (
     exists as _group_exists,
     create as _group_create,
 )
+from fabtools.files import uncommented_lines
 from fabtools.utils import run_as_root
 
 
@@ -194,11 +195,7 @@ def authorized_keys(name):
     ssh_dir = posixpath.join(home_directory(name), '.ssh')
     authorized_keys_filename = posixpath.join(ssh_dir, 'authorized_keys')
 
-    res = sudo('cat %s' % quote(authorized_keys_filename), quiet=True)
-    if res.succeeded:
-        return [line for line in res.splitlines() if line and not line.startswith('#')]
-    else:
-        return []
+    return uncommented_lines(authorized_keys_filename, use_sudo=True)
 
 
 def add_ssh_public_key(name, filename):
@@ -246,7 +243,8 @@ def add_ssh_public_keys(name, filenames):
     _require_directory(ssh_dir, mode='700', owner=name, use_sudo=True)
 
     authorized_keys_filename = posixpath.join(ssh_dir, 'authorized_keys')
-    _require_file(authorized_keys_filename, mode=600, owner=name, use_sudo=True)
+    _require_file(authorized_keys_filename, mode='600', owner=name,
+                  use_sudo=True)
 
     for filename in filenames:
 
@@ -257,3 +255,29 @@ def add_ssh_public_keys(name, filenames):
         if public_key not in authorized_keys(name):
             sudo('echo %s >>%s' % (quote(public_key),
                                    quote(authorized_keys_filename)))
+
+
+def add_host_keys(name, hostname):
+    """
+    Add all public keys of a host to the user's SSH known hosts file
+    """
+
+    from fabtools.require.files import (
+        directory as _require_directory,
+        file as _require_file,
+    )
+
+    ssh_dir = posixpath.join(home_directory(name), '.ssh')
+    _require_directory(ssh_dir, mode='700', owner=name, use_sudo=True)
+
+    known_hosts_filename = posixpath.join(ssh_dir, 'known_hosts')
+    _require_file(known_hosts_filename, mode='644', owner=name, use_sudo=True)
+
+    known_hosts = uncommented_lines(known_hosts_filename, use_sudo=True)
+
+    with hide('running', 'stdout'):
+        res = run('ssh-keyscan -t rsa,dsa %s 2>/dev/null' % hostname)
+    for host_key in res.splitlines():
+        if host_key not in known_hosts:
+            sudo('echo %s >>%s' % (quote(host_key),
+                                   quote(known_hosts_filename)))
