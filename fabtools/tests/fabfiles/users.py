@@ -2,7 +2,7 @@ from __future__ import with_statement
 
 import os
 
-from fabric.api import hide, sudo, task
+from fabric.api import run, task
 
 
 @task
@@ -58,6 +58,13 @@ def should_create_system_user_with_home_directory():
                          create_home=True, home='/var/lib/foo')
 
     assert fabtools.files.is_dir('/var/lib/foo')
+
+    # create two user with same uid
+    fabtools.user.create('user6', uid='1000', non_unique=True)
+    uid6 = int(run("id -u user6"))
+    fabtools.user.create('user7', uid='1000', non_unique=True)
+    uid7 = int(run("id -u user7"))
+    assert 1000 == uid6 == uid7
 
 
 @task
