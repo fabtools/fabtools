@@ -15,7 +15,6 @@ import fabtools.require.redis
 import fabtools.require.rpm
 import fabtools.require.service
 import fabtools.require.shorewall
-import fabtools.require.ssh
 import fabtools.require.supervisor
 import fabtools.require.system
 import fabtools.require.users
