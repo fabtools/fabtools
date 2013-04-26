@@ -8,31 +8,36 @@ from fabtools.utils import run_as_root
 import re
 
 
-def partition_list(device):
+def partitions(device=""):
     """
-    Get a partition list for a disk
+    Get a partition list for all disk or for selected device only
 
     Example::
 
-        from fabtools.disk import partition_list
+        from fabtools.disk import partitions
 
-        res = partition_list('/dev/sda')
-
-        # res ==  [['/dev/sda1', 'Linux'], ['/dev/sda2', 'Linux Swap']]
+        spart = {'Linux': 83, 'Swap': 82}
+        res = partitions()
+        # res =  {'/dev/sda1': '83', '/dev/sda2': '82', '/dev/sda3': '83'}
+        r = res['/dev/sda1'] == spart['Linux']
+        r = r and res['/dev/sda2'] == spart['Swap']
+        if r:
+            print("You can format these partitions")
     """
     # scan partition
     partitions = []
     with settings(hide('running', 'stdout')):
-        res = run_as_root('sfdisk -l %(device)s' % locals())
+        res = run_as_root('sfdisk -d %(device)s' % locals())
 
-        spart = re.compile(r'(%(device)s[0-9]+) +(\*?) +(.*?) +(.*?) +(.*?) +(.*?) +(.*?) +(.*)' % locals())
+        spart = re.compile(r'(?P<pname>^/.*) : .* Id=(?P<ptypeid>[a-z0-9]+)' %
+                           locals())
         lines = res.splitlines()
         for l in lines:
             m = spart.search(l)
             if m:
-                partitions.append([m.group(1), m.group(8)])
+                partitions.append([m.group('pname'), m.group('ptypeid')])
 
-    return partitions
+    return dict(partitions)
 
 
 def mount(device, mountpoint):
@@ -125,21 +130,3 @@ def mkswap(device):
         run_as_root('mkswap %(device)s' % locals())
     else:
         abort("swap partition is mounted")
-
-
-def partition_type_exists(disk, device, ptype):
-    """
-    Check if partition is a type
-
-    Example::
-
-        from fabtools.disk import partition_type_exists
-
-        if partition_type_exists('/dev/sda', '/dev/sda1', 'Linux'):
-           Print ("This is correct for receive a linux install")
-    """
-    partitions = dict(partition_list(disk))
-    if device in partitions:
-        return partitions[device] == ptype
-
-    return False
