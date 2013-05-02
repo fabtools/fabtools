@@ -1,6 +1,6 @@
 """
 Archlinux packages
-===============
+==================
 
 This module provides high-level tools for managing Archlinux packages
 and repositories.
