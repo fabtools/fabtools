@@ -1,6 +1,6 @@
 """
 Archlinux packages
-===============
+==================
 
 This module provides tools to manage Archlinux packages
 and repositories.
@@ -16,7 +16,7 @@ from fabtools.utils import run_as_root
 MANAGER = 'LC_ALL=C pacman'
 
 
-def update_index(quiet=True, yaourt=False):
+def update_index(quiet=True):
     """
     Update pacman package definitions.
     """
@@ -29,7 +29,7 @@ def update_index(quiet=True, yaourt=False):
         run_as_root("%(manager)s -Sy" % locals())
 
 
-def upgrade(yaourt=False):
+def upgrade():
     """
     Upgrade all packages.
     """
@@ -48,7 +48,7 @@ def is_installed(pkg_name):
         return res.succeeded
 
 
-def install(packages, update=False, yaourt=False, options=None):
+def install(packages, update=False, options=None):
     """
     Install one or more packages.
 
@@ -62,7 +62,7 @@ def install(packages, update=False, yaourt=False, options=None):
         import fabtools
 
         # Update index, then install a single package
-        fabtools.deb.install('build-essential', update=True)
+        fabtools.arch.install('build-essential', update=True)
 
         # Install multiple packages
         fabtools.arch.install([
@@ -84,7 +84,7 @@ def install(packages, update=False, yaourt=False, options=None):
     run_as_root(cmd, pty=False)
 
 
-def uninstall(packages, yaourt=False, options=None):
+def uninstall(packages, options=None):
     """
     Remove one or more packages.
 
