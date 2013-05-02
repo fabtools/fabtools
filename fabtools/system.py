@@ -9,8 +9,6 @@ from fabric.api import hide, run, settings
 from fabtools.files import is_file
 from fabtools.utils import run_as_root
 
-import re
-
 
 def distrib_id():
     """
@@ -162,14 +160,11 @@ def supported_locales():
     Each locale is returned as a ``(locale, charset)`` tuple.
     """
     with settings(hide('running', 'stdout')):
-        slocale = re.compile(r'^#*([a-z]+_[A-Z].*? [A-Z0-9\-]+)')
         if distrib_id() == "Archlinux":
             res = run("cat /etc/locale.gen")
-            locales = [m.group(1).split(' ') for l in res.splitlines() for m in [slocale.search(l)] if m]
         else:
             res = run('cat /usr/share/i18n/SUPPORTED')
-            locales = [m.group(1).split(' ') for l in res.splitlines() for m in [slocale.search(l)] if m]
-    return locales
+    return [line.split(' ') for line in res.splitlines() if not line.startswith('#')]
 
 
 def get_arch():
