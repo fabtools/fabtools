@@ -11,7 +11,7 @@ from fabric.contrib.files import append, uncomment
 
 from fabtools.files import is_file, watch
 from fabtools.system import (
-    distrib_family,
+    distrib_family, distrib_id,
     get_hostname, set_hostname,
     get_sysctl, set_sysctl,
     supported_locales,
@@ -69,12 +69,15 @@ def locales(names):
                 locale = "%s %s" % (name, charset)
                 with shell_env():
                     uncomment(config_file, escape(locale), use_sudo=True)
-                    append(config_file, locale, use_sudo=True)
+                    append(config_file, locale, use_sudo=True, partial=True)
             else:
                 warn('Unsupported locale name "%s"' % name)
 
     if config.changed:
-        run_as_root('dpkg-reconfigure --frontend=noninteractive locales')
+        if distrib_id() == "Archlinux":
+            run_as_root('locale-gen')
+        else:
+            run_as_root('dpkg-reconfigure --frontend=noninteractive locales')
 
 
 def locale(name):
@@ -95,4 +98,9 @@ def default_locale(name):
 
     # Make it the default
     contents = 'LANG="%s"\n' % name
-    require_file('/etc/default/locale', contents, use_sudo=True)
+    if distrib_id() == "Archlinux":
+        config_file = '/etc/locale.conf'
+        require_file(config_file, contents, use_sudo=True)
+    else:
+        config_file = '/etc/default/locale'
+        require_file(config_file, contents, use_sudo=True)

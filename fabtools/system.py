@@ -9,13 +9,15 @@ from fabric.api import hide, run, settings
 from fabtools.files import is_file
 from fabtools.utils import run_as_root
 
+import re
+
 
 def distrib_id():
     """
     Get the OS distribution ID.
 
     Returns one of ``"Debian"``, ``"Ubuntu"``, ``"RHEL"``, ``"CentOS"``,
-    ``"Fedora"``...
+    ``"Fedora"``, ``"Archlinux"``...
 
     Example::
 
@@ -35,6 +37,8 @@ def distrib_id():
             return "Debian"
         elif is_file('/etc/fedora-release'):
             return "Fedora"
+        elif is_file('/etc/arch-release'):
+            return "Archlinux"
         elif is_file('/etc/redhat-release'):
             release = run('cat /etc/redhat-release')
             if release.startswith('Red Hat Enterprise Linux'):
@@ -158,8 +162,14 @@ def supported_locales():
     Each locale is returned as a ``(locale, charset)`` tuple.
     """
     with settings(hide('running', 'stdout')):
-        res = run('cat /usr/share/i18n/SUPPORTED')
-    return [line.split(' ') for line in res.splitlines() if not line.startswith('#')]
+        slocale = re.compile(r'^#*([a-z]+_[A-Z].*? [A-Z0-9\-]+)')
+        if distrib_id() == "Archlinux":
+            res = run("cat /etc/locale.gen")
+            locales = [m.group(1).split(' ') for l in res.splitlines() for m in [slocale.search(l)] if m]
+        else:
+            res = run('cat /usr/share/i18n/SUPPORTED')
+            locales = [m.group(1).split(' ') for l in res.splitlines() for m in [slocale.search(l)] if m]
+    return locales
 
 
 def get_arch():

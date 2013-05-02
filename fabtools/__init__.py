@@ -1,4 +1,5 @@
 # Keep imports sorted alphabetically
+import fabtools.arch
 import fabtools.cron
 import fabtools.deb
 import fabtools.files
