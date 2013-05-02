@@ -62,12 +62,12 @@ def install(packages, update=False, options=None):
         import fabtools
 
         # Update index, then install a single package
-        fabtools.arch.install('build-essential', update=True)
+        fabtools.arch.install('mongodb', update=True)
 
         # Install multiple packages
         fabtools.arch.install([
-            'python-dev',
-            'libxml2-dev',
+            'mongodb',
+            'python-pymongo',
         ])
 
     """
