@@ -8,14 +8,13 @@ This module provides tools for installing `Oracle JDK`_
 
 """
 from __future__ import with_statement
+
 import re
 
 from fabric.api import run, cd, settings, hide
 
-import fabtools
-from fabtools import system
-from fabtools.require.files import directory as require_directory
-from fabtools.require.files import file as require_file
+from fabtools.files import is_link
+from fabtools.system import get_arch
 
 
 DEFAULT_VERSION = '7u21-b11'
@@ -33,6 +32,8 @@ def install_from_oracle_site(version=DEFAULT_VERSION):
         fabtools.oracle_jdk.install_from_oracle_site()
 
     """
+
+    from fabtools.require.files import directory as require_directory
 
     release, build = version.split('-')
     major, update = release.split('u')
@@ -66,7 +67,7 @@ def install_from_oracle_site(version=DEFAULT_VERSION):
         else:
             run('tar -xzvf /tmp/%s' % jdk_filename)
 
-        if fabtools.files.is_link('jdk'):
+        if is_link('jdk'):
             run('rm -rf jdk')
         run('ln -s %s jdk' % jdk_dir)
 
@@ -77,6 +78,8 @@ def _create_profile_d_file():
     """
     Create profile.d file with Java environment variables set.
     """
+    from fabtools.require.files import file as require_file
+
     require_file('/etc/profile.d/java.sh', contents=
                  'export JAVA_HOME="/opt/jdk"\n' +
                  'export PATH="$JAVA_HOME/bin:$PATH"\n',
@@ -104,7 +107,7 @@ def _required_jdk_arch():
 
     Raises exception when current system architecture is unsupported.
     """
-    system_arch = system.get_arch()
+    system_arch = get_arch()
     if system_arch == 'x86_64':
         return 'x64'
     elif re.match('i[0-9]86', system_arch):
