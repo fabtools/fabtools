@@ -2,10 +2,11 @@
 Disk Tools
 ==========
 """
-from fabric.api import hide, settings, abort
-from fabtools.utils import run_as_root
-
 import re
+
+from fabric.api import hide, settings, abort
+
+from fabtools.utils import run_as_root
 
 
 def partitions(device=""):
