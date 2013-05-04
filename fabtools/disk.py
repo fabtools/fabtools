@@ -29,11 +29,9 @@ def partitions(device=""):
     with settings(hide('running', 'stdout')):
         res = run_as_root('sfdisk -d %(device)s' % locals())
 
-        spart = re.compile(r'(?P<pname>^/.*) : .* Id=(?P<ptypeid>[0-9a-z]+)' %
-                           locals())
-        lines = res.splitlines()
-        for l in lines:
-            m = spart.search(l)
+        spart = re.compile(r'(?P<pname>^/.*) : .* Id=(?P<ptypeid>[0-9a-z]+)')
+        for line in res.splitlines():
+            m = spart.search(line)
             if m:
                 partitions[m.group('pname')] = int(m.group('ptypeid'), 16)
 
