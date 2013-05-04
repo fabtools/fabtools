@@ -17,6 +17,7 @@ import fabtools.python_distribute
 import fabtools.rpm
 import fabtools.service
 import fabtools.shorewall
+import fabtools.ssh
 import fabtools.supervisor
 import fabtools.system
 import fabtools.user
