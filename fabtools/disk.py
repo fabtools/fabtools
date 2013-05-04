@@ -24,7 +24,6 @@ def partitions(device=""):
         if r:
             print("You can format these partitions")
     """
-    # scan partition
     partitions = {}
     with settings(hide('running', 'stdout')):
         res = run_as_root('sfdisk -d %(device)s' % locals())
@@ -80,19 +79,17 @@ def ismounted(device):
     # Check filesystem
     with settings(hide('running', 'stdout')):
         res = run_as_root('mount')
-    lines = res.splitlines()
-    for l in lines:
-        m = re.search('^%(device)s ' % locals(), l)
-        if m:
+    for line in res.splitlines():
+        fields = line.split()
+        if fields[0] == device:
             return True
 
     # Check swap
     with settings(hide('running', 'stdout')):
         res = run_as_root('swapon -s')
-    lines = res.splitlines()
-    for l in lines:
-        m = re.search('^%(device)s ' % locals(), l)
-        if m:
+    for line in res.splitlines():
+        fields = line.split()
+        if fields[0] == device:
             return True
 
     return False
