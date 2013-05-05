@@ -23,6 +23,7 @@ fabtools
    shorewall
    supervisor
    system
+   systemd
    user
    utils
    vagrant
