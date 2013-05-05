@@ -32,11 +32,7 @@ class OracleJdkTestCase(unittest.TestCase):
 
         get_arch.return_value = 'unknown'
 
-        try:
-            _required_jdk_arch()
-            self.fail('Expected Exception was not raised')
-        except Exception:
-            pass
+        self.assertRaises(Exception, _required_jdk_arch)
 
     def test_jdk_version_with_update_over_ten(self):
 
