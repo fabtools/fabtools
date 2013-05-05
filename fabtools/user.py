@@ -192,6 +192,21 @@ def home_directory(name):
         return run('echo ~' + name)
 
 
+def local_home_directory(name=''):
+    """
+    Get the absolute path to the local user's home directory
+
+    Example::
+
+        import fabtools
+
+        local_home = fabtools.user.local_home_directory()
+
+    """
+    with settings(hide('running', 'stdout')):
+        return local('echo ~' + name, capture=True)
+
+
 def authorized_keys(name):
     """
     Get the list of authorized SSH public keys for the user
