@@ -5,6 +5,7 @@ OpenSSH tasks
 This module provides tools to manage OpenSSH server and client.
 
 """
+from __future__ import with_statement
 
 from fabric.api import hide
 from fabric.contrib.files import append, sed

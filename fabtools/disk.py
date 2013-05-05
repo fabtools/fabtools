@@ -2,6 +2,8 @@
 Disk Tools
 ==========
 """
+from __future__ import with_statement
+
 import re
 
 from fabric.api import hide, settings, abort
