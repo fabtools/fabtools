@@ -13,6 +13,25 @@ from fabtools.service import is_running, restart
 from fabtools.files import watch
 
 
+def _update_ssh_setting(sshd_config, name, value):
+
+    with watch(sshd_config) as config_file:
+
+        # First try to change existing setting
+        sed(sshd_config,
+            r'^(\s*#\s*)?%s\s+(yes|no)' % name,
+            '%s %s' % (name, value),
+            use_sudo=True)
+
+        # Then append setting if it's still missing
+        _append(sshd_config,
+                '%s %s' % (name, value),
+                use_sudo=True)
+
+    if config_file.changed and is_running('ssh'):
+        restart('ssh')
+
+
 def _append(filename, regex, use_sudo):
     """
     Less verbose append
@@ -21,29 +40,12 @@ def _append(filename, regex, use_sudo):
         return append(filename, regex, use_sudo=use_sudo)
 
 
-_PASSWORD_AUTHENTICATION = r'^(\s*#\s*)?PasswordAuthentication\s+(yes|no)'
-
-
 def disable_password_auth(sshd_config='/etc/ssh/sshd_config'):
     """
     Do not allow users to use passwords to login via ssh.
     """
 
-    with watch(sshd_config) as config_file:
-
-        # First try to change existing setting
-        sed(sshd_config,
-            _PASSWORD_AUTHENTICATION,
-            'PasswordAuthentication no',
-            use_sudo=True)
-
-        # Then append setting if it's still missing
-        _append(sshd_config,
-                'PasswordAuthentication no',
-                use_sudo=True)
-
-    if config_file.changed and is_running('ssh'):
-        restart('ssh')
+    _update_ssh_setting(sshd_config, 'PasswordAuthentication', 'no')
 
 
 def enable_password_auth(sshd_config='/etc/ssh/sshd_config'):
@@ -51,24 +53,7 @@ def enable_password_auth(sshd_config='/etc/ssh/sshd_config'):
     Allow users to use passwords to login via ssh.
     """
 
-    with watch(sshd_config) as config_file:
-
-        # First try to change existing setting
-        sed(sshd_config,
-            _PASSWORD_AUTHENTICATION,
-            'PasswordAuthentication yes',
-            use_sudo=True)
-
-        # Then append setting if it's still missing
-        _append(sshd_config,
-                'PasswordAuthentication yes',
-                use_sudo=True)
-
-    if config_file.changed and is_running('ssh'):
-        restart('ssh')
-
-
-_PERMIT_ROOT_LOGIN = r'^(\s*#\s*)?PermitRootLogin\s+(yes|no)'
+    _update_ssh_setting(sshd_config, 'PasswordAuthentication', 'yes')
 
 
 def disable_root_login(sshd_config='/etc/ssh/sshd_config'):
@@ -76,21 +61,7 @@ def disable_root_login(sshd_config='/etc/ssh/sshd_config'):
     Do not allow root to login via ssh.
     """
 
-    with watch(sshd_config) as config_file:
-
-        # First try to change existing setting
-        sed(sshd_config,
-            _PERMIT_ROOT_LOGIN,
-            'PermitRootLogin no',
-            use_sudo=True)
-
-        # Then append setting if it's still missing
-        _append(sshd_config,
-                'PermitRootLogin no',
-                use_sudo=True)
-
-    if config_file.changed and is_running('ssh'):
-        restart('ssh')
+    _update_ssh_setting(sshd_config, 'PermitRootLogin', 'no')
 
 
 def enable_root_login(sshd_config='/etc/ssh/sshd_config'):
@@ -98,21 +69,7 @@ def enable_root_login(sshd_config='/etc/ssh/sshd_config'):
     Allow root to login via ssh.
     """
 
-    with watch(sshd_config) as config_file:
-
-        # First try to change existing setting
-        sed(sshd_config,
-            _PERMIT_ROOT_LOGIN,
-            'PermitRootLogin yes',
-            use_sudo=True)
-
-        # Then append setting if it's still missing
-        _append(sshd_config,
-                'PermitRootLogin yes',
-                use_sudo=True)
-
-    if config_file.changed and is_running('ssh'):
-        restart('ssh')
+    _update_ssh_setting(sshd_config, 'PermitRootLogin', 'yes')
 
 
 def harden(allow_root_login=False, allow_password_auth=False,
