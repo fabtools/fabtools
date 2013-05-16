@@ -70,7 +70,7 @@ def ppa(name):
         update_index()
 
 
-def package(pkg_name, update=False):
+def package(pkg_name, update=False, version=None):
     """
     Require a deb package to be installed.
 
@@ -81,7 +81,7 @@ def package(pkg_name, update=False):
         require.deb.package('foo')
     """
     if not is_installed(pkg_name):
-        install(pkg_name, update)
+        install(pkg_name, update=update, version=version)
 
 
 def packages(pkg_list, update=False):

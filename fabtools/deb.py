@@ -50,7 +50,7 @@ def is_installed(pkg_name):
         return False
 
 
-def install(packages, update=False, options=None):
+def install(packages, update=False, options=None, version=None):
     """
     Install one or more packages.
 
@@ -78,12 +78,16 @@ def install(packages, update=False, options=None):
         update_index()
     if options is None:
         options = []
+    if version is None:
+        version = ''
+    if version and not isinstance(packages, list):
+        version = '=' + version
     if not isinstance(packages, basestring):
         packages = " ".join(packages)
     options.append("--quiet")
     options.append("--assume-yes")
     options = " ".join(options)
-    cmd = '%(manager)s install %(options)s %(packages)s' % locals()
+    cmd = '%(manager)s install %(options)s %(packages)s%(version)s' % locals()
     run_as_root(cmd, pty=False)
 
 
