@@ -10,8 +10,38 @@ This module provides high-level tools for managing `Git`_ repositories.
 
 from __future__ import with_statement
 
+from fabric.api import run
+
 from fabtools import git
 from fabtools.files import is_dir
+
+
+def command():
+    """
+    Require the git command-line tool.
+
+    Example::
+
+        from fabric.api import run
+        from fabtools import require
+
+        require.git.command()
+        run('git --help')
+
+    """
+    from fabtools.require.deb import package as require_deb_package
+    from fabtools.require.rpm import package as require_rpm_package
+    from fabtools.system import distrib_family
+
+    res = run('git --version', quiet=True)
+    if res.failed:
+        family = distrib_family()
+        if family == 'debian':
+            require_deb_package('git-core')
+        elif family == 'redhat':
+            require_rpm_package('git')
+        else:
+            raise NotImplementedError()
 
 
 def working_copy(remote_url, path=None, branch="master", update=True,
@@ -62,6 +92,8 @@ def working_copy(remote_url, path=None, branch="master", update=True,
                  has no effect.
     :type user: str
     """
+
+    command()
 
     if path is None:
         path = remote_url.split('/')[-1].rstrip('.git')

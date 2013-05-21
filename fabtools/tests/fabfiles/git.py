@@ -17,15 +17,6 @@ def git_require():
 
     from fabric.api import cd, sudo
 
-    from fabtools import require
-    from fabtools.system import distrib_family
-
-    family = distrib_family()
-    if family == 'debian':
-        require.deb.package('git-core')
-    elif family == 'redhat':
-        require.rpm.package('git')
-
     with cd('/tmp'):
 
         # Clean up
