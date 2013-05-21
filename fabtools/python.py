@@ -13,13 +13,14 @@ from __future__ import with_statement
 
 from contextlib import contextmanager
 from distutils.version import StrictVersion as V
+from pipes import quote
 import os
 import posixpath
 
 from fabric.api import cd, hide, prefix, run, settings, sudo
 from fabric.utils import puts
 
-from fabtools.utils import run_as_root
+from fabtools.utils import abspath, run_as_root
 
 
 def is_pip_installed(version=None):
@@ -157,6 +158,13 @@ def virtualenv(directory, local=False):
 
     .. _virtual environment: http://www.virtualenv.org/
     """
-    join = os.path.join if local else posixpath.join
-    with prefix('. "%s"' % join(directory, 'bin', 'activate')):
+
+    path_mod = os.path if local else posixpath
+
+    # Build absolute path to the virtualenv activation script
+    venv_path = abspath(directory)
+    activate_path = path_mod.join(venv_path, 'bin', 'activate')
+
+    # Source the activation script
+    with prefix('. %s' % quote(activate_path)):
         yield
