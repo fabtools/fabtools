@@ -24,11 +24,16 @@ def ssh_config(name=''):
 def _settings_dict(config):
     settings = {}
 
-    # Build host string
     user = config['User']
     hostname = config['HostName']
     port = config['Port']
-    settings['host_string'] = "%s@%s:%s" % (user, hostname, port)
+
+    # Build host string
+    host_string = "%s@%s:%s" % (user, hostname, port)
+
+    settings['user'] = user
+    settings['hosts'] = [host_string]
+    settings['host_string'] = host_string
 
     # Strip leading and trailing double quotes introduced by vagrant 1.1
     settings['key_filename'] = config['IdentityFile'].strip('"')
