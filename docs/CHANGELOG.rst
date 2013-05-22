@@ -1,18 +1,49 @@
 Changelog
 =========
 
-Version 0.14.0dev (unreleased)
-------------------------------
+Version 0.14.0 (2013-05-22)
+---------------------------
+
+Note: Fabtools now requires Fabric >= 1.6.0
 
 * Upgrade default pip version to 1.3.1
-* Add support for Vagrant 1.1 providers in functional tests
+* Improved vagrant support:
+    * Add support for Vagrant 1.1 providers in functional tests
+    * Also set ``env.user`` and ``env.hosts`` in ``vagrant`` context manager
 * Add ``fabtools.system.cpus`` to get the host's CPU count
 * Less verbose output
 * Move OS detection functions to ``fabtools.system``
 * Better support for Red Hat based systems
+* Improvements to the ``user`` module:
+    * Fix home dir default behaviour in ``require.user``
+    * Add support for SSH authorized keys (Kamil Chmielewski)
+    * Add support for SSH known hosts public keys
+    * Add ``non_unique`` argument to user functions (Zhang Erning)
+    * Get absolute path to the local user's home dir (Sebastien Beal)
+* Use ``SHOW DATABASES`` to test existence of MySQL (Zhang Erning)
+* Improvements to the ``git`` module
+    * Expose lower level ``fetch`` operation (Andreas Kaiser)
+    * Fix missing import in ``require`` module (Muraoka Yusuke)
+    * Require ``git`` command line tool
+* Use ``ifconfig`` as root in ``network`` module
+* Update OpenVZ guest context manager for Fabric 1.6.0
+* Improvements to the ``python`` module:
+    * Improved detection of distribute
+    * Add support for virtualenv ``--prompt`` option (Artem Nezvigin)
+    * Allow relative path in ``virtualenv`` context manager
+* Improvements to the ``oracle_jdk`` module:
+    * Upgrade default Oracle JDK version to 7u21-b11 (Kamil Chmielewski)
+    * Add support for Oracle JDK version 6 (Sebastien Beal)
+* Fix broken ``fabtools.deb.upgrade``
+* Add support for Arch Linux packages (Bruno Adele)
+* Add support for Linux disk partitions (Bruno Adele)
+* Add OpenSSH server hardening (Adam Patterson)
+* Add ``systemd`` module (Jakub Stasiak)
+* Improvements to the ``redis`` module:
+    * Fix broken Redis configuration (Victor Perron)
+    * Upgrade default Redis version to 2.6.13
+* Abort on nginx configuration errors
 * Upgrade default Node.js version to 0.10.7
-* Upgrade default Redis version to 2.6.12
-* Improved git support
 
 Version 0.13.0 (2013-03-15)
 ---------------------------
