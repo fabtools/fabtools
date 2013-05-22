@@ -10,7 +10,11 @@ web server and managing the configuration of web sites.
 """
 from __future__ import with_statement
 
-from fabric.api import hide, settings
+from fabric.api import (
+    abort,
+    hide,
+    settings,
+)
 from fabric.colors import red
 
 from fabtools.files import is_link
@@ -104,8 +108,9 @@ def site(server_name, template_contents=None, template_source=None,
         if check_config:
             with settings(hide('running', 'warnings'), warn_only=True):
                 if run_as_root("nginx -t").return_code > 0:
-                    print red("Error in %(server_name)s nginx site config (disabling for safety)" % locals())
                     run_as_root("rm %(link_filename)s" % locals())
+                    message = red("Error in %(server_name)s nginx site config (disabling for safety)" % locals())
+                    abort(message)
     else:
         if is_link(link_filename):
             run_as_root("rm %(link_filename)s" % locals())
