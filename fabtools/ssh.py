@@ -7,7 +7,7 @@ This module provides tools to manage OpenSSH server and client.
 """
 from __future__ import with_statement
 
-from fabric.api import hide
+from fabric.api import hide, shell_env
 from fabric.contrib.files import append, sed
 
 from fabtools.service import is_running, restart
@@ -84,16 +84,18 @@ def _update_ssh_setting(sshd_config, name, value):
 
     with watch(sshd_config) as config_file:
 
-        # First try to change existing setting
-        sed(sshd_config,
-            r'^(\s*#\s*)?%s\s+(yes|no)' % name,
-            '%s %s' % (name, value),
-            use_sudo=True)
+        with shell_env():
 
-        # Then append setting if it's still missing
-        _append(sshd_config,
+            # First try to change existing setting
+            sed(sshd_config,
+                r'^(\s*#\s*)?%s\s+(yes|no)' % name,
                 '%s %s' % (name, value),
                 use_sudo=True)
+
+            # Then append setting if it's still missing
+            _append(sshd_config,
+                    '%s %s' % (name, value),
+                    use_sudo=True)
 
     if config_file.changed and is_running('ssh'):
         restart('ssh')
