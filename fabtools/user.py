@@ -9,7 +9,7 @@ import posixpath
 import random
 import string
 
-from fabric.api import hide, run, settings, sudo
+from fabric.api import hide, run, settings, sudo, local
 
 from fabtools.group import (
     exists as _group_exists,
