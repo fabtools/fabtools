@@ -164,7 +164,7 @@ def supported_locales():
             res = run("cat /etc/locale.gen")
         else:
             res = run('cat /usr/share/i18n/SUPPORTED')
-    return [line.split(' ') for line in res.splitlines() if not line.startswith('#')]
+    return [line.strip().split(' ') for line in res.splitlines() if not line.startswith('#')]
 
 
 def get_arch():
