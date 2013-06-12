@@ -114,7 +114,6 @@ def instance(name, version=VERSION, **kwargs):
     require_directory('/etc/redis', use_sudo=True, owner='redis')
     require_directory('/var/db/redis', use_sudo=True, owner='redis')
     require_directory('/var/log/redis', use_sudo=True, owner='redis')
-    require_directory('/var/run/redis', use_sudo=True, owner='redis')
 
     # Required for background saving
     with settings(warn_only=True):
@@ -154,7 +153,7 @@ def instance(name, version=VERSION, **kwargs):
     require_process(
         process_name,
         user='redis',
-        directory='/var/run/redis',
+        directory='/var/run',
         command="%(redis_server)s %(config_filename)s" % locals(),
     )
 
