@@ -31,7 +31,7 @@ from fabtools.system import distrib_family
 DEFAULT_PIP_VERSION = '1.3.1'
 
 
-def distribute():
+def distribute(use_python='python'):
     """
     Require `distribute`_ to be installed.
 
@@ -56,20 +56,20 @@ def distribute():
             'python-devel',
         ])
 
-    if not is_distribute_installed():
-        install_distribute()
+    if not is_distribute_installed(use_python=use_python):
+        install_distribute(use_python=use_python)
 
 
-def pip(version=None):
+def pip(version=None, use_python='python'):
     """
     Require `pip`_ to be installed.
     """
-    distribute()
-    if not is_pip_installed(version):
-        install_pip()
+    distribute(use_python=use_python)
+    if not is_pip_installed(version, use_python=use_python):
+        install_pip(use_python=use_python)
 
 
-def package(pkg_name, url=None, **kwargs):
+def package(pkg_name, url=None, use_python='python', **kwargs):
     """
     Require a Python package.
 
@@ -90,33 +90,34 @@ def package(pkg_name, url=None, **kwargs):
 
     .. _pip installer: http://www.pip-installer.org/
     """
-    pip(DEFAULT_PIP_VERSION)
-    if not is_installed(pkg_name):
-        install(url or pkg_name, **kwargs)
+    pip(DEFAULT_PIP_VERSION, use_python=use_python)
+    if not is_installed(pkg_name, use_python):
+        install(url or pkg_name, use_python=use_python, **kwargs)
 
 
-def packages(pkg_list, **kwargs):
+def packages(pkg_list, use_python='python', **kwargs):
     """
     Require several Python packages.
     """
-    pip(DEFAULT_PIP_VERSION)
-    pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg)]
+    pip(DEFAULT_PIP_VERSION, use_python=use_python)
+    pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg, use_python=use_python)]
     if pkg_list:
-        install(pkg_list, **kwargs)
+        install(pkg_list, use_python=use_python, **kwargs)
 
 
-def requirements(filename, **kwargs):
+def requirements(filename, use_python='python', **kwargs):
     """
     Require Python packages from a pip `requirements file`_.
 
     .. _requirements file: http://www.pip-installer.org/en/latest/requirements.html
     """
-    pip(DEFAULT_PIP_VERSION)
-    install_requirements(filename, **kwargs)
+    pip(DEFAULT_PIP_VERSION, use_python=use_python)
+    install_requirements(filename, use_python=use_python, **kwargs)
 
 
 def virtualenv(directory, system_site_packages=False, python=None,
-               use_sudo=False, user=None, clear=False, prompt=None):
+               use_sudo=False, user=None, clear=False,
+               prompt=None, use_python='python'):
     """
     Require a Python `virtual environment`_.
 
@@ -128,7 +129,7 @@ def virtualenv(directory, system_site_packages=False, python=None,
 
     .. _virtual environment: http://www.virtualenv.org/
     """
-    package('virtualenv', use_sudo=True)
+    package('virtualenv', use_sudo=True, use_python=use_python)
     if not is_file(posixpath.join(directory, 'bin', 'python')):
         options = ['--quiet']
         if system_site_packages:
