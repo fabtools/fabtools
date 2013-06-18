@@ -47,7 +47,7 @@ def install_distribute(use_python='python'):
         run_as_root("%(use_python)s distribute_setup.py" % locals())
 
 
-def install(packages, upgrade=False, use_sudo=False, use_use_python='python'):
+def install(packages, upgrade=False, use_sudo=False, use_python='python'):
     """
     Install Python packages with ``easy_install``.
 
