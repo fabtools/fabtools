@@ -23,14 +23,14 @@ from fabric.utils import puts
 from fabtools.utils import abspath, run_as_root
 
 
-def is_pip_installed(version=None):
+def is_pip_installed(version=None, use_python='python'):
     """
     Check if `pip`_ is installed.
 
     .. _pip: http://www.pip-installer.org/
     """
     with settings(hide('running', 'warnings', 'stderr', 'stdout'), warn_only=True):
-        res = run('pip --version 2>/dev/null')
+        res = run('%(use_python)s -m pip --version 2>/dev/null' % locals())
         if res.failed:
             return False
         if version is None:
@@ -44,7 +44,7 @@ def is_pip_installed(version=None):
                 return True
 
 
-def install_pip():
+def install_pip(use_python='python'):
     """
     Install the latest version of `pip`_.
 
@@ -60,23 +60,23 @@ def install_pip():
     """
     with cd('/tmp'):
         run('curl --silent -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py')
-        run_as_root('python get-pip.py', pty=False)
+        run_as_root('%(use_python)s get-pip.py' % locals(), pty=False)
 
 
-def is_installed(package):
+def is_installed(package, use_python='python'):
     """
     Check if a Python package is installed.
     """
     options = []
     options = ' '.join(options)
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        res = run('pip freeze %(options)s' % locals())
+        res = run('%(use_python)s -m pip freeze %(options)s' % locals())
     packages = [line.split('==')[0] for line in res.splitlines()]
     return (package in packages)
 
 
 def install(packages, upgrade=False, use_mirrors=True, use_sudo=False,
-            user=None, download_cache=None, quiet=False):
+            user=None, download_cache=None, quiet=False, use_python='python'):
     """
     Install Python package(s) using `pip`_.
 
@@ -105,7 +105,7 @@ def install(packages, upgrade=False, use_mirrors=True, use_sudo=False,
     if quiet:
         options.append('--quiet')
     options = ' '.join(options)
-    command = 'pip install %(options)s %(packages)s' % locals()
+    command = '%(use_python)s -m pip install %(options)s %(packages)s' % locals()
     if use_sudo:
         sudo(command, user=user, pty=False)
     else:
@@ -114,7 +114,7 @@ def install(packages, upgrade=False, use_mirrors=True, use_sudo=False,
 
 def install_requirements(filename, upgrade=False, use_mirrors=True,
                          use_sudo=False, user=None, download_cache=None,
-                         quiet=False):
+                         quiet=False, use_python='python'):
     """
     Install Python packages from a pip `requirements file`_.
 
@@ -136,7 +136,7 @@ def install_requirements(filename, upgrade=False, use_mirrors=True,
     if quiet:
         options.append('--quiet')
     options = ' '.join(options)
-    command = 'pip install %(options)s -r %(filename)s' % locals()
+    command = '%(use_python)s -m pip install %(options)s -r %(filename)s' % locals()
     if use_sudo:
         sudo(command, user=user, pty=False)
     else:
