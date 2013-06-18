@@ -78,7 +78,12 @@ def package(pkg_name, update=False, version=None):
 
         from fabtools import require
 
+        # Require a package
         require.deb.package('foo')
+
+        # Require a specific version
+        require.deb.package('firefox', version='11.0+build1-0ubuntu4')
+
     """
     if not is_installed(pkg_name):
         install(pkg_name, update=update, version=version)

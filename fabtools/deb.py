@@ -72,6 +72,9 @@ def install(packages, update=False, options=None, version=None):
             'libxml2-dev',
         ])
 
+        # Install a specific version
+        fabtools.deb.install('emacs', version='23.3+1-1ubuntu9')
+
     """
     manager = MANAGER
     if update:
