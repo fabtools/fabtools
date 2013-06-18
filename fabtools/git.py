@@ -89,7 +89,7 @@ def fetch(path, use_sudo=False, user=None):
             run(cmd)
 
 
-def pull(path, use_sudo=False, user=None):
+def pull(path, use_sudo=False, user=None, force=False):
     """
     Fetch changes from the default remote repository and merge them.
 
@@ -106,13 +106,20 @@ def pull(path, use_sudo=False, user=None):
                  with the given user.  If ``use_sudo is False`` this parameter
                  has no effect.
     :type user: str
+    :param force: If ``True``, append the ``--force`` option to the command.
+    :type force: bool
     """
 
     if path is None:
         raise ValueError("Path to the working copy is needed to pull from a "
                          "remote repository.")
 
-    cmd = 'git pull'
+    options = []
+    if force:
+        options.append('--force')
+    options = ' '.join(options)
+
+    cmd = 'git pull %s' % options
 
     with cd(path):
         if use_sudo and user is None:
@@ -123,7 +130,7 @@ def pull(path, use_sudo=False, user=None):
             run(cmd)
 
 
-def checkout(path, branch="master", use_sudo=False, user=None):
+def checkout(path, branch="master", use_sudo=False, user=None, force=False):
     """
     Checkout a branch to the working directory.
 
@@ -143,13 +150,20 @@ def checkout(path, branch="master", use_sudo=False, user=None):
                  with the given user.  If ``use_sudo is False`` this parameter
                  has no effect.
     :type user: str
+    :param force: If ``True``, append the ``--force`` option to the command.
+    :type force: bool
     """
 
     if path is None:
         raise ValueError("Path to the working copy is needed to checkout a "
                          "branch")
 
-    cmd = 'git checkout %s' % branch
+    options = []
+    if force:
+        options.append('--force')
+    options = ' '.join(options)
+
+    cmd = 'git checkout %s %s' % (branch, options)
 
     with cd(path):
         if use_sudo and user is None:
