@@ -76,7 +76,7 @@ def source(name, uri, distribution, *components):
         update_index()
 
 
-def ppa(name, confirm=True, keyserver=None):
+def ppa(name, auto_accept=True, keyserver=None):
     """
     Require a `PPA`_ package source.
 
@@ -94,7 +94,7 @@ def ppa(name, confirm=True, keyserver=None):
     release = float(distrib_release())
     if release >= 12.04:
 	repo = repo.replace('.', '_')
-	confirm = '--yes' if confirm else ''
+	auto_accept = '--yes' if auto_accept else ''
     if not isinstance(keyserver, basestring) and keyserver:
 	keyserver = keyserver[0]
     if keyserver:
@@ -104,9 +104,9 @@ def ppa(name, confirm=True, keyserver=None):
     distrib = distrib_codename()
     source = '/etc/apt/sources.list.d/%(user)s-%(repo)s-%(distrib)s.list' % locals()
     if not is_file(source):
-        package('python-software-properties')
-	run_as_root('add-apt-repository %(confirm)s %(keyserver)s %(name)s' % locals(), pty=False)
-        update_index()
+	package('python-software-properties')
+	run_as_root('add-apt-repository %(auto_accept)s %(keyserver)s %(name)s' % locals(), pty=False)
+	update_index()
 
 
 def package(pkg_name, update=False, version=None):
