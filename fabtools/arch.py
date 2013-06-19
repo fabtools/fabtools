@@ -16,7 +16,7 @@ from fabtools.utils import run_as_root
 def pkg_manager():
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         output = run('which yaourt', warn_only=True)
-        if output.return_code == 0:
+        if output.succeeded:
             manager = 'yaourt'
         else:
             manager = 'pacman'
