@@ -93,8 +93,8 @@ def ppa(name, confirm=True, keyserver=None):
     user, repo = name[4:].split('/', 2)
     release = float(distrib_release())
     if release >= 12.04:
-	repo = re.sub('[.]', '_', repo)
-    confirm = '--yes' if confirm else ''
+	repo = repo.replace('.', '_')
+	confirm = '--yes' if confirm else ''
     if not isinstance(keyserver, basestring) and keyserver:
 	keyserver = keyserver[0]
     if keyserver:
