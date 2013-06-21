@@ -76,7 +76,9 @@ def working_copy(remote_url, path=None, branch="master", update=True,
                  the directory name of the working copy is created by ``git``.
     :type path: str
 
-    :param branch: Branch to check out.
+    :param branch: Branch or tag to check out.  If the given value is a tag
+                   name, update must be ``False`` or consecutive calls will
+                   fail.
     :type branch: str
 
     :param update: Whether or not to fetch and merge remote changesets.
