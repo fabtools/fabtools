@@ -30,6 +30,7 @@ def command():
 
     """
     from fabtools.require.deb import package as require_deb_package
+    from fabtools.require.pkg import package as require_pkg_package
     from fabtools.require.rpm import package as require_rpm_package
     from fabtools.system import distrib_family
 
@@ -40,6 +41,8 @@ def command():
             require_deb_package('git-core')
         elif family == 'redhat':
             require_rpm_package('git')
+        elif family == 'sun':
+            require_pkg_package('scmgit-base')
         else:
             raise NotImplementedError()
 
