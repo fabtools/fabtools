@@ -98,13 +98,13 @@ def working_copy(remote_url, path=None, branch="master", update=True,
     if path is None:
         path = remote_url.split('/')[-1].rstrip('.git')
 
-    if is_dir(path, use_sudo=use_sudo) and update:
+    if is_dir(path, use_sudo=use_sudo):
+        # always fetch changesets from remote and checkout branch / tag
         git.fetch(path=path, use_sudo=use_sudo, user=user)
         git.checkout(path=path, branch=branch, use_sudo=use_sudo, user=user)
-        git.pull(path=path, use_sudo=use_sudo, user=user)
-
-    elif is_dir(path, use_sudo=use_sudo) and not update:
-        git.checkout(path=path, branch=branch, use_sudo=use_sudo, user=user)
+        if update:
+            # only 'merge' if update is True
+            git.pull(path=path, use_sudo=use_sudo, user=user)
 
     elif not is_dir(path, use_sudo=use_sudo):
         git.clone(remote_url, path=path, use_sudo=use_sudo, user=user)
