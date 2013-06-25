@@ -17,7 +17,7 @@ from fabtools.files import is_link
 from fabtools.system import get_arch
 
 
-DEFAULT_VERSION = '7u21-b11'
+DEFAULT_VERSION = '7u25-b15'
 
 
 def install_from_oracle_site(version=DEFAULT_VERSION):
