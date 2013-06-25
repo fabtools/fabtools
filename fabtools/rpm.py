@@ -108,9 +108,9 @@ def install(packages, repos=None, yes=None, options=None):
             options.append('--enablerepo=%(repo)s' % locals())
     options = " ".join(options)
     if isinstance(yes, str):
-        run_as_root('yes %(yes)s | %(manager)s %(options)s install %(packages)s' % locals(), pty=False)
+        run_as_root('yes %(yes)s | %(manager)s %(options)s install %(packages)s' % locals())
     else:
-        run_as_root('%(manager)s %(options)s install %(packages)s' % locals(), pty=False)
+        run_as_root('%(manager)s %(options)s install %(packages)s' % locals())
 
 
 def groupinstall(group, options=None):
