@@ -152,8 +152,21 @@ def get_selections():
         selections.setdefault(status, list()).append(package)
     return selections
 
+def apt_key_exists(keyid):
+    # Command extracted from apt-key source
+    gpg_cmd = 'gpg --ignore-time-conflict --no-options --no-default-keyring --keyring /etc/apt/trusted.gpg'
 
-def add_apt_key(filename, update=True):
+    with settings(hide('everything'), warn_only=True):
+        return not run('%(gpg_cmd)s --fingerprint %(keyid)s' % locals()).return_code
+
+def _check_pgp_key(path, keyid):
+    """
+    Check if the given key id exists in apt keyring. Fail if it doesn't.
+    """
+    with settings(hide('everything')):
+        return not run('gpg --with-colons %(path)s | cut -d: -f 5 | grep -q \'%(keyid)s$\'' % locals())
+
+def add_apt_key(filename=None, url=None, keyid=None, keyserver='subkeys.pgp.net', update=False):
     """
     Trust packages signed with this public key.
 
@@ -161,14 +174,38 @@ def add_apt_key(filename, update=True):
 
         import fabtools
 
-        # Download 3rd party APT public key
-        if not fabtools.is_file('rabbitmq-signing-key-public.asc'):
-            run('wget http://www.rabbitmq.com/rabbitmq-signing-key-public.asc')
+        # Varnish signing key from URL and verify fingerprint)
+        fabtools.deb.add_apt_key(keyid='C4DEFFEB', url='http://repo.varnish-cache.org/debian/GPG-key.txt')
 
-        # Tell APT to trust that key
-        fabtools.deb.add_apt_key('rabbitmq-signing-key-public.asc')
+        # Nginx signing key from default key server (subkeys.pgp.net)
+        fabtools.deb.add_apt_key(keyid='7BD9BF62')
 
+        # From custom key server
+        fabtools.deb.add_apt_key(keyid='7BD9BF62', keyserver='keyserver.ubuntu.com')
+
+        # From a file
+        fabtools.deb.add_apt_key(keyid='7BD9BF62', filename='nginx.asc'
     """
-    run_as_root('apt-key add %(filename)s' % locals())
+
+    if keyid is None:
+        if filename is not None:
+            run_as_root('apt-key add %(filename)s' % locals())
+        elif url is not None:
+            run_as_root('wget %(url)s -O - | apt-key add -' % locals())
+        else:
+            raise ValueError('Either filename, url or keyid must be provided as argument')
+    else:
+        if filename is not None:
+            _check_pgp_key(filename, keyid)
+            run_as_root('apt-key add %(filename)s' % locals())
+        elif url is not None:
+            tmp_key = '/tmp/tmp.fabtools.key.%(keyid)s.key' % locals()
+            run_as_root('wget %(url)s -O %(tmp_key)s' % locals())
+            _check_pgp_key(tmp_key, keyid)
+            run_as_root('apt-key add %(tmp_key)s' % locals())
+        else:
+            keyserver_opt = '--keyserver %(keyserver)s' % locals() if keyserver is not None else ''
+            run_as_root('apt-key adv %(keyserver_opt)s --recv-keys %(keyid)s' % locals())
+
     if update:
         update_index()
