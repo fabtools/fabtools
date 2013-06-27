@@ -56,3 +56,14 @@ Java HotSpot(TM) 64-Bit Server VM (build 23.5-b02, mixed mode)
 '''
 
         self.assertEqual('7u9-b05', _extract_jdk_version(java_version_out))
+
+    def test_jdk_version_with_openjdk(self):
+
+        from fabtools.oracle_jdk import _extract_jdk_version
+
+        java_version_out = '''java version "1.7.0_21"
+OpenJDK Runtime Environment (IcedTea 2.3.9) (7u21-2.3.9-0ubuntu0.12.04.1)
+OpenJDK 64-Bit Server VM (build 23.7-b01, mixed mode)
+'''
+
+        self.assertEqual(None, _extract_jdk_version(java_version_out))
