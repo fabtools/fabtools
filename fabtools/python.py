@@ -75,6 +75,10 @@ def is_installed(package, use_python='python'):
     return (package in packages)
 
 
+def _get_python_version(use_python):
+    return run("""python -c 'import sys; print(".".join(map(str, sys.version_info[0:3])))'""").strip()
+
+
 def install(packages, upgrade=False, use_mirrors=False, use_sudo=False,
             user=None, download_cache=None, quiet=False, use_python='python'):
     """
@@ -105,7 +109,16 @@ def install(packages, upgrade=False, use_mirrors=False, use_sudo=False,
     if quiet:
         options.append('--quiet')
     options = ' '.join(options)
-    command = '%(use_python)s -m pip install %(options)s %(packages)s' % locals()
+
+    version = _get_python_version(use_python).split('.')
+
+    if (int(version[0]) < 3) and (int(version[1]) < 7):
+        command = 'pip-%s.%s' % (version[0], version[1])
+    else:
+        command = '%(use_python)s -m pip'
+
+    command += ' install %(options)s %(packages)s' % locals()
+
     if use_sudo:
         sudo(command, user=user, pty=False)
     else:
