@@ -39,3 +39,27 @@ You can specify which base boxes should be used by setting the FABTOOLS_TEST_BOX
 You can also use this to manually disable functional tests::
 
     $ FABTOOLS_TEST_BOXES='' tox
+
+.. note::
+
+   If you have some issue, start by ``rm .tox -rf``.
+
+| ``test_vagrant.py`` execute all fabric file present in ``fabtools/tests/fabfiles/`` folder.
+| If you want execute only some fabric file, you can select its like this :
+
+::
+
+    $ FABTOOLS_TEST_INCLUDE='oracle.py redis.py' python -m unittest discover -v fabtools.tests.test_vagrant
+
+or if you want exclude some fabric file :
+
+::
+
+    $ FABTOOLS_TEST_EXCLUDE='nginx.py git.py' python -m unittest discover -v fabtools.tests.test_vagrant
+
+When you work on fabric file, sometime you want to debug Vagrant VM. To do that, you can disable
+Vagrant VM destroy with this :
+
+::
+
+    $ FABTOOLS_TEST_NODESTROY=1 python -m unittest discover -v fabtools.tests.test_vagrant
