@@ -4,6 +4,7 @@ fabtools.require
 .. toctree::
    :maxdepth: 1
 
+   apache
    deb
    files
    git

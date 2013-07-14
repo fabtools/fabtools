@@ -4,6 +4,7 @@ fabtools
 .. toctree::
    :maxdepth: 1
 
+   apache
    cron
    deb
    files
