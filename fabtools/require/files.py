@@ -51,7 +51,26 @@ def directory(path, use_sudo=False, owner='', group='', mode=''):
     if mode and fabtools.files.mode(path, use_sudo) != mode:
         func('chmod %(mode)s "%(path)s"' % locals())
 
+def directories(path_list, use_sudo=False, owner='', group='', mode=''):
+    """
+    Require a list of directories to exist.
 
+    ::
+
+        from fabtools import require
+        dirs=[
+            '/tmp/mydir',
+            '/tmp/mydear',
+            '/tmp/my/dir'
+        ]
+        require.directories(dirs, owner='alice', mode='750')
+        
+    .. note:: This function can be accessed directly from the
+              ``fabtools.require`` module for convenience.
+    """
+    for path in path_list:
+        directory(path, use_sudo, owner, group, mode)
+        
 def file(path=None, contents=None, source=None, url=None, md5=None,
          use_sudo=False, owner=None, group='', mode=None, verify_remote=True):
     """
