@@ -6,6 +6,8 @@ This module provides high-level tools for installing the `apache2 <http://httpd.
 web server and managing the configuration of web sites.
 
 """
+from __future__ import with_statement
+
 from fabric.api import (
     abort,
     hide,
