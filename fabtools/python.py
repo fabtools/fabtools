@@ -115,7 +115,7 @@ def install(packages, upgrade=False, use_mirrors=False, use_sudo=False,
     if (int(version[0]) < 3) and (int(version[1]) < 7):
         command = 'pip-%s.%s' % (version[0], version[1])
     else:
-        command = '%(use_python)s -m pip'
+        command = '%(use_python)s -m pip' % locals()
 
     command += ' install %(options)s %(packages)s' % locals()
 
