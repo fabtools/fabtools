@@ -1,6 +1,9 @@
 from __future__ import with_statement
 
-from fabric.api import task
+from fabric.api import (
+    shell_env,
+    task,
+)
 
 
 @task
@@ -50,4 +53,8 @@ def apache():
         hostname='www.example.com',
         document_root='/home/vagrant/example.com/',
     )
-    assert run('wget -qO- http://www.example.com') == 'example page'
+
+    with shell_env(http_proxy=''):
+        body = run('wget -qO- http://www.example.com')
+
+    assert body == 'example page'
