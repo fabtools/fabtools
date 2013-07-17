@@ -15,6 +15,9 @@ def apache():
     from fabric.api import run, sudo
     from fabtools import require
     from fabtools.files import is_link
+    from fabtools.system import set_hostname
+
+    set_hostname('www.example.com')
 
     require.apache.server()
 
@@ -27,7 +30,6 @@ def apache():
     require.apache.disabled('default')
     assert not is_link('/etc/apache2/sites-enabled/000-default')
 
-    sudo('echo "127.0.0.1 www.example.com" >> /etc/hosts')
     run('mkdir -p ~/example.com/')
     run('echo "example page" > ~/example.com/index.html')
 
@@ -55,6 +57,6 @@ def apache():
     )
 
     with shell_env(http_proxy=''):
-        body = run('wget -qO- http://www.example.com')
+        body = run('wget -qO- --header="Host: www.example.com" http://localhost/')
 
     assert body == 'example page'
