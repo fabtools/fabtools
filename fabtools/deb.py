@@ -152,19 +152,23 @@ def get_selections():
         selections.setdefault(status, list()).append(package)
     return selections
 
+
 def apt_key_exists(keyid):
+    """
+    Check if the given key id exists in apt keyring.
+    """
+
     # Command extracted from apt-key source
     gpg_cmd = 'gpg --ignore-time-conflict --no-options --no-default-keyring --keyring /etc/apt/trusted.gpg'
 
     with settings(hide('everything'), warn_only=True):
         return not run('%(gpg_cmd)s --fingerprint %(keyid)s' % locals()).return_code
 
+
 def _check_pgp_key(path, keyid):
-    """
-    Check if the given key id exists in apt keyring. Fail if it doesn't.
-    """
     with settings(hide('everything')):
         return not run('gpg --with-colons %(path)s | cut -d: -f 5 | grep -q \'%(keyid)s$\'' % locals())
+
 
 def add_apt_key(filename=None, url=None, keyid=None, keyserver='subkeys.pgp.net', update=False):
     """
