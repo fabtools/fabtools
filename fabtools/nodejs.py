@@ -24,7 +24,7 @@ from fabtools.system import cpus, distrib_family
 from fabtools.utils import run_as_root
 
 
-DEFAULT_VERSION = '0.10.7'
+DEFAULT_VERSION = '0.10.13'
 
 
 def install_from_source(version=DEFAULT_VERSION):
