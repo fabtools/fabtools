@@ -22,6 +22,7 @@ from fabtools.files import is_file, watch
 from fabtools.system import distrib_codename
 from fabtools.utils import run_as_root
 
+
 def key(keyid, filename=None, url=None, keyserver='subkeys.pgp.net', update=False):
     """
     Require a PGP key for APT.
@@ -40,12 +41,13 @@ def key(keyid, filename=None, url=None, keyserver='subkeys.pgp.net', update=Fals
         require.deb.key('7BD9BF62', keyserver='keyserver.ubuntu.com')
 
         # From file
-        require.deb.key('7BD9BF62', filename='nginx.asc'
-    """
+        require.deb.key('7BD9BF62', filename='nginx.asc')
 
+    """
 
     if not apt_key_exists(keyid):
         add_apt_key(keyid=keyid, filename=filename, url=url, keyserver=keyserver, update=update)
+
 
 def source(name, uri, distribution, *components):
     """
