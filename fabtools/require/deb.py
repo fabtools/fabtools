@@ -8,9 +8,12 @@ and repositories.
 """
 from __future__ import with_statement
 
+from fabric.api import hide, run, settings
 from fabric.utils import puts
 
 from fabtools.deb import (
+    add_apt_key,
+    apt_key_exists,
     install,
     is_installed,
     uninstall,
@@ -20,6 +23,34 @@ from fabtools.files import is_file, watch
 from fabtools.system import distrib_codename
 from fabtools.utils import run_as_root
 
+def key(keyid, filename=None, url=None, keyserver='subkeys.pgp.net', update=False):
+    """
+    Require a PGP key for APT.
+
+    ::
+
+        from fabtools import require
+
+        # Varnish signing key from URL
+        require.deb.key('C4DEFFEB', url='http://repo.varnish-cache.org/debian/GPG-key.txt')
+
+        # Nginx signing key from default key server (subkeys.pgp.net)
+        require.deb.key('7BD9BF62')
+
+        # From custom key server
+        require.deb.key('7BD9BF62', keyserver='keyserver.ubuntu.com')
+
+        # From file
+        require.deb.key('7BD9BF62', filename='nginx.asc'
+    """
+
+    # Command extracted from apt-key source
+    gpg_cmd = 'gpg --ignore-time-conflict --no-options --no-default-keyring --keyring /etc/apt/trusted.gpg'
+
+    with settings(hide('everything'), warn_only=True):
+        key_exists = not run('%(gpg_cmd)s --fingerprint %(keyid)s' % locals()).return_code
+    if not key_exists:
+        add_apt_key(keyid=keyid, filename=filename, url=url, keyserver=keyserver, update=update)
 
 def source(name, uri, distribution, *components):
     """
