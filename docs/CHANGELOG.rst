@@ -1,6 +1,40 @@
 Changelog
 =========
 
+Version 0.15.0 (2013-07-25)
+---------------------------
+
+* Fix missing import in ``user.local_home_directory()`` (Sebastien Beal)
+* Improved Arch Linux support:
+    * Fix locale support in Arch Linux (Bruno Adele)
+    * Add support for yaourt package manager in Arch Linux (Bruno Adele)
+* Improvements to the ``redis`` module:
+    * Fix Redis startup after reboot (Victor Perron)
+    * Upgrade default Redis version to 2.6.14
+* Improvements to the ``git`` module:
+    * Add optional force parameter to git pull and checkout (Sebastien Beal)
+* Improvements to the ``python`` module:
+    * Add parameter to use a specific Python interpreter (Bruno Adele)
+    * Stop using PyPI mirrors now that it has a CDN (Dominique Lederer)
+* Debian/Ubuntu improvements:
+    * Add optional version parameter to deb.install() (Anthony Scalisi)
+    * Improved support for installing APT public keys (Santiago Mola)
+* SmartOS improvements (Andreas Kaiser):
+    * Fix md5sum on recent SmartOS
+    * Fix bug in pkg.is_installed with certain package names
+    * Add support for SmartOS in remote system identification
+    * Add support for SmartOS in require.git.command()
+* RedHat improvements:
+    * Fix broken rpm.install() (Sho Shimauchi)
+* Oracle JDK improvements:
+    * Upgrade default version to 7u25-b15 (Sebastien Beal)
+    * Fix Oracle JDK version parsing when OpenJDK is installed
+    * Fix Oracle JDK installation on Debian squeeze (Stéphane Klein)
+* Better tests documentation (thanks to Stéphane Klein)
+* Add require.directories() (Edouard de Labareyre)
+* Add support for Apache web server (Stéphane Klein)
+* Upgrade default Node.js version to 0.10.13
+
 Version 0.14.0 (2013-05-22)
 ---------------------------
 
