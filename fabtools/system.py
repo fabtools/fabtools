@@ -15,7 +15,7 @@ def distrib_id():
     Get the OS distribution ID.
 
     Returns one of ``"Debian"``, ``"Ubuntu"``, ``"RHEL"``, ``"CentOS"``,
-    ``"Fedora"``, ``"Archlinux"``...
+    ``"Fedora"``, ``"Archlinux"``, ``"SunOS"``...
 
     Example::
 
@@ -25,31 +25,37 @@ def distrib_id():
             abort(u"Distribution is not supported")
 
     """
-    # lsb_release works on Ubuntu and Debian >= 6.0
-    # but is not always included in other distros
-    if is_file('/usr/bin/lsb_release'):
-        with settings(hide('running', 'stdout')):
-            return run('lsb_release --id --short')
-    else:
-        if is_file('/etc/debian_version'):
-            return "Debian"
-        elif is_file('/etc/fedora-release'):
-            return "Fedora"
-        elif is_file('/etc/arch-release'):
-            return "Archlinux"
-        elif is_file('/etc/redhat-release'):
-            release = run('cat /etc/redhat-release')
-            if release.startswith('Red Hat Enterprise Linux'):
-                return "RHEL"
-            elif release.startswith('CentOS'):
-                return "CentOS"
-            elif release.startswith('Scientific Linux'):
-                return "SLES"
+
+    with settings(hide('running', 'stdout')):
+        kernel = run('uname -s')
+
+        if kernel == 'Linux':
+            # lsb_release works on Ubuntu and Debian >= 6.0
+            # but is not always included in other distros
+            if is_file('/usr/bin/lsb_release'):
+                return run('lsb_release --id --short')
+            else:
+                if is_file('/etc/debian_version'):
+                    return "Debian"
+                elif is_file('/etc/fedora-release'):
+                    return "Fedora"
+                elif is_file('/etc/arch-release'):
+                    return "Archlinux"
+                elif is_file('/etc/redhat-release'):
+                    release = run('cat /etc/redhat-release')
+                    if release.startswith('Red Hat Enterprise Linux'):
+                        return "RHEL"
+                    elif release.startswith('CentOS'):
+                        return "CentOS"
+                    elif release.startswith('Scientific Linux'):
+                        return "SLES"
+        elif kernel == "SunOS":
+            return "SunOS"
 
 
 def distrib_release():
     """
-    Get the release number of the Linux distribution.
+    Get the release number of the distribution.
 
     Example::
 
@@ -59,8 +65,16 @@ def distrib_release():
             print(u"CentOS 6.2 has been released. Please upgrade.")
 
     """
+
     with settings(hide('running', 'stdout')):
-        return run('lsb_release -r --short')
+
+        kernel = run('uname -s')
+
+        if kernel == 'Linux':
+            return run('lsb_release -r --short')
+
+        elif kernel == 'SunOS':
+            return run('uname -v')
 
 
 def distrib_codename():
@@ -95,13 +109,15 @@ def distrib_family():
     """
     Get the distribution family.
 
-    Returns one of ``debian``, ``redhat``, ``other``.
+    Returns one of ``debian``, ``redhat``, ``sun``, ``other``.
     """
     distrib = distrib_id()
     if distrib in ['Debian', 'Ubuntu']:
         return 'debian'
     elif distrib in ['RHEL', 'CentOS', 'Fedora']:
         return 'redhat'
+    elif distrib in ['SunOS']:
+        return 'sun'
     else:
         return 'other'
 
@@ -164,7 +180,8 @@ def supported_locales():
             res = run("cat /etc/locale.gen")
         else:
             res = run('cat /usr/share/i18n/SUPPORTED')
-    return [line.strip().split(' ') for line in res.splitlines() if not line.startswith('#')]
+    return [line.strip().split(' ') for line in res.splitlines()
+            if not line.startswith('#')]
 
 
 def get_arch():
@@ -196,5 +213,6 @@ def cpus():
 
     """
     with settings(hide('running', 'stdout')):
-        res = run('python -c "import multiprocessing ; print(multiprocessing.cpu_count())"')
+        res = run('python -c "import multiprocessing; '
+                  'print(multiprocessing.cpu_count())"')
         return int(res)
