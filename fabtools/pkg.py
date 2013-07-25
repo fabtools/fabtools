@@ -23,10 +23,11 @@ def update_index(force=False):
     manager = MANAGER
     if force:
         with quiet():
-            run_as_root("%(manager)s cl" % locals())
-        run_as_root("%(manager)s -f up" % locals())
+            # clean the package cache
+            run_as_root("%(manager)s clean" % locals())
+        run_as_root("%(manager)s -f update" % locals())
     else:
-        run_as_root("%(manager)s up" % locals())
+        run_as_root("%(manager)s update" % locals())
 
 
 def upgrade(full=False):
@@ -34,7 +35,7 @@ def upgrade(full=False):
     Upgrade all packages.
     """
     manager = MANAGER
-    cmds = {'pkgin': {False: 'ug', True: 'fug'}}
+    cmds = {'pkgin': {False: 'uprade', True: 'full-upgrade'}}
     cmd = cmds[manager][full]
     run_as_root("%(manager)s -y %(cmd)s" % locals())
 
@@ -43,11 +44,9 @@ def is_installed(pkg_name):
     """
     Check if a package is installed.
     """
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        res = run("yes 'y' | pkgin list | awk '{print $1}' | egrep -qio \"^%(pkg_name)s\"" % locals())
-        if res.succeeded:
-            return True
-        return False
+    with settings(warn_only=True):
+        res = run('pkg_info -e %s' % pkg_name)
+        return res.succeeded is True
 
 
 def install(packages, update=False, yes=None, options=None):
@@ -87,9 +86,9 @@ def install(packages, update=False, yes=None, options=None):
     options.append("-y")
     options = " ".join(options)
     if isinstance(yes, str):
-        run_as_root('yes %(yes)s | %(manager)s %(options)s in %(packages)s' % locals())
+        run_as_root('yes %(yes)s | %(manager)s %(options)s install %(packages)s' % locals())
     else:
-        run_as_root('%(manager)s %(options)s in %(packages)s' % locals())
+        run_as_root('%(manager)s %(options)s install %(packages)s' % locals())
 
 
 def uninstall(packages, orphan=False, options=None):
@@ -111,7 +110,7 @@ def uninstall(packages, orphan=False, options=None):
     options.append("-y")
     options = " ".join(options)
     if orphan:
-        run_as_root('%(manager)s -y ar' % locals())
+        run_as_root('%(manager)s -y autoremove' % locals())
     run_as_root('%(manager)s %(options)s remove %(packages)s' % locals())
 
 
