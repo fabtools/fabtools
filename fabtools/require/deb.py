@@ -8,7 +8,6 @@ and repositories.
 """
 from __future__ import with_statement
 
-from fabric.api import hide, run, settings
 from fabric.utils import puts
 
 from fabtools.deb import (
@@ -44,12 +43,8 @@ def key(keyid, filename=None, url=None, keyserver='subkeys.pgp.net', update=Fals
         require.deb.key('7BD9BF62', filename='nginx.asc'
     """
 
-    # Command extracted from apt-key source
-    gpg_cmd = 'gpg --ignore-time-conflict --no-options --no-default-keyring --keyring /etc/apt/trusted.gpg'
 
-    with settings(hide('everything'), warn_only=True):
-        key_exists = not run('%(gpg_cmd)s --fingerprint %(keyid)s' % locals()).return_code
-    if not key_exists:
+    if not apt_key_exists(keyid):
         add_apt_key(keyid=keyid, filename=filename, url=url, keyserver=keyserver, update=update)
 
 def source(name, uri, distribution, *components):
