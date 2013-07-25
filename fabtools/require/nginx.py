@@ -107,7 +107,7 @@ def site(server_name, template_contents=None, template_source=None,
         # Make sure we don't break the config
         if check_config:
             with settings(hide('running', 'warnings'), warn_only=True):
-                if run_as_root("nginx -t").return_code > 0:
+                if run_as_root('nginx -t').failed:
                     run_as_root("rm %(link_filename)s" % locals())
                     message = red("Error in %(server_name)s nginx site config (disabling for safety)" % locals())
                     abort(message)

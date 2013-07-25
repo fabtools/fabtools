@@ -162,7 +162,9 @@ def apt_key_exists(keyid):
     gpg_cmd = 'gpg --ignore-time-conflict --no-options --no-default-keyring --keyring /etc/apt/trusted.gpg'
 
     with settings(hide('everything'), warn_only=True):
-        return not run('%(gpg_cmd)s --fingerprint %(keyid)s' % locals()).return_code
+        res = run('%(gpg_cmd)s --fingerprint %(keyid)s' % locals())
+
+    return res.succeeded
 
 
 def _check_pgp_key(path, keyid):

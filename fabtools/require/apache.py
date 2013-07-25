@@ -113,7 +113,7 @@ def site(config_name, template_contents=None, template_source=None, enabled=True
 
     if check_config:
         with settings(hide('running', 'warnings'), warn_only=True):
-            if run_as_root("apache2ctl configtest").return_code > 0:
+            if run_as_root('apache2ctl configtest').failed:
                 disable(config_name)
                 message = red("Error in %(config_name)s apache site config (disabling for safety)" % locals())
                 abort(message)
