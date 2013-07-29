@@ -127,7 +127,8 @@ def get_hostname():
     Get the fully qualified hostname.
     """
     with settings(hide('running', 'stdout')):
-        return run('hostname --fqdn')
+        return run('hostname --fqdn') if not distrib_id() == 'Archlinux' \
+            else run('hostname -f')
 
 
 def set_hostname(hostname, persist=True):
