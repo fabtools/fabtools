@@ -20,7 +20,7 @@ except ImportError:
 
 from fabric.api import cd, hide, run, settings
 
-from fabtools.system import cpus, distrib_family, distrib_id
+from fabtools.system import cpus, distrib_family
 from fabtools.utils import run_as_root
 
 
@@ -79,15 +79,12 @@ def install_from_source(version=DEFAULT_VERSION):
     run('rm -rf %(filename)s %(foldername)s' % locals())
 
 
-def version():
+def version(node='node'):
     """
     Get the version of Node.js currently installed.
 
     Returns ``None`` if it is not installed.
     """
-    node = '/usr/bin/node' if distrib_id() is 'Archlinux' \
-        else '/usr/local/bin/node'
-
     with settings(hide('running', 'stdout', 'warnings'), warn_only=True):
         res = run('%(node)s --version' % locals())
     if res.failed:
@@ -96,7 +93,7 @@ def version():
         return res[1:]
 
 
-def install_package(package, version=None, local=False):
+def install_package(package, version=None, local=False, npm='npm'):
     """
     Install a Node.js package.
 
@@ -113,9 +110,6 @@ def install_package(package, version=None, local=False):
         fabtools.nodejs.install_package('underscore', local=False)
 
     """
-    npm = '/usr/bin/npm' if distrib_id() is 'Archlinux' \
-        else '/usr/local/bin/npm'
-
     if version:
         package += '@%s' % version
 
@@ -125,7 +119,7 @@ def install_package(package, version=None, local=False):
         run_as_root('HOME=/root %(npm)s install -g %(package)s' % locals())
 
 
-def install_dependencies():
+def install_dependencies(npm='npm'):
     """
     Install Node.js package dependencies.
 
@@ -142,22 +136,16 @@ def install_dependencies():
             nodejs.install_dependencies()
 
     """
-    npm = '/usr/bin/npm' if distrib_id() is 'Archlinux' \
-        else '/usr/local/bin/npm'
-
     run('%(npm)s install' % locals())
 
 
-def package_version(package, local=False):
+def package_version(package, local=False, npm='npm'):
     """
     Get the installed version of a Node.js package.
 
     Returns ``None``is the package is not installed. If *local* is
     ``True``, returns the version of the locally installed package.
     """
-    npm = '/usr/bin/npm' if distrib_id() is 'Archlinux' \
-        else '/usr/local/bin/npm'
-
     options = ['--json true', '--silent']
     if local:
         options.append('-l')
@@ -176,22 +164,19 @@ def package_version(package, local=False):
         return None
 
 
-def update_package(package, local=False):
+def update_package(package, local=False, npm='npm'):
     """
     Update a Node.js package.
 
     If *local* is ``True``, the package will be updated locally.
     """
-    npm = '/usr/bin/npm' if distrib_id() is 'Archlinux' \
-        else '/usr/local/bin/npm'
-
     if local:
         run('%(npm)s update -l %(package)s' % locals())
     else:
         run_as_root('HOME=/root %(npm)s update -g %(package)s' % locals())
 
 
-def uninstall_package(package, version=None, local=False):
+def uninstall_package(package, version=None, local=False, npm='npm'):
     """
     Uninstall a Node.js package.
 
@@ -208,9 +193,6 @@ def uninstall_package(package, version=None, local=False):
         fabtools.nodejs.uninstall_package('underscore', local=False)
 
     """
-    npm = '/usr/bin/npm' if distrib_id() is 'Archlinux' \
-        else '/usr/local/bin/npm'
-
     if version:
         package += '@%s' % version
 
