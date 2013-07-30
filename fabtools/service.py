@@ -28,8 +28,12 @@ def is_running(service):
             print "Service foo is running!"
     """
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        res = run_as_root('service %(service)s status' % locals())
-        return res.succeeded
+        test_upstart = run_as_root('test -f /etc/init/{}.conf'.format(service))
+        status = run_as_root('service %(service)s status' % locals())
+        if test_upstart.succeeded:
+            return 'running' in status
+        else:
+            return status.succeeded
 
 
 def start(service):
