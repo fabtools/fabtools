@@ -79,7 +79,7 @@ def installed_from_source(version=VERSION):
                     run_as_root('chown redis: %(dest_dir)s/%(filename)s' % locals())
 
 
-def instance(name, version=VERSION, **kwargs):
+def instance(name, version=VERSION, bind='127.0.0.1', port=6379, **kwargs):
     """
     Require a Redis instance to be running.
 
@@ -122,8 +122,8 @@ def instance(name, version=VERSION, **kwargs):
     # Set default parameters
     params = {}
     params.update(kwargs)
-    params.setdefault('bind', '127.0.0.1')
-    params.setdefault('port', '6379')
+    params.setdefault('bind', bind)
+    params.setdefault('port', port)
     params.setdefault('logfile', '/var/log/redis/redis-%(name)s.log' % locals())
     params.setdefault('loglevel', 'verbose')
     params.setdefault('dir', '/var/db/redis')
