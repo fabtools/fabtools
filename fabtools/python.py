@@ -79,7 +79,9 @@ def install_pip(python_cmd='python', use_sudo=True):
 
 def is_installed(package, pip_cmd='pip'):
     """
-    Check if a Python package is installed.
+    Check if a Python package is installed (using pip).
+
+    .. _pip: http://www.pip-installer.org/
     """
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = run('%(pip_cmd)s freeze' % locals())
@@ -92,8 +94,6 @@ def install(packages, upgrade=False, use_mirrors=False, use_sudo=False,
     """
     Install Python package(s) using `pip`_.
 
-    .. _pip: http://www.pip-installer.org/
-
     Examples::
 
         import fabtools
@@ -104,6 +104,7 @@ def install(packages, upgrade=False, use_mirrors=False, use_sudo=False,
         # Install a list of packages
         fabtools.python.install(['pkg1', 'pkg2'], use_sudo=True)
 
+    .. _pip: http://www.pip-installer.org/
     """
     if not isinstance(packages, basestring):
         packages = ' '.join(packages)
