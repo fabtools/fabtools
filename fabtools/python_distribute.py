@@ -15,20 +15,20 @@ from fabric.api import cd, run
 from fabtools.utils import run_as_root
 
 
-def is_distribute_installed(use_python='python'):
+def is_distribute_installed(python_cmd='python'):
     """
     Check if `distribute`_ is installed.
 
     .. _distribute: http://packages.python.org/distribute/
     """
-    cmd = '''%(use_python)s -c "import pkg_resources;\
+    cmd = '''%(python_cmd)s -c "import pkg_resources;\
                         print pkg_resources.get_distribution('distribute')"
           ''' % locals()
     res = run(cmd, quiet=True)
     return res.succeeded and (res.find('distribute') >= 0)
 
 
-def install_distribute(use_python='python'):
+def install_distribute(python_cmd='python'):
     """
     Install the latest version of `distribute`_.
 
@@ -44,10 +44,10 @@ def install_distribute(use_python='python'):
     """
     with cd("/tmp"):
         run("curl --silent -O http://python-distribute.org/distribute_setup.py")
-        run_as_root("%(use_python)s distribute_setup.py" % locals())
+        run_as_root("%(python_cmd)s distribute_setup.py" % locals())
 
 
-def install(packages, upgrade=False, use_sudo=False, use_python='python'):
+def install(packages, upgrade=False, use_sudo=False, python_cmd='python'):
     """
     Install Python packages with ``easy_install``.
 
@@ -73,4 +73,4 @@ def install(packages, upgrade=False, use_sudo=False, use_python='python'):
     if upgrade:
         options.append("-U")
     options = " ".join(options)
-    func('%(use_python)s -m easy_install %(options)s %(packages)s' % locals())
+    func('%(python_cmd)s -m easy_install %(options)s %(packages)s' % locals())

@@ -31,7 +31,7 @@ from fabtools.system import distrib_family
 DEFAULT_PIP_VERSION = '1.3.1'
 
 
-def distribute(use_python='python'):
+def distribute(python_cmd='python'):
     """
     Require `distribute`_ to be installed.
 
@@ -56,20 +56,20 @@ def distribute(use_python='python'):
             'python-devel',
         ])
 
-    if not is_distribute_installed(use_python=use_python):
-        install_distribute(use_python=use_python)
+    if not is_distribute_installed(python_cmd=python_cmd):
+        install_distribute(python_cmd=python_cmd)
 
 
-def pip(version=None, use_python='python'):
+def pip(version=None, pip_cmd='pip', python_cmd='python'):
     """
     Require `pip`_ to be installed.
     """
-    distribute(use_python=use_python)
-    if not is_pip_installed(version, use_python=use_python):
-        install_pip(use_python=use_python)
+    distribute(python_cmd=python_cmd)
+    if not is_pip_installed(version, pip_cmd=pip_cmd):
+        install_pip(python_cmd=python_cmd)
 
 
-def package(pkg_name, url=None, use_python='python', **kwargs):
+def package(pkg_name, url=None, pip_cmd='pip', python_cmd='python', **kwargs):
     """
     Require a Python package.
 
@@ -90,34 +90,34 @@ def package(pkg_name, url=None, use_python='python', **kwargs):
 
     .. _pip installer: http://www.pip-installer.org/
     """
-    pip(DEFAULT_PIP_VERSION, use_python=use_python)
-    if not is_installed(pkg_name, use_python):
-        install(url or pkg_name, use_python=use_python, **kwargs)
+    pip(DEFAULT_PIP_VERSION, python_cmd=python_cmd)
+    if not is_installed(pkg_name, pip_cmd=pip_cmd):
+        install(url or pkg_name, pip_cmd=pip_cmd, **kwargs)
 
 
-def packages(pkg_list, use_python='python', **kwargs):
+def packages(pkg_list, pip_cmd='pip', python_cmd='python', **kwargs):
     """
     Require several Python packages.
     """
-    pip(DEFAULT_PIP_VERSION, use_python=use_python)
-    pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg, use_python=use_python)]
+    pip(DEFAULT_PIP_VERSION, python_cmd=python_cmd)
+    pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg, pip_cmd=pip_cmd)]
     if pkg_list:
-        install(pkg_list, use_python=use_python, **kwargs)
+        install(pkg_list, pip_cmd=pip_cmd, **kwargs)
 
 
-def requirements(filename, use_python='python', **kwargs):
+def requirements(filename, pip_cmd='pip', python_cmd='python', **kwargs):
     """
     Require Python packages from a pip `requirements file`_.
 
     .. _requirements file: http://www.pip-installer.org/en/latest/requirements.html
     """
-    pip(DEFAULT_PIP_VERSION, use_python=use_python)
-    install_requirements(filename, use_python=use_python, **kwargs)
+    pip(DEFAULT_PIP_VERSION, python_cmd=python_cmd)
+    install_requirements(filename, pip_cmd=pip_cmd, **kwargs)
 
 
-def virtualenv(directory, system_site_packages=False, python=None,
-               use_sudo=False, user=None, clear=False,
-               prompt=None, use_python='python'):
+def virtualenv(directory, system_site_packages=False, venv_python=None,
+               use_sudo=False, user=None, clear=False, prompt=None,
+               virtualenv_cmd='virtualenv', pip_cmd='pip', python_cmd='python'):
     """
     Require a Python `virtual environment`_.
 
@@ -129,19 +129,19 @@ def virtualenv(directory, system_site_packages=False, python=None,
 
     .. _virtual environment: http://www.virtualenv.org/
     """
-    package('virtualenv', use_sudo=True, use_python=use_python)
+    package('virtualenv', use_sudo=True, pip_cmd=pip_cmd, python_cmd=python_cmd)
     if not is_file(posixpath.join(directory, 'bin', 'python')):
         options = ['--quiet']
         if system_site_packages:
             options.append('--system-site-packages')
-        if python:
-            options.append('--python=%s' % python)
+        if venv_python:
+            options.append('--python=%s' % venv_python)
         if clear:
             options.append('--clear')
         if prompt:
             options.append('--prompt="%s"' % prompt)
         options = ' '.join(options)
-        command = 'virtualenv %(options)s "%(directory)s"' % locals()
+        command = '%(virtualenv_cmd)s %(options)s "%(directory)s"' % locals()
         if use_sudo:
             sudo(command, user=user)
         else:

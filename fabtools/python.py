@@ -23,14 +23,14 @@ from fabric.utils import puts
 from fabtools.utils import abspath, run_as_root
 
 
-def is_pip_installed(version=None, use_python='python'):
+def is_pip_installed(version=None, pip_cmd='pip'):
     """
     Check if `pip`_ is installed.
 
     .. _pip: http://www.pip-installer.org/
     """
     with settings(hide('running', 'warnings', 'stderr', 'stdout'), warn_only=True):
-        res = run('%(use_python)s -m pip --version 2>/dev/null' % locals())
+        res = run('%(pip_cmd)s --version 2>/dev/null' % locals())
         if res.failed:
             return False
         if version is None:
@@ -44,9 +44,10 @@ def is_pip_installed(version=None, use_python='python'):
                 return True
 
 
-def install_pip(use_python='python'):
+def install_pip(python_cmd='python'):
     """
-    Install the latest version of `pip`_.
+    Install the latest version of `pip`_, using the given Python
+    interpreter.
 
     .. _pip: http://www.pip-installer.org/
 
@@ -60,27 +61,21 @@ def install_pip(use_python='python'):
     """
     with cd('/tmp'):
         run('curl --silent -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py')
-        run_as_root('%(use_python)s get-pip.py' % locals(), pty=False)
+        run_as_root('%(python_cmd)s get-pip.py' % locals(), pty=False)
 
 
-def is_installed(package, use_python='python'):
+def is_installed(package, pip_cmd='pip'):
     """
     Check if a Python package is installed.
     """
-    options = []
-    options = ' '.join(options)
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        res = run('%(use_python)s -m pip freeze %(options)s' % locals())
+        res = run('%(pip_cmd)s freeze' % locals())
     packages = [line.split('==')[0] for line in res.splitlines()]
     return (package in packages)
 
 
-def _get_python_version(use_python):
-    return run("""python -c 'import sys; print(".".join(map(str, sys.version_info[0:3])))'""").strip()
-
-
 def install(packages, upgrade=False, use_mirrors=False, use_sudo=False,
-            user=None, download_cache=None, quiet=False, use_python='python'):
+            user=None, download_cache=None, quiet=False, pip_cmd='pip'):
     """
     Install Python package(s) using `pip`_.
 
@@ -99,6 +94,7 @@ def install(packages, upgrade=False, use_mirrors=False, use_sudo=False,
     """
     if not isinstance(packages, basestring):
         packages = ' '.join(packages)
+
     options = []
     if use_mirrors:
         options.append('--use-mirrors')
@@ -110,14 +106,7 @@ def install(packages, upgrade=False, use_mirrors=False, use_sudo=False,
         options.append('--quiet')
     options = ' '.join(options)
 
-    version = _get_python_version(use_python).split('.')
-
-    if (int(version[0]) < 3) and (int(version[1]) < 7):
-        command = 'pip-%s.%s' % (version[0], version[1])
-    else:
-        command = '%(use_python)s -m pip' % locals()
-
-    command += ' install %(options)s %(packages)s' % locals()
+    command = '%(pip_cmd)s install %(options)s %(packages)s' % locals()
 
     if use_sudo:
         sudo(command, user=user, pty=False)
@@ -127,7 +116,7 @@ def install(packages, upgrade=False, use_mirrors=False, use_sudo=False,
 
 def install_requirements(filename, upgrade=False, use_mirrors=False,
                          use_sudo=False, user=None, download_cache=None,
-                         quiet=False, use_python='python'):
+                         quiet=False, pip_cmd='pip'):
     """
     Install Python packages from a pip `requirements file`_.
 
@@ -149,7 +138,9 @@ def install_requirements(filename, upgrade=False, use_mirrors=False,
     if quiet:
         options.append('--quiet')
     options = ' '.join(options)
-    command = '%(use_python)s -m pip install %(options)s -r %(filename)s' % locals()
+
+    command = '%(pip_cmd)s install %(options)s -r %(filename)s' % locals()
+
     if use_sudo:
         sudo(command, user=user, pty=False)
     else:
