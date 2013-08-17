@@ -45,12 +45,10 @@ def is_pip_installed(version=None, pip_cmd='pip'):
                 return True
 
 
-def install_pip(python_cmd='python'):
+def install_pip(python_cmd='python', use_sudo=True):
     """
     Install the latest version of `pip`_, using the given Python
     interpreter.
-
-    .. _pip: http://www.pip-installer.org/
 
     ::
 
@@ -59,10 +57,22 @@ def install_pip(python_cmd='python'):
         if not fabtools.python.is_pip_installed():
             fabtools.python.install_pip()
 
+    .. note::
+        pip is automatically installed inside a virtualenv, so there
+        is no need to install it yourself in this case.
+
+    .. _pip: http://www.pip-installer.org/
     """
+
     with cd('/tmp'):
+
         run('curl --silent -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py')
-        run_as_root('%(python_cmd)s get-pip.py' % locals(), pty=False)
+
+        command = '%(python_cmd)s get-pip.py' % locals()
+        if use_sudo:
+            run_as_root(command, pty=False)
+        else:
+            run(command, pty=False)
 
 
 def is_installed(package, pip_cmd='pip'):
