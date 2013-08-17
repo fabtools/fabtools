@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Version 0.16.0 (unreleased)
+---------------------------
+
+* Redis improvements
+    * Make bind and port arguments explicit
+    * Improve documentation
+
+
 Version 0.15.0 (2013-07-25)
 ---------------------------
 
