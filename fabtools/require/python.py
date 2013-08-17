@@ -9,17 +9,15 @@ and installing packages using `pip`_.
 .. _pip: http://www.pip-installer.org/
 
 """
-import posixpath
 
-from fabric.api import run, sudo
-
-from fabtools.files import is_file
 from fabtools.python import (
+    create_virtualenv,
     install,
     install_pip,
     install_requirements,
     is_installed,
     is_pip_installed,
+    virtualenv_exists,
 )
 from fabtools.python_distribute import (
     install_distribute,
@@ -129,20 +127,17 @@ def virtualenv(directory, system_site_packages=False, venv_python=None,
 
     .. _virtual environment: http://www.virtualenv.org/
     """
+
     package('virtualenv', use_sudo=True, pip_cmd=pip_cmd, python_cmd=python_cmd)
-    if not is_file(posixpath.join(directory, 'bin', 'python')):
-        options = ['--quiet']
-        if system_site_packages:
-            options.append('--system-site-packages')
-        if venv_python:
-            options.append('--python=%s' % venv_python)
-        if clear:
-            options.append('--clear')
-        if prompt:
-            options.append('--prompt="%s"' % prompt)
-        options = ' '.join(options)
-        command = '%(virtualenv_cmd)s %(options)s "%(directory)s"' % locals()
-        if use_sudo:
-            sudo(command, user=user)
-        else:
-            run(command)
+
+    if not virtualenv_exists(directory):
+        create_virtualenv(
+            directory,
+            system_site_packages=system_site_packages,
+            venv_python=venv_python,
+            use_sudo=use_sudo,
+            user=user,
+            clear=clear,
+            prompt=prompt,
+            virtualenv_cmd=virtualenv_cmd,
+        )

@@ -10,6 +10,7 @@ Version 0.16.0 (unreleased)
 * Python improvements
     * Improve support for using specific Python interpreters (**warning**:
       API changes)
+    * Expose low-level virtualenv operations
 
 
 Version 0.15.0 (2013-07-25)

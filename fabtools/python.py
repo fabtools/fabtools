@@ -20,6 +20,7 @@ import posixpath
 from fabric.api import cd, hide, prefix, run, settings, sudo
 from fabric.utils import puts
 
+from fabtools.files import is_file
 from fabtools.utils import abspath, run_as_root
 
 
@@ -145,6 +146,49 @@ def install_requirements(filename, upgrade=False, use_mirrors=False,
         sudo(command, user=user, pty=False)
     else:
         run(command, pty=False)
+
+
+def create_virtualenv(directory, system_site_packages=False, venv_python=None,
+               use_sudo=False, user=None, clear=False, prompt=None,
+               virtualenv_cmd='virtualenv'):
+    """
+    Create a Python `virtual environment`_.
+
+    ::
+
+        import fabtools
+
+        fabtools.python.create_virtualenv('/path/to/venv')
+
+    .. _virtual environment: http://www.virtualenv.org/
+    """
+    options = ['--quiet']
+    if system_site_packages:
+        options.append('--system-site-packages')
+    if venv_python:
+        options.append('--python=%s' % quote(venv_python))
+    if clear:
+        options.append('--clear')
+    if prompt:
+        options.append('--prompt=%s' % quote(prompt))
+    options = ' '.join(options)
+
+    directory = quote(directory)
+
+    command = '%(virtualenv_cmd)s %(options)s %(directory)s' % locals()
+    if use_sudo:
+        sudo(command, user=user)
+    else:
+        run(command)
+
+
+def virtualenv_exists(directory):
+    """
+    Check if a Python `virtual environment`_ exists.
+
+    .. _virtual environment: http://www.virtualenv.org/
+    """
+    return is_file(posixpath.join(directory, 'bin', 'python'))
 
 
 @contextmanager
