@@ -11,6 +11,7 @@ Version 0.16.0 (unreleased)
     * Improve support for using specific Python interpreters (**warning**:
       API changes)
     * Expose low-level virtualenv operations
+    * Improve pip installation
 
 
 Version 0.15.0 (2013-07-25)
