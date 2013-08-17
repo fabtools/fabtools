@@ -74,6 +74,8 @@ def install_pip(python_cmd='python', use_sudo=True):
         else:
             run(command, pty=False)
 
+        run('rm -f get-pip.py')
+
 
 def is_installed(package, pip_cmd='pip'):
     """
