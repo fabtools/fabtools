@@ -26,7 +26,7 @@ from fabtools.python_distribute import (
 from fabtools.system import distrib_family
 
 
-DEFAULT_PIP_VERSION = '1.3.1'
+MIN_PIP_VERSION = '1.3.1'
 
 
 def distribute(python_cmd='python'):
@@ -58,9 +58,14 @@ def distribute(python_cmd='python'):
         install_distribute(python_cmd=python_cmd)
 
 
-def pip(version=None, pip_cmd='pip', python_cmd='python'):
+def pip(version=MIN_PIP_VERSION, pip_cmd='pip', python_cmd='python'):
     """
     Require `pip`_ to be installed.
+
+    If pip is not installed, or if a version older than *version*
+    is installed, the latest version will be installed.
+
+    .. _pip: http://www.pip-installer.org/
     """
     distribute(python_cmd=python_cmd)
     if not is_pip_installed(version, pip_cmd=pip_cmd):
@@ -88,7 +93,7 @@ def package(pkg_name, url=None, pip_cmd='pip', python_cmd='python', **kwargs):
 
     .. _pip installer: http://www.pip-installer.org/
     """
-    pip(DEFAULT_PIP_VERSION, python_cmd=python_cmd)
+    pip(MIN_PIP_VERSION, python_cmd=python_cmd)
     if not is_installed(pkg_name, pip_cmd=pip_cmd):
         install(url or pkg_name, pip_cmd=pip_cmd, **kwargs)
 
@@ -97,7 +102,7 @@ def packages(pkg_list, pip_cmd='pip', python_cmd='python', **kwargs):
     """
     Require several Python packages.
     """
-    pip(DEFAULT_PIP_VERSION, python_cmd=python_cmd)
+    pip(MIN_PIP_VERSION, python_cmd=python_cmd)
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg, pip_cmd=pip_cmd)]
     if pkg_list:
         install(pkg_list, pip_cmd=pip_cmd, **kwargs)
@@ -109,7 +114,7 @@ def requirements(filename, pip_cmd='pip', python_cmd='python', **kwargs):
 
     .. _requirements file: http://www.pip-installer.org/en/latest/requirements.html
     """
-    pip(DEFAULT_PIP_VERSION, python_cmd=python_cmd)
+    pip(MIN_PIP_VERSION, python_cmd=python_cmd)
     install_requirements(filename, pip_cmd=pip_cmd, **kwargs)
 
 
