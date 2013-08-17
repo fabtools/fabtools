@@ -19,4 +19,4 @@
     .. autofunction:: packages
     .. autofunction:: requirements
     .. autofunction:: pip
-    .. autofunction:: distribute
+    .. autofunction:: setuptools

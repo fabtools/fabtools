@@ -18,7 +18,7 @@ fabtools
    pkg
    postgres
    python
-   python_distribute
+   python_setuptools
    rpm
    service
    shorewall

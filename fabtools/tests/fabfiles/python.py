@@ -4,6 +4,17 @@ from fabric.api import task
 
 
 @task
+def python_setuptools():
+    """
+    Test setuptools installation
+    """
+
+    from fabtools import require
+
+    require.python.setuptools()
+
+
+@task
 def python_virtualenv():
     """
     Test Python virtualenv creation

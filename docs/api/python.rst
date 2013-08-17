@@ -5,7 +5,7 @@
 
 .. automodule:: fabtools.python
 
-    .. seealso:: :ref:`python_distribute_module` and :ref:`require_python_module`
+    .. seealso:: :ref:`python_setuptools_module` and :ref:`require_python_module`
 
     Virtual environments
     ~~~~~~~~~~~~~~~~~~~~

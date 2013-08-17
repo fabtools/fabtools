@@ -19,21 +19,25 @@ from fabtools.python import (
     is_pip_installed,
     virtualenv_exists,
 )
-from fabtools.python_distribute import (
-    install_distribute,
-    is_distribute_installed,
+from fabtools.python_setuptools import (
+    install_setuptools,
+    is_setuptools_installed,
 )
 from fabtools.system import distrib_family
 
 
+MIN_SETUPTOOLS_VERSION = '0.7'
 MIN_PIP_VERSION = '1.3.1'
 
 
-def distribute(python_cmd='python'):
+def setuptools(version=MIN_SETUPTOOLS_VERSION, python_cmd='python'):
     """
-    Require `distribute`_ to be installed.
+    Require `setuptools`_ to be installed.
 
-    .. _distribute: http://packages.python.org/distribute/
+    If setuptools is not installed, or if a version older than *version*
+    is installed, the latest version will be installed.
+
+    .. _setuptools: http://pythonhosted.org/setuptools/
     """
 
     from fabtools.require.deb import packages as require_deb_packages
@@ -54,8 +58,8 @@ def distribute(python_cmd='python'):
             'python-devel',
         ])
 
-    if not is_distribute_installed(python_cmd=python_cmd):
-        install_distribute(python_cmd=python_cmd)
+    if not is_setuptools_installed(python_cmd=python_cmd):
+        install_setuptools(python_cmd=python_cmd)
 
 
 def pip(version=MIN_PIP_VERSION, pip_cmd='pip', python_cmd='python'):
@@ -67,7 +71,7 @@ def pip(version=MIN_PIP_VERSION, pip_cmd='pip', python_cmd='python'):
 
     .. _pip: http://www.pip-installer.org/
     """
-    distribute(python_cmd=python_cmd)
+    setuptools(python_cmd=python_cmd)
     if not is_pip_installed(version, pip_cmd=pip_cmd):
         install_pip(python_cmd=python_cmd)
 

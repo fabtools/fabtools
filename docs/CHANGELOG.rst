@@ -12,6 +12,9 @@ Version 0.16.0 (unreleased)
       API changes)
     * Expose low-level virtualenv operations
     * Improve pip installation
+    * Switch from distribute to setuptools 0.7+ after project merge
+      (**warning**: API changes)
+
 
 
 Version 0.15.0 (2013-07-25)

@@ -15,7 +15,7 @@ import fabtools.oracle_jdk
 import fabtools.pkg
 import fabtools.postgres
 import fabtools.python
-import fabtools.python_distribute
+import fabtools.python_setuptools
 import fabtools.rpm
 import fabtools.service
 import fabtools.shorewall
