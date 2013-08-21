@@ -24,8 +24,8 @@ def package_version(name, python_cmd='python'):
 
     Returns ``None`` if it can't be found.
     """
-    cmd = '''%(python_cmd)s -c "\
-        import pkg_resources;\
+    cmd = '''%(python_cmd)s -c \
+        "import pkg_resources;\
         dist = pkg_resources.get_distribution('%(name)s');\
         print dist.version"
         ''' % locals()
