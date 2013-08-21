@@ -43,22 +43,22 @@ def setuptools(version=MIN_SETUPTOOLS_VERSION, python_cmd='python'):
     from fabtools.require.deb import packages as require_deb_packages
     from fabtools.require.rpm import packages as require_rpm_packages
 
-    family = distrib_family()
-
-    if family == 'debian':
-        require_deb_packages([
-            'curl',
-            'python-dev',
-        ])
-
-    elif family == 'redhat':
-
-        require_rpm_packages([
-            'curl',
-            'python-devel',
-        ])
-
     if not is_setuptools_installed(python_cmd=python_cmd):
+        family = distrib_family()
+
+        if family == 'debian':
+            require_deb_packages([
+                'curl',
+                'python-dev',
+            ])
+
+        elif family == 'redhat':
+
+            require_rpm_packages([
+                'curl',
+                'python-devel',
+            ])
+
         install_setuptools(python_cmd=python_cmd)
 
 
