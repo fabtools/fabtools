@@ -76,7 +76,6 @@ def install_pip(python_cmd='python', use_sudo=True):
 
         run('rm -f get-pip.py')
 
-
 def is_installed(package, pip_cmd='pip'):
     """
     Check if a Python package is installed (using pip).
@@ -85,8 +84,8 @@ def is_installed(package, pip_cmd='pip'):
     """
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = run('%(pip_cmd)s freeze' % locals())
-    packages = [line.split('==')[0] for line in res.splitlines()]
-    return (package in packages)
+    packages = [line.split('==')[0].lower() for line in res.splitlines()]
+    return (package.lower() in packages)
 
 
 def install(packages, upgrade=False, use_mirrors=False, use_sudo=False,
