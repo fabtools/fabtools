@@ -79,6 +79,7 @@ def install_pip(python_cmd='python', use_sudo=True):
 def is_installed(package, pip_cmd='pip'):
     """
     Check if a Python package is installed (using pip).
+    Package name is case insensitive.
 
     .. _pip: http://www.pip-installer.org/
     """
