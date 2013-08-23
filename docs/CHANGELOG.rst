@@ -18,6 +18,7 @@ Version 0.16.0 (unreleased)
       is already installed (ponty)
     * Make package names case-insensitive in python.is_installed
       (ponty)
+* Fix ``require.system.locales`` when a prefix is set
 
 
 Version 0.15.0 (2013-07-25)
