@@ -79,7 +79,17 @@ def install_pip(python_cmd='python', use_sudo=True):
 def is_installed(package, pip_cmd='pip'):
     """
     Check if a Python package is installed (using pip).
-    Package name is case insensitive.
+
+    Package names are case insensitive.
+
+    Example::
+
+        from fabtools.python import virtualenv
+        import fabtools
+
+        with virtualenv('/path/to/venv'):
+            fabtools.python.install('Flask')
+            assert fabtools.python.is_installed('flask')
 
     .. _pip: http://www.pip-installer.org/
     """
@@ -93,6 +103,8 @@ def install(packages, upgrade=False, use_mirrors=False, use_sudo=False,
             user=None, download_cache=None, quiet=False, pip_cmd='pip'):
     """
     Install Python package(s) using `pip`_.
+
+    Package names are case insensitive.
 
     Examples::
 

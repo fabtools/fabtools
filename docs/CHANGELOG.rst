@@ -14,7 +14,10 @@ Version 0.16.0 (unreleased)
     * Improve pip installation
     * Switch from distribute to setuptools 0.7+ after project merge
       (**warning**: API changes)
-
+    * Do not install `curl` and `python-dev` packages when setuptools
+      is already installed (ponty)
+    * Make package names case-insensitive in python.is_installed
+      (ponty)
 
 
 Version 0.15.0 (2013-07-25)

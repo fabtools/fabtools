@@ -83,6 +83,8 @@ def package(pkg_name, url=None, pip_cmd='pip', python_cmd='python', **kwargs):
     If the package is not installed, it will be installed
     using the `pip installer`_.
 
+    Package names are case insensitive.
+
     ::
 
         from fabtools.python import virtualenv
@@ -105,6 +107,8 @@ def package(pkg_name, url=None, pip_cmd='pip', python_cmd='python', **kwargs):
 def packages(pkg_list, pip_cmd='pip', python_cmd='python', **kwargs):
     """
     Require several Python packages.
+
+    Package names are case insensitive.
     """
     pip(MIN_PIP_VERSION, python_cmd=python_cmd)
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg, pip_cmd=pip_cmd)]
