@@ -17,7 +17,7 @@ from fabtools.utils import run_as_root
 import fabtools.supervisor
 
 
-VERSION = '2.6.14'
+VERSION = '2.6.15'
 
 BINARIES = [
     'redis-benchmark',
@@ -66,7 +66,7 @@ def installed_from_source(version=VERSION):
 
             # Download and unpack the tarball
             tarball = 'redis-%(version)s.tar.gz' % locals()
-            url = 'http://redis.googlecode.com/files/' + tarball
+            url = _download_url(version) + tarball
             require_file(tarball, url=url)
             run('tar xzf %(tarball)s' % locals())
 
@@ -77,6 +77,17 @@ def installed_from_source(version=VERSION):
                 for filename in BINARIES:
                     run_as_root('cp -pf src/%(filename)s %(dest_dir)s/' % locals())
                     run_as_root('chown redis: %(dest_dir)s/%(filename)s' % locals())
+
+
+def _download_url(version):
+    if _parse_version(version) <= (2, 6, 14):
+        return 'http://redis.googlecode.com/files/'
+    else:
+        return 'http://download.redis.io/releases/'
+
+
+def _parse_version(version):
+    return tuple(map(int, version.split('.')))
 
 
 def instance(name, version=VERSION, bind='127.0.0.1', port=6379, **kwargs):
