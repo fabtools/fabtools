@@ -6,7 +6,7 @@ from __future__ import with_statement
 
 from re import escape
 
-from fabric.api import warn, shell_env
+from fabric.api import warn
 from fabric.contrib.files import append, uncomment
 
 from fabtools.files import is_file, watch
