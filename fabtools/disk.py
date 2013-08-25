@@ -27,7 +27,7 @@ def partitions(device=""):
         if r:
             print("You can format these partitions")
     """
-    partitions = {}
+    partitions_list = {}
     with settings(hide('running', 'stdout')):
         res = run_as_root('sfdisk -d %(device)s' % locals())
 
@@ -35,9 +35,9 @@ def partitions(device=""):
         for line in res.splitlines():
             m = spart.search(line)
             if m:
-                partitions[m.group('pname')] = int(m.group('ptypeid'), 16)
+                partitions_list[m.group('pname')] = int(m.group('ptypeid'), 16)
 
-    return partitions
+    return partitions_list
 
 
 def mount(device, mountpoint):
