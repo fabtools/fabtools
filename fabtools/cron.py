@@ -12,7 +12,7 @@ from tempfile import NamedTemporaryFile
 from fabtools.files import upload_template
 
 
-def add_task(name, timespec, user, command):
+def add_task(name, timespec, user, command, environment=None):
     """
     Add a cron task.
 
@@ -21,6 +21,9 @@ def add_task(name, timespec, user, command):
     You can use any valid `crontab(5)`_ *timespec*, including the
     ``@hourly``, ``@daily``, ``@weekly``, ``@monthly`` and ``@yearly``
     shortcuts.
+
+    You can also provide an optional dictionary of environment variables
+    that should be set when running the periodic command.
 
     Examples::
 
@@ -35,10 +38,23 @@ def add_task(name, timespec, user, command):
     .. _crontab(5): http://manpages.debian.net/cgi-bin/man.cgi?query=crontab&sektion=5
 
     """
+    if environment is None:
+        environment = {}
+
     with NamedTemporaryFile() as script:
+
+        # Write optional environment variables first
+        for key, value in environment.iteritems():
+            script.write('%(key)s=%(value)s\n' % locals())
+
+        # Write the main crontab line
         script.write('%(timespec)s %(user)s %(command)s\n' % locals())
+
         script.flush()
-        upload_template('/etc/cron.d/%(name)s' % locals(),
+
+        # Upload file
+        filename = '/etc/cron.d/%(name)s' % locals()
+        upload_template(filename,
                         script.name,
                         context={},
                         chown=True,
