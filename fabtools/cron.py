@@ -10,6 +10,7 @@ from __future__ import with_statement
 from tempfile import NamedTemporaryFile
 
 from fabtools.files import upload_template
+from fabtools.utils import run_as_root
 
 
 def add_task(name, timespec, user, command, environment=None):
@@ -59,6 +60,9 @@ def add_task(name, timespec, user, command, environment=None):
                         context={},
                         chown=True,
                         use_sudo=True)
+
+        # Fix permissions
+        run_as_root('chmod 0644 %s' % filename)
 
 
 def add_daily(name, user, command):
