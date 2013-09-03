@@ -53,10 +53,12 @@ def locales(names):
     Require the list of locales to be available.
     """
 
-    config_file = '/var/lib/locales/supported.d/local'
-
-    if not is_file(config_file):
-        config_file = '/etc/locale.gen'
+    if distrib_id() == "Ubuntu":
+        config_file = '/var/lib/locales/supported.d/local'
+        if not is_file(config_file):
+            run_as_root('touch %s' % config_file)
+    else:
+         config_file = '/etc/locale.gen'
 
     # Regenerate locales if config file changes
     with watch(config_file, use_sudo=True) as config:
