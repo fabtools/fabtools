@@ -230,3 +230,15 @@ def uncommented_lines(filename, use_sudo=False):
                 if line and not line.startswith('#')]
     else:
         return []
+
+
+def getmtime(path, use_sudo=False):
+    """
+    Return the time of last modification of path. 
+    The return value is a number giving the number of seconds since the epoch
+    
+    Same as os.path.getmtime(path)
+    """
+    func = use_sudo and run_as_root or run
+    with settings(hide('running', 'stdout')):
+        return int(func('stat -c %%Y "%(path)s" ' % locals()).strip())

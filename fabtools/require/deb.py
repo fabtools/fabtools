@@ -17,10 +17,12 @@ from fabtools.deb import (
     is_installed,
     uninstall,
     update_index,
+    last_update_time,
 )
 from fabtools.files import is_file, watch
 from fabtools.system import distrib_codename
 from fabtools.utils import run_as_root
+from fabtools import system
 
 
 def key(keyid, filename=None, url=None, keyserver='subkeys.pgp.net', update=False):
@@ -167,3 +169,19 @@ def nopackages(pkg_list):
     pkg_list = [pkg for pkg in pkg_list if is_installed(pkg)]
     if pkg_list:
         uninstall(pkg_list)
+
+
+def periodic_update_index(quiet=True, period=86400):
+    """
+    Update APT package definitions only 
+    if specified time since last update already elapsed.
+
+    Example::
+
+        from fabtools import require
+
+        # update every day
+        require.deb.periodic_update_index(period=86400)
+    """
+    if system.time() - last_update_time() > period:
+        update_index(quiet=quiet)

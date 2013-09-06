@@ -216,3 +216,14 @@ def cpus():
         res = run('python -c "import multiprocessing; '
                   'print(multiprocessing.cpu_count())"')
         return int(res)
+
+
+def time():
+    """
+    Return the current time in seconds since the Epoch.
+
+    Same as `time.time()`
+    """
+
+    with settings(hide('running', 'stdout')):
+        return int(run('date +%s'))
