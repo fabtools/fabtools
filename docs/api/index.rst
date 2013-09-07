@@ -27,4 +27,5 @@ fabtools
    systemd
    user
    utils
+   tomcat
    vagrant

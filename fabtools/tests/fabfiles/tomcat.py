@@ -14,12 +14,12 @@ def should_verify_tomcat_version():
     """
 
     # from fabtools import tomcat
-    from fabtools import oracle_jdk,tomcat
+    from fabtools import oracle_jdk, tomcat
     from fabtools.files import is_file
 
     # Install java and tomcat
     require.oracle_jdk.installed()
     require.tomcat.installed()
 
-    assert is_file('/usr/share/tomcat7/bin/catalina.sh')
+    assert is_file('/usr/share/tomcat/bin/catalina.sh')
     assert tomcat.DEFAULT_VERSION == tomcat.version()

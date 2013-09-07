@@ -1,10 +1,10 @@
 """
-Tomcat 
+Tomcat
 ============
 
-This module provides tools for installing `Tomcat 7`_
+This module provides tools for installing `Tomcat`_
 
-.. _Tomcat 7: http://tomcat.apache.org
+.. _Tomcat: http://tomcat.apache.org
 
 """
 from fabtools import tomcat
@@ -12,7 +12,7 @@ from fabtools import tomcat
 
 def installed(version=tomcat.DEFAULT_VERSION):
     """
-    Require Tomcat 7 to be installed.
+    Require Tomcat to be installed.
 
     ::
 
