@@ -16,6 +16,7 @@ from distutils.version import StrictVersion as V
 from pipes import quote
 import os
 import posixpath
+import re
 
 from fabric.api import cd, hide, prefix, run, settings, sudo
 from fabric.utils import puts
@@ -37,7 +38,10 @@ def is_pip_installed(version=None, pip_cmd='pip'):
         if version is None:
             return res.succeeded
         else:
-            installed = res.split(' ')[1]
+            m = re.search(r'pip (?P<version>.*) from', res)
+            if m is None:
+                return False
+            installed = m.group('version')
             if V(installed) < V(version):
                 puts("pip %s found (version >= %s required)" % (installed, version))
                 return False
