@@ -221,8 +221,8 @@ def add_apt_key(filename=None, url=None, keyid=None, keyserver='subkeys.pgp.net'
 def last_update_time():
     """
     Return the time of last update-check.
-    (mtime of /var/lib/apt/periodic/update-success-stamp)
-    Return `-1` if there was no update before.
+    (mtime of ``/var/lib/apt/periodic/update-success-stamp``)
+    Return ``-1`` if there was no update before.
 
     Example::
 

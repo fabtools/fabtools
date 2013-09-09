@@ -12,6 +12,7 @@
 
     .. autofunction:: source
     .. autofunction:: ppa
+    .. autofunction:: periodic_update_index
 
     Packages
     ~~~~~~~~

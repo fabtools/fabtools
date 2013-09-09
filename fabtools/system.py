@@ -222,7 +222,8 @@ def time():
     """
     Return the current time in seconds since the Epoch.
 
-    Same as `time.time()`
+    Same as :py:func:`time.time()`
+
     """
 
     with settings(hide('running', 'stdout')):

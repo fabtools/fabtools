@@ -234,10 +234,10 @@ def uncommented_lines(filename, use_sudo=False):
 
 def getmtime(path, use_sudo=False):
     """
-    Return the time of last modification of path. 
+    Return the time of last modification of path.
     The return value is a number giving the number of seconds since the epoch
-    
-    Same as os.path.getmtime(path)
+
+    Same as :py:func:`os.path.getmtime()`
     """
     func = use_sudo and run_as_root or run
     with settings(hide('running', 'stdout')):

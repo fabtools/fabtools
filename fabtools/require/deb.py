@@ -173,14 +173,14 @@ def nopackages(pkg_list):
 
 def periodic_update_index(quiet=True, period=86400):
     """
-    Update APT package definitions only 
+    Update APT package definitions (``apt-get update``) only
     if specified time since last update already elapsed.
 
     Example::
 
         from fabtools import require
 
-        # update every day
+        # do not update in 1 day
         require.deb.periodic_update_index(period=86400)
     """
     if system.time() - last_update_time() > period:

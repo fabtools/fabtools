@@ -254,4 +254,5 @@ texinfo_documents = [
 
 intersphinx_mapping = {
     'fabric': ('http://fabric.readthedocs.org/en/latest/', None),
+    'python': ('http://docs.python.org/2.7', None),
 }
