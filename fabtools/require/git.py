@@ -99,7 +99,9 @@ def working_copy(remote_url, path=None, branch="master", update=True,
     command()
 
     if path is None:
-        path = remote_url.split('/')[-1].rstrip('.git')
+        path = remote_url.split('/')[-1]
+        if path.endswith('.git'):
+            path = path[:-4]
 
     if is_dir(path, use_sudo=use_sudo) and update:
         git.fetch(path=path, use_sudo=use_sudo, user=user)
