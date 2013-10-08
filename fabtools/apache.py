@@ -35,7 +35,7 @@ def enable_module(module):
         run_as_root('a2enmod %s' % module)
 
 
-def disable_module(config):
+def disable_module(module):
     """
     Delete link in /etc/apache/mods-enabled/
 
