@@ -83,7 +83,7 @@ def ppa(name, auto_accept=True, keyserver=None):
         from fabtools import require
 
         # Node.js packages by Chris Lea
-	require.deb.ppa('ppa:chris-lea/node.js', keyserver='my.keyserver.com')
+        require.deb.ppa('ppa:chris-lea/node.js', keyserver='my.keyserver.com')
 
     .. _PPA: https://help.launchpad.net/Packaging/PPA
     """
@@ -91,20 +91,20 @@ def ppa(name, auto_accept=True, keyserver=None):
     user, repo = name[4:].split('/', 2)
     release = float(distrib_release())
     if release >= 12.04:
-	repo = repo.replace('.', '_')
-	auto_accept = '--yes' if auto_accept else ''
+        repo = repo.replace('.', '_')
+        auto_accept = '--yes' if auto_accept else ''
     if not isinstance(keyserver, basestring) and keyserver:
-	keyserver = keyserver[0]
+        keyserver = keyserver[0]
     if keyserver:
-	keyserver = '--keyserver ' + keyserver
+        keyserver = '--keyserver ' + keyserver
     else:
-	keyserver = ''
+       keyserver = ''
     distrib = distrib_codename()
     source = '/etc/apt/sources.list.d/%(user)s-%(repo)s-%(distrib)s.list' % locals()
     if not is_file(source):
-	package('python-software-properties')
-	run_as_root('add-apt-repository %(auto_accept)s %(keyserver)s %(name)s' % locals(), pty=False)
-	update_index()
+        package('python-software-properties')
+        run_as_root('add-apt-repository %(auto_accept)s %(keyserver)s %(name)s' % locals(), pty=False)
+        update_index()
 
 
 def package(pkg_name, update=False, version=None):
