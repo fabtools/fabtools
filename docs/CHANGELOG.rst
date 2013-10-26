@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Version 0.16.0 (unreleased)
+Version 0.16.0 (2013-10-26)
 ---------------------------
 
 * Redis improvements
