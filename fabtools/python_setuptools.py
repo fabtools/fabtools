@@ -56,7 +56,6 @@ def install_setuptools(python_cmd='python', use_sudo=True):
 
         fabtools.python_setuptools.install_setuptools()
 
-    .. _setuptools: http://packages.python.org/setuptools/
     """
 
     setuptools_version = package_version('setuptools', python_cmd)
