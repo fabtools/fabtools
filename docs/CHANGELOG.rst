@@ -7,7 +7,7 @@ Version 0.16.0 (unreleased)
 * Redis improvements
     * Make bind and port arguments explicit
     * Improve documentation
-    * Upgrade default version to 2.6.15
+    * Upgrade default version to 2.6.16
 * Python improvements
     * Improve support for using specific Python interpreters (**warning**:
       API changes)

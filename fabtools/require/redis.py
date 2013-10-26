@@ -17,7 +17,7 @@ from fabtools.utils import run_as_root
 import fabtools.supervisor
 
 
-VERSION = '2.6.15'
+VERSION = '2.6.16'
 
 BINARIES = [
     'redis-benchmark',
