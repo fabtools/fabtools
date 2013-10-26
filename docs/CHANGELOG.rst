@@ -19,7 +19,16 @@ Version 0.16.0 (unreleased)
       is already installed (ponty)
     * Make package names case-insensitive in python.is_installed
       (ponty)
+    * Fix pip version parsing when using ``pythonbrew switch``
 * Fix ``require.system.locales`` when a prefix is set
+* Fix require.system.locale() on fresh Ubuntu systems
+* Add optional environment variables in crontab
+* Fix crontab permissions
+* Allow special characters in MySQL password (Régis Behmo)
+* Fix bug with some services not starting correctly (Chris Marinos)
+* Add ``getdevice_by_uuid`` to the disk module (Bruno Adele)
+* Fix implicit directory name in ``git.working_copy`` (iiie)
+* Make ``require.sysctl`` robust to procps start failure
 
 
 Version 0.15.0 (2013-07-25)
