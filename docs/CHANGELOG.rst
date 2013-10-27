@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.17.0 (unreleased)
+---------------------------
+
+* Fix support for Vagrant >= 1.3.0
+* Ubuntu PPA fixes (Anthony Scalisi)
+
+
 Version 0.16.0 (2013-10-26)
 ---------------------------
 
