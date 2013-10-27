@@ -88,19 +88,26 @@ def ppa(name, auto_accept=True, keyserver=None):
     .. _PPA: https://help.launchpad.net/Packaging/PPA
     """
     assert name.startswith('ppa:')
+
     user, repo = name[4:].split('/', 2)
+
     release = float(distrib_release())
     if release >= 12.04:
         repo = repo.replace('.', '_')
         auto_accept = '--yes' if auto_accept else ''
+    else:
+        auto_accept = ''
+
     if not isinstance(keyserver, basestring) and keyserver:
         keyserver = keyserver[0]
     if keyserver:
         keyserver = '--keyserver ' + keyserver
     else:
        keyserver = ''
+
     distrib = distrib_codename()
     source = '/etc/apt/sources.list.d/%(user)s-%(repo)s-%(distrib)s.list' % locals()
+
     if not is_file(source):
         package('python-software-properties')
         run_as_root('add-apt-repository %(auto_accept)s %(keyserver)s %(name)s' % locals(), pty=False)
