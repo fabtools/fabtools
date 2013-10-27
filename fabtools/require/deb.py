@@ -19,7 +19,7 @@ from fabtools.deb import (
     update_index,
 )
 from fabtools.files import is_file, watch
-from fabtools.system import distrib_codename
+from fabtools.system import distrib_codename, distrib_release
 from fabtools.utils import run_as_root
 
 
@@ -74,7 +74,7 @@ def source(name, uri, distribution, *components):
         update_index()
 
 
-def ppa(name):
+def ppa(name, auto_accept=True, keyserver=None):
     """
     Require a `PPA`_ package source.
 
@@ -83,18 +83,27 @@ def ppa(name):
         from fabtools import require
 
         # Node.js packages by Chris Lea
-        require.deb.ppa('ppa:chris-lea/node.js')
+        require.deb.ppa('ppa:chris-lea/node.js', keyserver='my.keyserver.com')
 
     .. _PPA: https://help.launchpad.net/Packaging/PPA
     """
     assert name.startswith('ppa:')
     user, repo = name[4:].split('/', 2)
+    release = float(distrib_release())
+    if release >= 12.04:
+        repo = repo.replace('.', '_')
+        auto_accept = '--yes' if auto_accept else ''
+    if not isinstance(keyserver, basestring) and keyserver:
+        keyserver = keyserver[0]
+    if keyserver:
+        keyserver = '--keyserver ' + keyserver
+    else:
+       keyserver = ''
     distrib = distrib_codename()
-    source = '%(user)s-%(repo)s-%(distrib)s.list' % locals()
-
+    source = '/etc/apt/sources.list.d/%(user)s-%(repo)s-%(distrib)s.list' % locals()
     if not is_file(source):
         package('python-software-properties')
-        run_as_root('add-apt-repository %s' % name, pty=False)
+        run_as_root('add-apt-repository %(auto_accept)s %(keyserver)s %(name)s' % locals(), pty=False)
         update_index()
 
 
