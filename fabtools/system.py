@@ -216,3 +216,19 @@ def cpus():
         res = run('python -c "import multiprocessing; '
                   'print(multiprocessing.cpu_count())"')
         return int(res)
+
+
+def using_systemd():
+    """
+    Return True if using systemd
+
+    Example::
+
+        from fabtools.system import use_systemd
+
+        if using_systemd():
+            # do stuff with fabtools.systemd ...
+            pass
+
+    """
+    return run('which systemctl', quiet=True).succeeded

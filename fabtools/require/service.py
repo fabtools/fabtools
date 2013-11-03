@@ -12,6 +12,8 @@ support both `upstart`_ services and traditional SysV-style
 """
 
 from fabtools.service import is_running, restart, start, stop
+from fabtools.system import using_systemd
+import fabtools.systemd as systemd
 
 
 def started(service):
@@ -25,7 +27,10 @@ def started(service):
         require.service.started('foo')
     """
     if not is_running(service):
-        start(service)
+        if using_systemd():
+            systemd.start(service)
+        else:
+            start(service)
 
 
 def stopped(service):
@@ -39,7 +44,10 @@ def stopped(service):
         require.service.stopped('foo')
     """
     if is_running(service):
-        stop(service)
+        if using_systemd():
+            systemd.stop(service)
+        else:
+            stop(service)
 
 
 def restarted(service):
@@ -53,9 +61,15 @@ def restarted(service):
         require.service.restarted('foo')
     """
     if is_running(service):
-        restart(service)
+        if using_systemd():
+            systemd.restart(service)
+        else:
+            restart(service)
     else:
-        start(service)
+        if using_systemd():
+            systemd.start(service)
+        else:
+            start(service)
 
 
 __all__ = ['started', 'stopped', 'restarted']
