@@ -16,6 +16,7 @@ import os
 from fabric.api import cd, hide, run, settings
 from fabtools.utils import run_as_root
 from fabtools.files import is_file, is_link, is_dir
+from fabric.operations import put
 
 # Default parameters
 DEFAULT_VERSION = '7.0.47'
@@ -176,3 +177,16 @@ def _extract_tomcat_version(tomcat_version_out):
         return None
     match_version = match.group(1).split('/')[1].strip()
     return match_version
+
+
+def deploy_application(war_file, webapp_path=None):
+    '''
+    Deploy an application into the webapp path for a Tomcat installation.
+    '''
+    # If no webapp path specified, used default installation.
+    if not webapp_path:
+        webapp_path = os.path.join(DEFAULT_INSTALLATION_PATH, 'webapps')
+
+    # Now copy our WAR into the webapp path.
+    put(local_path=war_file, remote_path=os.path.join(webapp_path, war_file),
+        use_sudo=True)
