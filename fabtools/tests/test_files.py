@@ -1,6 +1,7 @@
 import hashlib
-import mock
 import unittest
+
+from mock import patch
 
 
 class FilesTestCase(unittest.TestCase):
@@ -11,8 +12,8 @@ class FilesTestCase(unittest.TestCase):
         from fabtools import require
         require.files.file(*args, **kwargs)
 
-    @mock.patch('fabtools.require.files.md5sum')
-    @mock.patch('fabtools.require.files.is_file')
+    @patch('fabtools.require.files.md5sum')
+    @patch('fabtools.require.files.is_file')
     def test_verify_remote_false(self, is_file, md5sum):
         """ If verify_remote is set to False, then we should find that
         only is_file is used to check for the file's existence. Hashlib's
@@ -23,8 +24,8 @@ class FilesTestCase(unittest.TestCase):
         self.assertTrue(is_file.called)
         self.assertFalse(md5sum.called)
 
-    @mock.patch('fabtools.require.files.md5sum')
-    @mock.patch('fabtools.require.files.is_file')
+    @patch('fabtools.require.files.md5sum')
+    @patch('fabtools.require.files.is_file')
     def test_verify_remote_true(self, is_file, md5sum):
         """ If verify_remote is True, then we should find that an MD5 hash is
         used to work out whether the file is different.
@@ -34,3 +35,84 @@ class FilesTestCase(unittest.TestCase):
         self._file(contents='This is a test', verify_remote=True)
         self.assertTrue(is_file.called)
         self.assertTrue(md5sum.called)
+
+
+class TestUploadTemplate(unittest.TestCase):
+
+    @patch('fabtools.files.run')
+    @patch('fabtools.files._upload_template')
+    def test_mkdir(self, mock_upload_template, mock_run):
+
+        from fabtools.files import upload_template
+
+        upload_template('filename', '/path/to/destination', mkdir=True)
+
+        args, kwargs = mock_run.call_args
+        self.assertEqual(args[0], 'mkdir -p /path/to')
+
+    @patch('fabtools.files.sudo')
+    @patch('fabtools.files._upload_template')
+    def test_mkdir_sudo(self, mock_upload_template, mock_sudo):
+
+        from fabtools.files import upload_template
+
+        upload_template('filename', '/path/to/destination', mkdir=True, use_sudo=True)
+
+        args, kwargs = mock_sudo.call_args
+        self.assertEqual(args[0], 'mkdir -p /path/to')
+        self.assertEqual(kwargs['user'], None)
+
+    @patch('fabtools.files.sudo')
+    @patch('fabtools.files._upload_template')
+    def test_mkdir_sudo_user(self, mock_upload_template, mock_sudo):
+
+        from fabtools.files import upload_template
+
+        upload_template('filename', '/path/to/destination', mkdir=True, use_sudo=True, user='alice')
+
+        args, kwargs = mock_sudo.call_args
+        self.assertEqual(args[0], 'mkdir -p /path/to')
+        self.assertEqual(kwargs['user'], 'alice')
+
+    @patch('fabtools.files.run_as_root')
+    @patch('fabtools.files._upload_template')
+    def test_chown(self, mock_upload_template, mock_run_as_root):
+
+        from fabric.api import env
+        from fabtools.files import upload_template
+
+        upload_template('filename', 'destination', chown=True)
+
+        args, kwargs = mock_run_as_root.call_args
+        self.assertEqual(args[0], 'chown %s: destination' % env.user)
+
+    @patch('fabtools.files.run_as_root')
+    @patch('fabtools.files._upload_template')
+    def test_chown_user(self, mock_upload_template, mock_run_as_root):
+
+        from fabtools.files import upload_template
+
+        upload_template('filename', 'destination', chown=True, user='alice')
+
+        args, kwargs = mock_run_as_root.call_args
+        self.assertEqual(args[0], 'chown alice: destination')
+
+    @patch('fabtools.files._upload_template')
+    def test_use_jinja_true(self, mock_upload_template):
+
+        from fabtools.files import upload_template
+
+        upload_template('filename', 'destination', use_jinja=True)
+
+        args, kwargs = mock_upload_template.call_args
+        self.assertEqual(kwargs['use_jinja'], True)
+
+    @patch('fabtools.files._upload_template')
+    def test_use_jinja_false(self, mock_upload_template):
+
+        from fabtools.files import upload_template
+
+        upload_template('filename', 'destination', use_jinja=False)
+
+        args, kwargs = mock_upload_template.call_args
+        self.assertEqual(kwargs['use_jinja'], False)
