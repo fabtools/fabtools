@@ -8,7 +8,9 @@ Version 0.17.0 (unreleased)
 * Ubuntu PPA fixes (Anthony Scalisi)
 * Update ``files.upload_template`` to match Fabric parameters
   (thanks to Adam Patterson)
-* Fix: use ``run`` instead of ``sudo`` in ``_run_as_pg`` (iiie)
+* PostgreSQL improvements:
+    * Fix: use ``run`` instead of ``sudo`` in ``_run_as_pg`` (iiie)
+    * Improve SmartOS and locale support (Andreas Kaiser)
 
 
 Version 0.16.0 (2013-10-26)
