@@ -15,7 +15,7 @@ import os
 # Fabric imports
 from fabric.api import cd, hide, run, settings
 from fabtools.utils import run_as_root
-from fabtools.files import is_file, is_link
+from fabtools.files import is_file, is_link, is_dir
 
 # Default parameters
 DEFAULT_VERSION = '7.0.47'
@@ -25,7 +25,8 @@ DEFAULT_MIRROR = "http://archive.apache.org"
 
 def install_from_source(installation_path=DEFAULT_INSTALLATION_PATH,
                         installation_version=DEFAULT_VERSION,
-                        mirror=DEFAULT_MIRROR):
+                        mirror=DEFAULT_MIRROR,
+                        overwrite=False):
     """
     Install Tomcat7 from source.
 
@@ -50,8 +51,9 @@ def install_from_source(installation_path=DEFAULT_INSTALLATION_PATH,
 
     # Build the distribution in /tmp
     with cd('/tmp'):
+        # Make sure we have the tarball downloaded.
         if not is_file(os.path.join('/tmp/', file_name)):
-            # Ensure that the archive is in the right place
+            # Otherwise, download the tarball based on our mirror and version.
             tomcat_url = '{3}/dist/tomcat/tomcat-{0}/v{1}/bin/{2}'\
                 .format(version_major,
                         installation_version,
@@ -61,23 +63,42 @@ def install_from_source(installation_path=DEFAULT_INSTALLATION_PATH,
             # Ensure the file has been downloaded
             require_file(url=tomcat_url)
 
-            # Extract the file
-            run('tar -xzf {0}'.format(file_name))
+        # Extract the file
+        run('tar -xzf {0}'.format(file_name))
 
-        # Ensure the directory and path match
+        # Handle possibility of existing path
+        if is_dir(installation_path):
+            if overwrite == False:
+                # Raise exception as we don't want to overwrite
+                raise OSError("Path {0} already exists and overwrite not set."\
+                              .format(installation_path))
+            else:
+                # Otherwise, backup the tomcat path
+                backup_installation_path = installation_path + ".backup"
+                if is_dir(backup_installation_path):
+                    run_as_root("rm -rf {0}".format(backup_installation_path))
+                run_as_root("mv {0} {1}".format(installation_path,
+                                                backup_installation_path))
+
+        '''
+        After all that, let's ensure we have the installation path setup
+        properly and place the install.
+        '''
         require_directory(installation_path, mode='755', use_sudo=True)
         run_as_root('mv {0}/* {1}'.format(folder_name, installation_path))
-        run("rm -f {0}".format(file_name))
 
-    # Configure and start Tomcat
-    configure_tomcat(installation_path)
+        # Now cleanup temp.
+        run("rm -rf {0}*".format(file_name))
+
+    # Finally, configure and start Tomcat
+    configure_tomcat(installation_path, overwrite=overwrite)
     start_tomcat()
 
 
-def configure_tomcat(installation_path):
+def configure_tomcat(installation_path, overwrite=False):
     from fabric.contrib.files import append
 
-    startupScript = """
+    startup_script = """
 # Tomcat auto-start
 #
 # description: Auto-starts tomcat
@@ -98,9 +119,16 @@ sh {0}/bin/startup.sh
 esac
 exit 0""".format(installation_path)
 
-    if not is_file('/etc/init.d/tomcat'):
-        append('/etc/init.d/tomcat', startupScript, use_sudo=True)
-        run_as_root('chmod 755 /etc/init.d/tomcat')
+    # Check for existing files and overwrite.
+    if is_file('/etc/init.d/tomcat'):
+        if overwrite == False:
+            raise OSError("/etc/init.d/tomcat already exists and not overwriting.")
+        else:
+            run_as_root("rm -f /etc/init.d/tomcat")
+
+    # Now create the file and symlinks.
+    append('/etc/init.d/tomcat', startup_script, use_sudo=True)
+    run_as_root('chmod 755 /etc/init.d/tomcat')
 
     if not is_link('/etc/rc1.d/K99tomcat'):
         run_as_root('ln -s /etc/init.d/tomcat /etc/rc1.d/K99tomcat')
@@ -110,10 +138,16 @@ exit 0""".format(installation_path)
 
 
 def start_tomcat():
+    '''
+    Start the Tomcat service.
+    '''
     run_as_root('service tomcat start', pty=False)
 
 
 def stop_tomcat():
+    '''
+    Stop the Tomcat service.
+    '''
     run_as_root('service tomcat stop')
 
 
