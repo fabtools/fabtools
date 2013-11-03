@@ -158,7 +158,7 @@ def version(installation_path):
     Returns ``None`` if it is not installed.
     """
     with settings(hide('running', 'stdout', 'warnings'), warn_only=True):
-        res = run(os.path.join(installation_path, '/bin/version.sh'))
+        res = run(os.path.join(installation_path, 'bin/version.sh'))
     if res.failed:
         return None
     else:

@@ -9,6 +9,7 @@ import os
 # Fabric imports
 from fabric.api import task
 from fabtools import require
+from fabtools.tomcat import DEFAULT_VERSION
 
 
 @task
@@ -26,4 +27,4 @@ def should_verify_tomcat_version(installation_path="/usr/share/tomcat"):
     require.tomcat.installed()
 
     assert is_file(os.path.join(installation_path, 'bin/catalina.sh'))
-    assert tomcat.DEFAULT_VERSION == tomcat.version()
+    assert DEFAULT_VERSION == tomcat.version(installation_path)
