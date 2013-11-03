@@ -5,7 +5,7 @@ PostgreSQL users and databases
 from __future__ import with_statement
 
 from fabric.api import cd, hide, run, settings
-from fabtools.files import is_file, watch
+from fabtools.files import is_file
 from fabtools.postgres import (
     create_database,
     create_user,
@@ -87,9 +87,8 @@ def database(name, owner, template='template0', encoding='UTF8',
     """
     if not database_exists(name):
 
-        with watch('/etc/locale.gen') as locales:
+        if locale not in run('locale -a').split():
             require_locale(locale)
-        if locales.changed:
             restarted(_service_name())
 
         create_database(name, owner, template=template, encoding=encoding,
