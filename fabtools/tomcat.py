@@ -54,7 +54,7 @@ def install_from_source(installation_path=DEFAULT_INSTALLATION_PATH,
             # Ensure that the archive is in the right place
             tomcat_url = '{3}/dist/tomcat/tomcat-{0}/v{1}/bin/{2}'\
                 .format(version_major,
-                        version,
+                        installation_version,
                         file_name,
                         mirror)
 
