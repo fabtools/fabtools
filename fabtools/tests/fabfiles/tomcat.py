@@ -3,12 +3,16 @@
 
 from __future__ import with_statement
 
+# Standard imports
+import os
+
+# Fabric imports
 from fabric.api import task
 from fabtools import require
 
 
 @task
-def should_verify_tomcat_version():
+def should_verify_tomcat_version(installation_path="/usr/share/tomcat"):
     """
     Test high level API
     """
@@ -21,5 +25,5 @@ def should_verify_tomcat_version():
     require.oracle_jdk.installed()
     require.tomcat.installed()
 
-    assert is_file('/usr/share/tomcat/bin/catalina.sh')
+    assert is_file(os.path.join(installation_path, 'bin/catalina.sh'))
     assert tomcat.DEFAULT_VERSION == tomcat.version()

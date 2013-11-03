@@ -9,6 +9,9 @@ This module provides tools for installing `Tomcat7`_.
 """
 from __future__ import with_statement
 
+# Standard imports
+import os
+
 # Fabric imports
 from fabric.api import cd, hide, run, settings
 from fabtools.utils import run_as_root
@@ -47,7 +50,7 @@ def install_from_source(installation_path=DEFAULT_INSTALLATION_PATH,
 
     # Build the distribution in /tmp
     with cd('/tmp'):
-        if not is_file('/tmp/{0}'.format(file_name)):
+        if not is_file(os.path.join('/tmp/', file_name)):
             # Ensure that the archive is in the right place
             tomcat_url = '{3}/dist/tomcat/tomcat-{0}/v{1}/bin/{2}'\
                 .format(version_major,
@@ -121,7 +124,7 @@ def version(installation_path):
     Returns ``None`` if it is not installed.
     """
     with settings(hide('running', 'stdout', 'warnings'), warn_only=True):
-        res = run('{0}/bin/version.sh'.format(installation_path))
+        res = run(os.path.join(installation_path, '/bin/version.sh'))
     if res.failed:
         return None
     else:
