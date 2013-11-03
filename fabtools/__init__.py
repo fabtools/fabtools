@@ -22,6 +22,7 @@ import fabtools.shorewall
 import fabtools.ssh
 import fabtools.supervisor
 import fabtools.system
+import fabtools.tomcat
 import fabtools.user
 
 import fabtools.require

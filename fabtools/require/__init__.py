@@ -19,6 +19,7 @@ import fabtools.require.service
 import fabtools.require.shorewall
 import fabtools.require.supervisor
 import fabtools.require.system
+import fabtools.require.tomcat
 import fabtools.require.users
 
 from fabtools.require.files import (
