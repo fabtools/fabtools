@@ -9,20 +9,20 @@ This module provides tools for installing `Tomcat7`_.
 """
 from __future__ import with_statement
 
-# Standard imports
-import os.path
-
 # Fabric imports
 from fabric.api import cd, hide, run, settings
 from fabtools.utils import run_as_root
-from fabtools.files import is_file, is_dir, is_link
+from fabtools.files import is_file, is_link
 
 # Default parameters
 DEFAULT_VERSION = '7.0.47'
 DEFAULT_INSTALLATION_PATH = "/usr/share/tomcat"
-DEFAULT_MIRROR="http://archive.apache.org"
+DEFAULT_MIRROR = "http://archive.apache.org"
 
-def install_from_source(installation_path=DEFAULT_INSTALLATION_PATH, version=DEFAULT_VERSION, mirror=DEFAULT_MIRROR):
+
+def install_from_source(installation_path=DEFAULT_INSTALLATION_PATH,
+                        installation_version=DEFAULT_VERSION,
+                        mirror=DEFAULT_MIRROR):
     """
     Install Tomcat7 from source.
 
@@ -38,27 +38,26 @@ def install_from_source(installation_path=DEFAULT_INSTALLATION_PATH, version=DEF
     from fabtools.require.files import directory as require_directory
 
     # Tokenize version into parts
-    version_tokens = version.split('.')
+    version_tokens = installation_version.split('.')
     version_major = version_tokens[0]
-    version_minor = version_tokens[1]
-    version_release = version_tokens[2]
 
     # Parse the filename and folder
-    file_name = 'apache-tomcat-{0}.tar.gz'.format(version)
-    folder_name = 'apache-tomcat-{0}'.format(version)
+    file_name = 'apache-tomcat-{0}.tar.gz'.format(installation_version)
+    folder_name = 'apache-tomcat-{0}'.format(installation_version)
 
     # Build the distribution in /tmp
     with cd('/tmp'):
         if not is_file('/tmp/{0}'.format(file_name)):
             # Ensure that the archive is in the right place
-            tomcat_url = '{3}/dist/tomcat/tomcat-{0}/v{1}/bin/{2}'.format(version_major,
-                version,
-                file_name,
-                mirror)
+            tomcat_url = '{3}/dist/tomcat/tomcat-{0}/v{1}/bin/{2}'\
+                .format(version_major,
+                        version,
+                        file_name,
+                        mirror)
 
             # Ensure the file has been downloaded
             require_file(url=tomcat_url)
-            
+
             # Extract the file
             run('tar -xzf {0}'.format(file_name))
 
@@ -73,7 +72,7 @@ def install_from_source(installation_path=DEFAULT_INSTALLATION_PATH, version=DEF
 
 
 def configure_tomcat(installation_path):
-    from fabric.contrib.files import append, sed
+    from fabric.contrib.files import append
 
     startupScript = """
 # Tomcat auto-start
@@ -138,5 +137,5 @@ def _extract_tomcat_version(tomcat_version_out):
     match = re.search(r'Server version: (.*)', tomcat_version_out)
     if match is None:
         return None
-    version = match.group(1).split('/')[1].strip()
-    return version
+    match_version = match.group(1).split('/')[1].strip()
+    return match_version
