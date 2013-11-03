@@ -13,6 +13,7 @@ Version 0.17.0 (unreleased)
     * Improve SmartOS and locale support (Andreas Kaiser)
 * Support tags in addition to branches in
   ``fabtools.require.git.working_copy`` (Andreas Kaiser)
+* Improve upstart support in ``service.is_running`` (John MacKenzie)
 
 
 Version 0.16.0 (2013-10-26)
