@@ -14,6 +14,8 @@ Version 0.17.0 (unreleased)
 * Support tags in addition to branches in
   ``fabtools.require.git.working_copy`` (Andreas Kaiser)
 * Improve upstart support in ``service.is_running`` (John MacKenzie)
+* Improve support for Arch Linux in ``nodejs``, ``service`` and
+  ``supervisor`` modules (Steeve Chailloux)
 
 
 Version 0.16.0 (2013-10-26)
