@@ -28,8 +28,12 @@ def is_running(service):
             print "Service foo is running!"
     """
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        res = run_as_root('service %(service)s status' % locals())
-        return res.succeeded
+        test_upstart = run_as_root('test -f /etc/init/%s.conf' % service)
+        status = run_as_root('service %(service)s status' % locals())
+        if test_upstart.succeeded:
+            return 'running' in status
+        else:
+            return status.succeeded
 
 
 def start(service):
@@ -44,7 +48,7 @@ def start(service):
         if not fabtools.service.is_running('foo'):
             fabtools.service.start('foo')
     """
-    run_as_root('service %(service)s start' % locals())
+    run_as_root('service %(service)s start' % locals(), pty=False)
 
 
 def stop(service):
@@ -76,7 +80,7 @@ def restart(service):
         else:
             fabtools.service.start('foo')
     """
-    run_as_root('service %(service)s restart' % locals())
+    run_as_root('service %(service)s restart' % locals(), pty=False)
 
 
 def reload(service):
@@ -94,7 +98,7 @@ def reload(service):
 
         The service needs to support the ``reload`` operation.
     """
-    run_as_root('service %(service)s reload' % locals())
+    run_as_root('service %(service)s reload' % locals(), pty=False)
 
 
 def force_reload(service):
@@ -112,4 +116,4 @@ def force_reload(service):
 
         The service needs to support the ``force-reload`` operation.
     """
-    run_as_root('service %(service)s force-reload' % locals())
+    run_as_root('service %(service)s force-reload' % locals(), pty=False)

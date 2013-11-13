@@ -1,13 +1,30 @@
 Changelog
 =========
 
-Version 0.16.0 (unreleased)
+Version 0.17.0 (unreleased)
+---------------------------
+
+* Fix support for Vagrant >= 1.3.0
+* Ubuntu PPA fixes (Anthony Scalisi)
+* Update ``files.upload_template`` to match Fabric parameters
+  (thanks to Adam Patterson)
+* PostgreSQL improvements:
+    * Fix: use ``run`` instead of ``sudo`` in ``_run_as_pg`` (iiie)
+    * Improve SmartOS and locale support (Andreas Kaiser)
+* Support tags in addition to branches in
+  ``fabtools.require.git.working_copy`` (Andreas Kaiser)
+* Improve upstart support in ``service.is_running`` (John MacKenzie)
+* Improve support for Arch Linux in ``nodejs``, ``service`` and
+  ``supervisor`` modules (Steeve Chailloux)
+
+
+Version 0.16.0 (2013-10-26)
 ---------------------------
 
 * Redis improvements
     * Make bind and port arguments explicit
     * Improve documentation
-    * Upgrade default version to 2.6.15
+    * Upgrade default version to 2.6.16
 * Python improvements
     * Improve support for using specific Python interpreters (**warning**:
       API changes)
@@ -19,7 +36,16 @@ Version 0.16.0 (unreleased)
       is already installed (ponty)
     * Make package names case-insensitive in python.is_installed
       (ponty)
+    * Fix pip version parsing when using ``pythonbrew switch``
 * Fix ``require.system.locales`` when a prefix is set
+* Fix require.system.locale() on fresh Ubuntu systems
+* Add optional environment variables in crontab
+* Fix crontab permissions
+* Allow special characters in MySQL password (Régis Behmo)
+* Fix bug with some services not starting correctly (Chris Marinos)
+* Add ``getdevice_by_uuid`` to the disk module (Bruno Adele)
+* Fix implicit directory name in ``git.working_copy`` (iiie)
+* Make ``require.sysctl`` robust to procps start failure
 
 
 Version 0.15.0 (2013-07-25)

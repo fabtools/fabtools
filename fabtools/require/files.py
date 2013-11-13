@@ -64,13 +64,14 @@ def directories(path_list, use_sudo=False, owner='', group='', mode=''):
             '/tmp/my/dir'
         ]
         require.directories(dirs, owner='alice', mode='750')
-        
+
     .. note:: This function can be accessed directly from the
               ``fabtools.require`` module for convenience.
     """
     for path in path_list:
         directory(path, use_sudo, owner, group, mode)
-        
+
+
 def file(path=None, contents=None, source=None, url=None, md5=None,
          use_sudo=False, owner=None, group='', mode=None, verify_remote=True):
     """

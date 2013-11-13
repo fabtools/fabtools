@@ -218,6 +218,22 @@ def cpus():
         return int(res)
 
 
+def using_systemd():
+    """
+    Return True if using systemd
+
+    Example::
+
+        from fabtools.system import use_systemd
+
+        if using_systemd():
+            # do stuff with fabtools.systemd ...
+            pass
+
+    """
+    return run('which systemctl', quiet=True).succeeded
+
+
 def time():
     """
     Return the current time in seconds since the Epoch.

@@ -20,7 +20,11 @@ def version():
     """
     with settings(hide('running')):
         res = local('vagrant --version', capture=True)
-    ver = res.split()[2]
+    parts = res.split()
+    if len(parts) == 3:
+        ver = parts[2]
+    else:
+        ver = parts[1]
     return tuple(map(int, ver.split('.')))
 
 

@@ -6,7 +6,7 @@ from __future__ import with_statement
 
 from re import escape
 
-from fabric.api import warn
+from fabric.api import settings, warn
 from fabric.contrib.files import append, uncomment
 
 from fabtools.files import is_file, watch
@@ -37,7 +37,8 @@ def sysctl(key, value, persist=True):
                          use_sudo=True)
         if config.changed:
             if distrib_family() == 'debian':
-                run_as_root('service procps start')
+                with settings(warn_only=True):
+                    run_as_root('service procps start')
 
 
 def hostname(name):
