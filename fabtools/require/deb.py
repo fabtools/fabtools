@@ -171,7 +171,32 @@ def nopackages(pkg_list):
         uninstall(pkg_list)
 
 
-def periodic_update_index(quiet=True, period=86400):
+def _simple_time_interval(var):
+    sec = 0
+    MINUTE = 60
+    HOUR = 60 * MINUTE
+    DAY = 24 * HOUR
+    WEEK = 7 * DAY
+    MONTH = 31 * DAY
+    try:
+        for key, value in var.items():
+            if key == 'second':
+                sec += value
+            elif key == 'minute':
+                sec += value * MINUTE
+            elif key == 'hour':
+                sec += value * HOUR
+            elif key == 'day':
+                sec += value * DAY
+            elif key == 'week':
+                sec += value * WEEK
+            elif key == 'month':
+                sec += value * MONTH
+        return sec
+    except AttributeError:
+        return var
+
+def uptodate_index(quiet=True, max_age=86400):
     """
     Update APT package definitions (``apt-get update``) only
     if specified time since last update already elapsed.
@@ -181,7 +206,7 @@ def periodic_update_index(quiet=True, period=86400):
         from fabtools import require
 
         # do not update in 1 day
-        require.deb.periodic_update_index(period=86400)
+        require.deb.uptodate_index(max_age={'day' : 1})
     """
-    if system.time() - last_update_time() > period:
+    if system.time() - last_update_time() > _simple_time_interval(max_age):
         update_index(quiet=quiet)
