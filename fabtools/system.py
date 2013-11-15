@@ -31,7 +31,8 @@ def distrib_id():
 
         if kernel == 'Linux':
             # lsb_release works on Ubuntu and Debian >= 6.0
-            # but is not always included in other distros
+            # but is not always included in other distros such as:
+            # Gentoo
             if is_file('/usr/bin/lsb_release'):
                 return run('lsb_release --id --short')
             else:
@@ -118,6 +119,8 @@ def distrib_family():
         return 'redhat'
     elif distrib in ['SunOS']:
         return 'sun'
+    elif distrib in ['Gentoo']:
+        return 'gentoo'
     else:
         return 'other'
 
