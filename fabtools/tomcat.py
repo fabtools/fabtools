@@ -1,10 +1,10 @@
 """
-Tomcat7
+Tomcat
 =======
 
-This module provides tools for installing `Tomcat7`_.
+This module provides tools for installing `Tomcat`_.
 
-.. _Tomcat7: http://tomcat.apache.org/
+.. _Tomcat: http://tomcat.apache.org/
 
 """
 from __future__ import with_statement
@@ -17,6 +17,7 @@ from fabric.api import cd, hide, run, settings
 from fabtools.utils import run_as_root
 from fabtools.files import is_file, is_link, is_dir
 from fabric.operations import put
+from fabtools.service import start, stop
 
 # Default parameters
 DEFAULT_VERSION = '7.0.47'
@@ -29,14 +30,14 @@ def install_from_source(installation_path=DEFAULT_INSTALLATION_PATH,
                         mirror=DEFAULT_MIRROR,
                         overwrite=False):
     """
-    Install Tomcat7 from source.
+    Install Tomcat from source.
 
     ::
 
         import fabtools
 
-        # Install Tomcat7
-        fabtools.tomcat.install_from_source()
+        # Install Tomcat
+        fabtools.tomcat.install_from_source(installation_version=)
 
     """
     from fabtools.require import file as require_file
@@ -69,9 +70,9 @@ def install_from_source(installation_path=DEFAULT_INSTALLATION_PATH,
 
         # Handle possibility of existing path
         if is_dir(installation_path):
-            if overwrite == False:
+            if overwrite is False:
                 # Raise exception as we don't want to overwrite
-                raise OSError("Path {0} already exists and overwrite not set."\
+                raise OSError("Path {0} already exists and overwrite not set."
                               .format(installation_path))
             else:
                 # Otherwise, backup the tomcat path
@@ -122,7 +123,7 @@ exit 0""".format(installation_path)
 
     # Check for existing files and overwrite.
     if is_file('/etc/init.d/tomcat'):
-        if overwrite == False:
+        if overwrite is False:
             raise OSError("/etc/init.d/tomcat already exists and not overwriting.")
         else:
             run_as_root("rm -f /etc/init.d/tomcat")
@@ -142,14 +143,14 @@ def start_tomcat():
     '''
     Start the Tomcat service.
     '''
-    run_as_root('service tomcat start', pty=False)
+    start('tomcat')
 
 
 def stop_tomcat():
     '''
     Stop the Tomcat service.
     '''
-    run_as_root('service tomcat stop')
+    fabtools.service.stop('tomcat')
 
 
 def version(installation_path):
