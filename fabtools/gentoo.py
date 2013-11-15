@@ -44,6 +44,11 @@ def is_installed(pkg_name):
     if not res.succeeded:
         return False
 
+    if pkg_name.startswith("="):
+        # The =, which is required when installing/checking for absolute
+        # versions, will not appear in the results.
+        pkg_name = pkg_name[1:]
+
     match = re.search(
             r"\n\[ebuild +(?P<code>\w+) *\] .*%(pkg_name)s.*" % locals(),
             res.stdout)
