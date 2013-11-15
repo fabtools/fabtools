@@ -37,7 +37,7 @@ def install_from_source(installation_path=DEFAULT_INSTALLATION_PATH,
         import fabtools
 
         # Install Tomcat
-        fabtools.tomcat.install_from_source(installation_version=)
+        fabtools.tomcat.install_from_source(installation_version='6.0.36')
 
     """
     from fabtools.require import file as require_file
@@ -150,7 +150,7 @@ def stop_tomcat():
     '''
     Stop the Tomcat service.
     '''
-    fabtools.service.stop('tomcat')
+    stop('tomcat')
 
 
 def version(installation_path):
