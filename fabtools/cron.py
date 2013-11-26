@@ -55,11 +55,13 @@ def add_task(name, timespec, user, command, environment=None):
 
         # Upload file
         filename = '/etc/cron.d/%(name)s' % locals()
-        upload_template(filename,
-                        script.name,
-                        context={},
-                        chown=True,
-                        use_sudo=True)
+        upload_template(
+            filename=script.name,
+            destination=filename,
+            context={},
+            chown=True,
+            use_sudo=True,
+        )
 
         # Fix permissions
         run_as_root('chmod 0644 %s' % filename)
