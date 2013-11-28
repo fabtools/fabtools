@@ -50,6 +50,8 @@ def distrib_id():
                         return "CentOS"
                     elif release.startswith('Scientific Linux'):
                         return "SLES"
+                elif is_file('/etc/gentoo-release'):
+                    return "Gentoo"
         elif kernel == "SunOS":
             return "SunOS"
 
