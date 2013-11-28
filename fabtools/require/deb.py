@@ -187,7 +187,7 @@ def nopackages(pkg_list):
         uninstall(pkg_list)
 
 
-def _simple_time_interval(var):
+def _to_seconds(var):
     sec = 0
     MINUTE = 60
     HOUR = 60 * MINUTE
@@ -196,21 +196,24 @@ def _simple_time_interval(var):
     MONTH = 31 * DAY
     try:
         for key, value in var.items():
-            if key == 'second':
+            if key in ('second', 'seconds'):
                 sec += value
-            elif key == 'minute':
+            elif key in ('minute', 'minutes'):
                 sec += value * MINUTE
-            elif key == 'hour':
+            elif key in ('hour', 'hours'):
                 sec += value * HOUR
-            elif key == 'day':
+            elif key in ('day', 'days'):
                 sec += value * DAY
-            elif key == 'week':
+            elif key in ('week', 'weeks'):
                 sec += value * WEEK
-            elif key == 'month':
+            elif key in ('month', 'months'):
                 sec += value * MONTH
+            else:
+                raise ValueError("Unknown time unit '%s'" % key)
         return sec
     except AttributeError:
         return var
+
 
 def uptodate_index(quiet=True, max_age=86400):
     """
@@ -222,7 +225,11 @@ def uptodate_index(quiet=True, max_age=86400):
         from fabtools import require
 
         # do not update in 1 day
-        require.deb.uptodate_index(max_age={'day' : 1})
+        require.deb.uptodate_index(max_age={'day': 1})
+
+        # do not update in 1 hour and 30 minutes
+        require.deb.uptodate_index(max_age={'hour': 1, 'minutes': 30})
+
     """
-    if system.time() - last_update_time() > _simple_time_interval(max_age):
+    if system.time() - last_update_time() > _to_seconds(max_age):
         update_index(quiet=quiet)
