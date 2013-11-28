@@ -21,13 +21,22 @@ def apache():
 
     require.apache.server()
 
-    require.apache.disabled('default')
+    require.apache.module_disabled('rewrite')
+    assert not is_link('/etc/apache2/mods-enabled/rewrite.load')
+
+    require.apache.module_enabled('rewrite')
+    assert is_link('/etc/apache2/mods-enabled/rewrite.load')
+
+    require.apache.module_disabled('rewrite')
+    assert not is_link('/etc/apache2/mods-enabled/rewrite.load')
+
+    require.apache.site_disabled('default')
     assert not is_link('/etc/apache2/sites-enabled/000-default')
 
-    require.apache.enabled('default')
+    require.apache.site_enabled('default')
     assert is_link('/etc/apache2/sites-enabled/000-default')
 
-    require.apache.disabled('default')
+    require.apache.site_disabled('default')
     assert not is_link('/etc/apache2/sites-enabled/000-default')
 
     run('mkdir -p ~/example.com/')
