@@ -95,3 +95,8 @@ def disable_site(config):
     """
     if is_site_enabled(config):
         run_as_root('a2dissite %s' % _get_config_name(config))
+
+
+# backward compatibility (deprecated)
+enable = enable_site
+disable = disable_site

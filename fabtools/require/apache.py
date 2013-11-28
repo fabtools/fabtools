@@ -143,3 +143,8 @@ def site(config_name, template_contents=None, template_source=None, enabled=True
                 abort(message)
 
     reload_service('apache2')
+
+
+# backward compatibility (deprecated)
+enabled = site_enabled
+disabled = site_disabled
