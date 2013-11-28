@@ -15,7 +15,13 @@ from fabric.api import (
 )
 from fabric.colors import red
 
-from fabtools.apache import disable, enable, _get_config_name
+from fabtools.apache import (
+    disable_module,
+    enable_module,
+    disable_site,
+    enable_site,
+    _get_config_name,
+)
 from fabtools.require.deb import package
 from fabtools.require.files import template_file
 from fabtools.require.service import started as require_started
@@ -37,21 +43,39 @@ def server():
     require_started('apache2')
 
 
-def enabled(config):
+def module_enabled(module):
+    """
+    Ensure link to /etc/apache2/mods-available/module exists and reload apache2
+    configuration if needed.
+    """
+    enable_module(module)
+    reload_service('apache2')
+
+
+def module_disabled(module):
+    """
+    Ensure link to /etc/apache2/mods-available/module doesn't exist and reload
+    apache2 configuration if needed.
+    """
+    disable_module(module)
+    reload_service('apache2')
+
+
+def site_enabled(config):
     """
     Ensure link to /etc/apache2/sites-available/config exists and reload apache2
     configuration if needed.
     """
-    enable(config)
+    enable_site(config)
     reload_service('apache2')
 
 
-def disabled(config):
+def site_disabled(config):
     """
     Ensure link to /etc/apache2/sites-available/config doesn't exist and reload
     apache2 configuration if needed.
     """
-    disable(config)
+    disable_site(config)
     reload_service('apache2')
 
 
@@ -107,15 +131,20 @@ def site(config_name, template_contents=None, template_source=None, enabled=True
     template_file(config_filename, template_contents, template_source, context, use_sudo=True)
 
     if enabled:
-        enable(config_name)
+        enable_site(config_name)
     else:
-        disable(config_name)
+        disable_site(config_name)
 
     if check_config:
         with settings(hide('running', 'warnings'), warn_only=True):
             if run_as_root('apache2ctl configtest').failed:
-                disable(config_name)
+                disable_site(config_name)
                 message = red("Error in %(config_name)s apache site config (disabling for safety)" % locals())
                 abort(message)
 
     reload_service('apache2')
+
+
+# backward compatibility (deprecated)
+enabled = site_enabled
+disabled = site_disabled

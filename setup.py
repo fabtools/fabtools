@@ -1,4 +1,5 @@
 import os
+import re
 
 try:
     from setuptools import setup, find_packages
@@ -9,7 +10,9 @@ except ImportError:
 
 
 def read(filename):
-    return open(os.path.join(os.path.dirname(__file__), filename)).read()
+    path = os.path.join(os.path.dirname(__file__), filename)
+    contents = open(path).read()
+    return re.sub(r'.*travis-ci\.org/.*', '', contents)
 
 
 setup(

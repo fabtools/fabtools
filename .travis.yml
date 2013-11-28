@@ -1,11 +1,9 @@
 language: python
 python:
-  - "2.5"
   - "2.6"
   - "2.7"
 # command to install dependencies
 install:
-  - "if [[ $TRAVIS_PYTHON_VERSION == '2.5' ]]; then pip install mock unittest2 simplejson --use-mirrors ; fi"
   - "if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install mock unittest2 --use-mirrors ; fi"
   - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then pip install mock --use-mirrors ; fi"
   - "pip install -e . --use-mirrors"
@@ -14,6 +12,5 @@ env:
   - FABTOOLS_TEST_BOXES=""
 # command to run tests
 script:
-  - "if [[ $TRAVIS_PYTHON_VERSION == '2.5' ]]; then unit2 discover ; fi"
   - "if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then unit2 discover ; fi"
   - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then python -m unittest discover ; fi"

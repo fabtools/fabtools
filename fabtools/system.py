@@ -237,3 +237,15 @@ def using_systemd():
 
     """
     return run('which systemctl', quiet=True).succeeded
+
+
+def time():
+    """
+    Return the current time in seconds since the Epoch.
+
+    Same as :py:func:`time.time()`
+
+    """
+
+    with settings(hide('running', 'stdout')):
+        return int(run('date +%s'))

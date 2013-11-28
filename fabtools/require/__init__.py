@@ -9,6 +9,7 @@ import fabtools.require.mysql
 import fabtools.require.nginx
 import fabtools.require.nodejs
 import fabtools.require.openvz
+import fabtools.require.opkg
 import fabtools.require.oracle_jdk
 import fabtools.require.pkg
 import fabtools.require.portage

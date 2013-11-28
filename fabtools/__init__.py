@@ -12,6 +12,7 @@ import fabtools.network
 import fabtools.nginx
 import fabtools.nodejs
 import fabtools.openvz
+import fabtools.opkg
 import fabtools.oracle_jdk
 import fabtools.pkg
 import fabtools.portage

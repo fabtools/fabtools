@@ -17,10 +17,12 @@ from fabtools.deb import (
     is_installed,
     uninstall,
     update_index,
+    last_update_time,
 )
 from fabtools.files import is_file, watch
 from fabtools.system import distrib_codename, distrib_release
 from fabtools.utils import run_as_root
+from fabtools import system
 
 
 def key(keyid, filename=None, url=None, keyserver='subkeys.pgp.net', update=False):
@@ -183,3 +185,51 @@ def nopackages(pkg_list):
     pkg_list = [pkg for pkg in pkg_list if is_installed(pkg)]
     if pkg_list:
         uninstall(pkg_list)
+
+
+def _to_seconds(var):
+    sec = 0
+    MINUTE = 60
+    HOUR = 60 * MINUTE
+    DAY = 24 * HOUR
+    WEEK = 7 * DAY
+    MONTH = 31 * DAY
+    try:
+        for key, value in var.items():
+            if key in ('second', 'seconds'):
+                sec += value
+            elif key in ('minute', 'minutes'):
+                sec += value * MINUTE
+            elif key in ('hour', 'hours'):
+                sec += value * HOUR
+            elif key in ('day', 'days'):
+                sec += value * DAY
+            elif key in ('week', 'weeks'):
+                sec += value * WEEK
+            elif key in ('month', 'months'):
+                sec += value * MONTH
+            else:
+                raise ValueError("Unknown time unit '%s'" % key)
+        return sec
+    except AttributeError:
+        return var
+
+
+def uptodate_index(quiet=True, max_age=86400):
+    """
+    Update APT package definitions (``apt-get update``) only
+    if specified time since last update already elapsed.
+
+    Example::
+
+        from fabtools import require
+
+        # do not update in 1 day
+        require.deb.uptodate_index(max_age={'day': 1})
+
+        # do not update in 1 hour and 30 minutes
+        require.deb.uptodate_index(max_age={'hour': 1, 'minutes': 30})
+
+    """
+    if system.time() - last_update_time() > _to_seconds(max_age):
+        update_index(quiet=quiet)
