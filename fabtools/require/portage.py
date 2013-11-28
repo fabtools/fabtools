@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-Gentoo packages
+Portage packages
 ===============
 
-This module provides high-level tools for managing Gentoo packages
+This module provides high-level tools for managing portage packages
 and repositories.
 
 """
 from __future__ import with_statement
 
-from fabtools.gentoo import (
+from fabtools.portage import (
     install,
     is_installed,
     uninstall,
@@ -19,13 +19,13 @@ from fabtools.gentoo import (
 
 def package(pkg_name, update=False):
     """
-    Require a gentoo package to be installed.
+    Require a portage package to be installed.
 
     Example::
 
         from fabtools import require
 
-        require.gentoo.package('foo')
+        require.portage.package('foo')
     """
     if not is_installed(pkg_name):
         install(pkg_name, update)
@@ -33,13 +33,13 @@ def package(pkg_name, update=False):
 
 def packages(pkg_list, update=False):
     """
-    Require several gentoo packages to be installed.
+    Require several portage packages to be installed.
 
     Example::
 
         from fabtools import require
 
-        require.gentoo.packages([
+        require.portage.packages([
             'foo',
             'bar',
             'baz',
@@ -52,13 +52,13 @@ def packages(pkg_list, update=False):
 
 def nopackage(pkg_name):
     """
-    Require a gentoo package to be uninstalled.
+    Require a portage package to be uninstalled.
 
     Example::
 
         from fabtools import require
 
-        require.gentoo.nopackage('apache2')
+        require.portage.nopackage('apache2')
     """
     if is_installed(pkg_name):
         uninstall(pkg_name)
@@ -66,13 +66,13 @@ def nopackage(pkg_name):
 
 def nopackages(pkg_list):
     """
-    Require several gentoo packages to be uninstalled.
+    Require several portage packages to be uninstalled.
 
     Example::
 
         from fabtools import require
 
-        require.gentoo.nopackages([
+        require.portage.nopackages([
             'perl',
             'php5',
             'ruby',

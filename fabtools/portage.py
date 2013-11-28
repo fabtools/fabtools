@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Gentoo packages
+portage packages
 ===============
 
-This module provides tools to manage Gentoo packages and repositories.
+This module provides tools to manage Portage packages and repositories.
 
 """
 from __future__ import with_statement
@@ -63,7 +63,7 @@ def install(packages, update=False, options=None):
     Install one or more packages.
 
     If *update* is ``True``, the package definitions will be updated
-    first, using :py:func:`~fabtools.gentoo.update_index`.
+    first, using :py:func:`~fabtools.portage.update_index`.
 
     Extra *options* may be passed to ``emerge`` if necessary.
 
@@ -72,7 +72,7 @@ def install(packages, update=False, options=None):
         import fabtools
 
         # Update index, then install a single package
-        fabtools.gentoo.install('mongodb', update=True)
+        fabtools.portage.install('mongodb', update=True)
 
         # Install multiple packages
         fabtools.arch.install([

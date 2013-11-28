@@ -20,7 +20,7 @@ import fabtools.require.shorewall
 import fabtools.require.supervisor
 import fabtools.require.system
 import fabtools.require.users
-import fabtools.require.gentoo
+import fabtools.require.portage
 
 from fabtools.require.files import (
     directory,
