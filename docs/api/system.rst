@@ -36,3 +36,8 @@
     ~~~~~~~
 
     .. autofunction:: supported_locales
+
+    Time
+    ~~~~~~~
+
+    .. autofunction:: time
