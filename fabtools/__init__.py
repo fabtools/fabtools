@@ -6,6 +6,7 @@ import fabtools.disk
 import fabtools.files
 import fabtools.git
 import fabtools.group
+import fabtools.mercurial
 import fabtools.mysql
 import fabtools.network
 import fabtools.nginx
