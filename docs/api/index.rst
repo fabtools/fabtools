@@ -14,6 +14,7 @@ fabtools
    network
    nodejs
    openvz
+   opkg
    oracle_jdk
    pkg
    postgres
