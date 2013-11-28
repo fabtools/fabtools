@@ -11,7 +11,6 @@ from __future__ import with_statement
 from fabric.api import hide, run, settings
 
 from fabtools.utils import run_as_root
-# from fabtools.files import getmtime, is_file
 
 
 MANAGER = 'opkg'

@@ -8,18 +8,12 @@ and repositories.
 """
 from __future__ import with_statement
 
-# from fabric.utils import puts
-
 from fabtools.opkg import (
     install,
     is_installed,
     uninstall,
     update_index,
 )
-# from fabtools.files import is_file, watch
-# from fabtools.system import distrib_codename, distrib_release
-# from fabtools.utils import run_as_root
-# from fabtools import system
 
 
 def package(pkg_name, update=False):
