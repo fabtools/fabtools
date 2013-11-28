@@ -15,6 +15,9 @@ from fabric.api import hide, settings
 
 from fabtools.utils import run_as_root
 
+from fabtools import systemd
+
+from fabtools.system import using_systemd
 
 def is_running(service):
     """
@@ -28,12 +31,15 @@ def is_running(service):
             print "Service foo is running!"
     """
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        test_upstart = run_as_root('test -f /etc/init/%s.conf' % service)
-        status = run_as_root('service %(service)s status' % locals())
-        if test_upstart.succeeded:
-            return 'running' in status
+        if using_systemd():
+            return systemd.is_running(service)
         else:
-            return status.succeeded
+            test_upstart = run_as_root('test -f /etc/init/%s.conf' % service)
+            status = run_as_root('service %(service)s status' % locals())
+            if test_upstart.succeeded:
+                return 'running' in status
+            else:
+                return status.succeeded
 
 
 def start(service):
