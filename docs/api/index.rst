@@ -16,6 +16,7 @@ fabtools
    openvz
    oracle_jdk
    pkg
+   portage
    postgres
    python
    python_setuptools

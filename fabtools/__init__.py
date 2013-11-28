@@ -13,6 +13,7 @@ import fabtools.nodejs
 import fabtools.openvz
 import fabtools.oracle_jdk
 import fabtools.pkg
+import fabtools.portage
 import fabtools.postgres
 import fabtools.python
 import fabtools.python_setuptools

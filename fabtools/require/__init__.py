@@ -10,6 +10,7 @@ import fabtools.require.nodejs
 import fabtools.require.openvz
 import fabtools.require.oracle_jdk
 import fabtools.require.pkg
+import fabtools.require.portage
 import fabtools.require.postfix
 import fabtools.require.postgres
 import fabtools.require.python
@@ -20,7 +21,6 @@ import fabtools.require.shorewall
 import fabtools.require.supervisor
 import fabtools.require.system
 import fabtools.require.users
-import fabtools.require.portage
 
 from fabtools.require.files import (
     directory,

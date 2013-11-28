@@ -15,6 +15,7 @@ fabtools.require
    openvz
    oracle_jdk
    pkg
+   portage
    postfix
    postgres
    python
