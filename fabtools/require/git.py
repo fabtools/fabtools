@@ -32,6 +32,7 @@ def command():
     from fabtools.require.deb import package as require_deb_package
     from fabtools.require.pkg import package as require_pkg_package
     from fabtools.require.rpm import package as require_rpm_package
+    from fabtools.require.portage import package as require_portage_package
     from fabtools.system import distrib_family
 
     res = run('git --version', quiet=True)
@@ -43,6 +44,8 @@ def command():
             require_rpm_package('git')
         elif family == 'sun':
             require_pkg_package('scmgit-base')
+        elif family == 'gentoo':
+            require_portage_package('dev-vcs/git')
         else:
             raise NotImplementedError()
 
