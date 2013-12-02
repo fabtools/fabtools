@@ -1,4 +1,5 @@
 import os
+import re
 
 try:
     from setuptools import setup, find_packages
@@ -9,12 +10,14 @@ except ImportError:
 
 
 def read(filename):
-    return open(os.path.join(os.path.dirname(__file__), filename)).read()
+    path = os.path.join(os.path.dirname(__file__), filename)
+    contents = open(path).read()
+    return re.sub(r'.*travis-ci\.org/.*', '', contents)
 
 
 setup(
     name='fabtools',
-    version='0.16.0',
+    version='0.17.0-dev',
     description='Tools for writing awesome Fabric files',
     long_description=read('README.rst') + '\n' + read('docs/CHANGELOG.rst'),
     author='Ronan Amicel',

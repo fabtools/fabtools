@@ -1,3 +1,6 @@
+.. image:: https://api.travis-ci.org/ronnix/fabtools.png
+    :target: http://travis-ci.org/ronnix/fabtools
+
 About
 =====
 
@@ -91,9 +94,3 @@ Supported targets
 * Archlinux
 
 Contributions to help support other Unix/Linux distributions are welcome!
-
-Automatic integration test result
----------------------------------
-
-.. image:: https://api.travis-ci.org/ronnix/fabtools.png
-    :target: http://travis-ci.org/ronnix/fabtools

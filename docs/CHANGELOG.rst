@@ -1,6 +1,23 @@
 Changelog
 =========
 
+Version 0.17.0 (unreleased)
+---------------------------
+
+* Fix support for Vagrant >= 1.3.0
+* Ubuntu PPA fixes (Anthony Scalisi)
+* Update ``files.upload_template`` to match Fabric parameters
+  (thanks to Adam Patterson)
+* PostgreSQL improvements:
+    * Fix: use ``run`` instead of ``sudo`` in ``_run_as_pg`` (iiie)
+    * Improve SmartOS and locale support (Andreas Kaiser)
+* Support tags in addition to branches in
+  ``fabtools.require.git.working_copy`` (Andreas Kaiser)
+* Improve upstart support in ``service.is_running`` (John MacKenzie)
+* Improve support for Arch Linux in ``nodejs``, ``service`` and
+  ``supervisor`` modules (Steeve Chailloux)
+
+
 Version 0.16.0 (2013-10-26)
 ---------------------------
 

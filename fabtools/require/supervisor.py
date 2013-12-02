@@ -12,7 +12,7 @@ from __future__ import with_statement
 
 from fabtools.files import watch
 from fabtools.supervisor import update_config, process_status, start_process
-from fabtools.system import distrib_family
+from fabtools.system import distrib_family, distrib_id
 
 
 def process(name, **kwargs):
@@ -53,6 +53,7 @@ def process(name, **kwargs):
     from fabtools.require import file as require_file
     from fabtools.require.deb import package as require_deb_package
     from fabtools.require.rpm import package as require_rpm_package
+    from fabtools.require.arch import package as require_arch_package
     from fabtools.require.service import started as require_started
 
     family = distrib_family()
@@ -62,6 +63,9 @@ def process(name, **kwargs):
         require_started('supervisor')
     elif family == 'redhat':
         require_rpm_package('supervisor')
+        require_started('supervisord')
+    elif distrib_id() is 'Archlinux':
+        require_arch_package('supervisor')
         require_started('supervisord')
 
     # Set default parameters
@@ -79,7 +83,7 @@ def process(name, **kwargs):
     # Upload config file
     if family == 'debian':
         filename = '/etc/supervisor/conf.d/%(name)s.conf' % locals()
-    elif family == 'redhat':
+    elif family == 'redhat' or distrib_id() is 'Archlinux':
         filename = '/etc/supervisord.d/%(name)s.ini' % locals()
     with watch(filename, callback=update_config, use_sudo=True):
         require_file(filename, contents='\n'.join(lines), use_sudo=True)

@@ -13,6 +13,7 @@ fabtools.require
    nginx
    nodejs
    openvz
+   opkg
    oracle_jdk
    pkg
    postfix

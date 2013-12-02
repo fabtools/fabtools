@@ -17,6 +17,7 @@ from fabric.api import (
 )
 from fabric.colors import red
 
+from fabtools.deb import is_installed
 from fabtools.files import is_link
 from fabtools.nginx import disable, enable
 from fabtools.require.deb import package
@@ -26,9 +27,11 @@ from fabtools.service import reload as reload_service
 from fabtools.utils import run_as_root
 
 
-def server():
+def server(package_name='nginx'):
     """
     Require nginx server to be installed and running.
+    Allows override of package name, this allow to install other packages like
+    `nginx-extras` or `nginx-light`.
 
     ::
 
@@ -36,7 +39,7 @@ def server():
 
         require.nginx.server()
     """
-    package('nginx')
+    package(package_name)
     require_started('nginx')
 
 
@@ -87,7 +90,9 @@ def site(server_name, template_contents=None, template_source=None,
 
     .. seealso:: :py:func:`fabtools.require.files.template_file`
     """
-    server()
+    if not is_installed('nginx-common'):
+        # nginx-common is always installed if Nginx exists
+        server()
 
     config_filename = '/etc/nginx/sites-available/%s.conf' % server_name
 
