@@ -10,7 +10,7 @@ This module provides tools for installing `Tomcat`_
 from fabtools import tomcat
 
 
-def installed(tomcat_version=tomcat.DEFAULT_VERSION):
+def installed(version=tomcat.DEFAULT_VERSION):
     """
     Require Tomcat to be installed.
 
@@ -21,6 +21,5 @@ def installed(tomcat_version=tomcat.DEFAULT_VERSION):
         require.tomcat.installed()
 
     """
-    if tomcat.version(tomcat.DEFAULT_INSTALLATION_PATH) != tomcat_version:
-        tomcat.install_from_source(installation_version=tomcat_version,
-                                   overwrite=True)
+    if tomcat.version(tomcat.DEFAULT_INSTALLATION_PATH) != version:
+        tomcat.install_from_source(version=version, overwrite=True)
