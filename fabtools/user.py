@@ -110,7 +110,7 @@ def create(name, comment=None, home=None, create_home=None, skeleton_dir=None,
     if shell:
         args.append('-s %s' % quote(shell))
     if uid:
-        args.append('-u %s' % quote(uid))
+        args.append('-u %s' % uid)
         if non_unique:
             args.append('-o')
     args.append(name)
