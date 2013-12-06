@@ -4,18 +4,34 @@ Changelog
 Version 0.17.0 (unreleased)
 ---------------------------
 
-* Fix support for Vagrant >= 1.3.0
-* Ubuntu PPA fixes (Anthony Scalisi)
+* Vagrant improvements:
+    * Fix support for Vagrant >= 1.3.0
+    * Fix duplicate function in ``vagrant`` module documentation
+      (Dean Malmgren)
+* Package management improvements:
+    * Ubuntu PPA fixes (Anthony Scalisi)
+    * Add support for ``opkg`` package manager (ponty)
+    * Add conditional APT index updates, based on the time of the
+      last update (ponty)
 * Update ``files.upload_template`` to match Fabric parameters
   (thanks to Adam Patterson)
 * PostgreSQL improvements:
     * Fix: use ``run`` instead of ``sudo`` in ``_run_as_pg`` (iiie)
     * Improve SmartOS and locale support (Andreas Kaiser)
 * Support tags in addition to branches in
-  ``fabtools.require.git.working_copy`` (Andreas Kaiser)
-* Improve upstart support in ``service.is_running`` (John MacKenzie)
+  ``require.git.working_copy`` (Andreas Kaiser)
+* Services management improvements:
+    * Improve upstart support in ``service.is_running`` (John MacKenzie)
+    * Add support for ``systemd`` in ``service.is_running``
+      (Adrien Raffin)
 * Improve support for Arch Linux in ``nodejs``, ``service`` and
   ``supervisor`` modules (Steeve Chailloux)
+* Allow custom ``nginx`` package names (Laurent Meunier)
+* Add module management for Apache (Eugene Leonovich)
+* Fix test environment for Python 2.5
+* Use the new Read the Docs theme if available when
+  building the docs locally
+* Fix bug with user/group creation with int UID/GID
 
 
 Version 0.16.0 (2013-10-26)
