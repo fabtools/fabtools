@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Version 0.17.0 (unreleased)
+Version 0.17.0 (2013-12-06)
 ---------------------------
 
 * Vagrant improvements:
