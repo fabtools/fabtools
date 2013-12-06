@@ -5,5 +5,3 @@
 
 .. automodule:: fabtools.vagrant
     :members:
-
-    .. autofunction:: vagrant
