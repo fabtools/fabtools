@@ -61,6 +61,22 @@ def create_user(name, password, superuser=False, createdb=False,
     _run_as_pg('''psql -c "CREATE USER %(name)s %(options)s;"''' % locals())
 
 
+def drop_user(name):
+    """
+    Drop a PostgreSQL user.
+
+    Example::
+
+        import fabtools
+
+        # Remove DB user if it exists
+        if fabtools.postgres.user_exists('dbuser'):
+            fabtools.postgres.drop_user('dbuser')
+
+    """
+    _run_as_pg('''psql -c "DROP USER %(name)s;"''' % locals())
+
+
 def database_exists(name):
     """
     Check if a PostgreSQL database exists.
@@ -87,6 +103,22 @@ def create_database(name, owner, template='template0', encoding='UTF8',
     _run_as_pg('''createdb --owner %(owner)s --template %(template)s \
                   --encoding=%(encoding)s --lc-ctype=%(locale)s \
                   --lc-collate=%(locale)s %(name)s''' % locals())
+
+
+def drop_database(name):
+    """
+    Delete a PostgreSQL database.
+
+    Example::
+
+        import fabtools
+
+        # Remove DB if it exists
+        if fabtools.postgres.database_exists('myapp'):
+            fabtools.postgres.drop_database('myapp')
+
+    """
+    _run_as_pg('''dropdb %(name)s''' % locals())
 
 
 def create_schema(name, database, owner=None):
