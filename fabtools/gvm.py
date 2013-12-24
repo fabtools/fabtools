@@ -10,7 +10,7 @@ This module provides tools for installing `GVM`_ : the Groovy enVironment Manage
 
 from fabric.api import run
 
-def install():
+def install(java_version=None):
     """
     Install dependencies (curl and unzip) and Install GVM
 
@@ -41,16 +41,33 @@ def install():
             require_pkg_packages(packages)
         else:
             raise NotImplementedError()
-
-        java()
+        
+        if java_version is None:
+            java()
+        else:
+            java(version=java_version)
 
         run('curl -s get.gvmtool.net | bash')
-        run('source "~/.gvm/bin/gvm-init.sh"')
-        sed('~/.gvm/etc/config', 'gvm_auto_answer=false', 'gvm_auto_answer=true')
+        user = run('whoami')
+        run('source "/home/%s/.gvm/bin/gvm-init.sh"' % user)
+        configFile = "/home/%s/.gvm/etc/config" % user
+        sed(configFile, 'gvm_auto_answer=false', 'gvm_auto_answer=true')
 
 
+def install_candidate(candidate, version=None, java_version=None):
+    """
+    Install a candidate
 
-def install_candidate(candidate, version=None):
+    ::
+
+        import fabtools
+
+        # Install a GVM candidate (For example Groovy)
+        fabtools.gvm.install_candidate('groovy')
+
+    """
+    install(java_version)
+
     if version is None:
         cmd = 'gvm install %s' % candidate
     else:
