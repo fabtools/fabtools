@@ -4,6 +4,14 @@ Changelog
 Version 0.18.0 (unreleased)
 ---------------------------
 
+* Add drop_user and drop_database in ``postgres`` module
+* Add LinuxMint to the Debian family list (Frank Rousseau)
+* Add support for git remotes (Bryan Folliot)
+* Add support for Tomcat (Jan Kowalski)
+* Add support for Gentoo / portage (Travis Shirk)
+* Add support for Mercurial (Travis Shirk)
+* Add support for GVM (Groovy environment manager) (Bryan Folliot)
+
 
 Version 0.17.0 (2013-12-06)
 ---------------------------
