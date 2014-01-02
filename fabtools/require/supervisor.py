@@ -14,9 +14,11 @@ from fabtools.supervisor import update_config, process_status, start_process
 from fabtools.system import UnsupportedFamily, distrib_family
 
 
-def process(name, **kwargs):
+def process(name, use_pip=False, **kwargs):
     """
-    Require a supervisor process to be running.
+    Require a supervisor process to be running. Installs supervisor
+    from the default system package manager unless ``use_pip`` is
+    truthy.
 
     Keyword arguments will be used to build the program configuration
     file. Some useful arguments are:
@@ -47,9 +49,11 @@ def process(name, **kwargs):
             )
 
     .. _supervisor documentation: http://supervisord.org/configuration.html#program-x-section-values
+
     """
 
     from fabtools.require import file as require_file
+    from fabtools.require.python import package as require_python_package
     from fabtools.require.deb import package as require_deb_package
     from fabtools.require.rpm import package as require_rpm_package
     from fabtools.require.arch import package as require_arch_package
@@ -57,14 +61,22 @@ def process(name, **kwargs):
 
     family = distrib_family()
 
-    if family == 'debian':
+    # make sure its installed
+    if use_pip:
+        require_python_package('supervisor')
+    elif family == 'debian':
         require_deb_package('supervisor')
-        require_started('supervisor')
     elif family == 'redhat':
         require_rpm_package('supervisord')
-        require_started('supervisord')
     elif family == 'arch':
         require_arch_package('supervisor')
+
+    # make sure its started
+    if family == 'debian':
+        require_started('supervisor')
+    elif family == 'redhat':
+        require_started('supervisord')
+    elif family is 'arch':
         require_started('supervisord')
     else:
         raise UnsupportedFamily(supported=['debian', 'redhat', 'arch'])
