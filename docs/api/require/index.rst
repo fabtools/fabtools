@@ -25,4 +25,5 @@ fabtools.require
    shorewall
    supervisor
    system
+   tomcat
    users
