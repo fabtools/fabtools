@@ -52,7 +52,7 @@ def clone(remote_url, path=None, use_sudo=False, user=None):
         run(cmd)
 
 
-def remote_add(path, name, remote_url, use_sudo=False, user=None, fetch=True):
+def add_remote(path, name, remote_url, use_sudo=False, user=None, fetch=True):
     """
     Add a remote Git repository into a directory.
 
