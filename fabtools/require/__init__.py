@@ -4,6 +4,7 @@ import fabtools.require.apache
 import fabtools.require.deb
 import fabtools.require.files
 import fabtools.require.git
+import fabtools.require.mercurial
 import fabtools.require.mysql
 import fabtools.require.nginx
 import fabtools.require.nodejs
@@ -11,6 +12,7 @@ import fabtools.require.openvz
 import fabtools.require.opkg
 import fabtools.require.oracle_jdk
 import fabtools.require.pkg
+import fabtools.require.portage
 import fabtools.require.postfix
 import fabtools.require.postgres
 import fabtools.require.python

@@ -16,6 +16,7 @@ fabtools.require
    opkg
    oracle_jdk
    pkg
+   portage
    postfix
    postgres
    python

@@ -6,6 +6,7 @@ import fabtools.disk
 import fabtools.files
 import fabtools.git
 import fabtools.group
+import fabtools.mercurial
 import fabtools.mysql
 import fabtools.network
 import fabtools.nginx
@@ -14,6 +15,7 @@ import fabtools.openvz
 import fabtools.opkg
 import fabtools.oracle_jdk
 import fabtools.pkg
+import fabtools.portage
 import fabtools.postgres
 import fabtools.python
 import fabtools.python_setuptools

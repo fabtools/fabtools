@@ -17,7 +17,8 @@ from fabtools.utils import run_as_root
 
 from fabtools import systemd
 
-from fabtools.system import using_systemd
+from fabtools.system import using_systemd, distrib_family
+
 
 def is_running(service):
     """
@@ -30,16 +31,23 @@ def is_running(service):
         if fabtools.service.is_running('foo'):
             print "Service foo is running!"
     """
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(hide('running', 'stdout', 'stderr', 'warnings'),
+                  warn_only=True):
         if using_systemd():
             return systemd.is_running(service)
         else:
-            test_upstart = run_as_root('test -f /etc/init/%s.conf' % service)
-            status = run_as_root('service %(service)s status' % locals())
-            if test_upstart.succeeded:
-                return 'running' in status
+            if distrib_family() != "gentoo":
+                test_upstart = run_as_root('test -f /etc/init/%s.conf' %
+                                           service)
+                status = _service(service, 'status')
+                if test_upstart.succeeded:
+                    return 'running' in status
+                else:
+                    return status.succeeded
             else:
-                return status.succeeded
+                # gentoo
+                status = _service(service, 'status')
+                return ' started' in status
 
 
 def start(service):
@@ -54,7 +62,7 @@ def start(service):
         if not fabtools.service.is_running('foo'):
             fabtools.service.start('foo')
     """
-    run_as_root('service %(service)s start' % locals(), pty=False)
+    _service(service, 'start')
 
 
 def stop(service):
@@ -69,7 +77,7 @@ def stop(service):
         if fabtools.service.is_running('foo'):
             fabtools.service.stop('foo')
     """
-    run_as_root('service %(service)s stop' % locals())
+    _service(service, 'stop')
 
 
 def restart(service):
@@ -86,7 +94,7 @@ def restart(service):
         else:
             fabtools.service.start('foo')
     """
-    run_as_root('service %(service)s restart' % locals(), pty=False)
+    _service(service, 'restart')
 
 
 def reload(service):
@@ -104,7 +112,7 @@ def reload(service):
 
         The service needs to support the ``reload`` operation.
     """
-    run_as_root('service %(service)s reload' % locals(), pty=False)
+    _service(service, 'reload')
 
 
 def force_reload(service):
@@ -122,4 +130,18 @@ def force_reload(service):
 
         The service needs to support the ``force-reload`` operation.
     """
-    run_as_root('service %(service)s force-reload' % locals(), pty=False)
+    _service(service, 'force-reload')
+
+
+def _service(service, action):
+    """
+    Compatibility layer for distros that use ``service`` and those that don't.
+    """
+    if distrib_family() != "gentoo":
+        status = run_as_root('service %(service)s %(action)s' % locals(),
+                             pty=False)
+    else:
+        # gentoo
+        status = run_as_root('/etc/init.d/%(service)s %(action)s' % locals(),
+                             pty=False)
+    return status

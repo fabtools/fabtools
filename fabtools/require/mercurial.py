@@ -1,10 +1,10 @@
 """
-Git
-===
+Mercurial
+=========
 
-This module provides high-level tools for managing `Git`_ repositories.
+This module provides high-level tools for managing `Mercurial`_ repositories.
 
-.. _Git: http://git-scm.com/
+.. _Mercurial: http://mercurial.selenic.com/
 
 """
 
@@ -12,21 +12,21 @@ from __future__ import with_statement
 
 from fabric.api import run
 
-from fabtools import git
+from fabtools import mercurial
 from fabtools.files import is_dir
 
 
 def command():
     """
-    Require the git command-line tool.
+    Require the ``hg`` command-line tool.
 
     Example::
 
         from fabric.api import run
         from fabtools import require
 
-        require.git.command()
-        run('git --help')
+        require.mercurial.command()
+        run('hg --help')
 
     """
     from fabtools.require.deb import package as require_deb_package
@@ -35,51 +35,46 @@ def command():
     from fabtools.require.portage import package as require_portage_package
     from fabtools.system import distrib_family
 
-    res = run('git --version', quiet=True)
+    res = run('hg --version', quiet=True)
     if res.failed:
         family = distrib_family()
-        if family == 'debian':
-            require_deb_package('git-core')
+        if family == 'gentoo':
+            require_portage_package('mercurial')
         elif family == 'redhat':
-            require_rpm_package('git')
-        elif family == 'sun':
-            require_pkg_package('scmgit-base')
-        elif family == 'gentoo':
-            require_portage_package('dev-vcs/git')
+            require_rpm_package('mercurial')
         else:
-            raise NotImplementedError()
+            raise NotImplementedError("Mercurial install package for %s "
+                                      "not known." % family)
 
 
-def working_copy(remote_url, path=None, branch="master", update=True,
+def working_copy(remote_url, path=None, branch="default", update=True,
                  use_sudo=False, user=None):
     """
     Require a working copy of the repository from the ``remote_url``.
 
     The ``path`` is optional, and defaults to the last segment of the
-    remote repository URL, without its ``.git`` suffix.
+    remote repository URL.
 
     If the ``path`` does not exist, this will clone the remote
     repository and check out the specified branch.
 
-    If the ``path`` exists and ``update`` is ``True``, it will fetch
+    If the ``path`` exists and ``update`` is ``True``, it will pull
     changes from the remote repository, check out the specified branch,
-    then merge the remote changes into the working copy.
+    then update the working copy.
 
     If the ``path`` exists and ``update`` is ``False``, it will only
-    check out the specified branch, without fetching remote changesets.
+    check out the specified branch, without pulling remote changesets.
 
-    :param remote_url: URL of the remote repository (e.g.
-                       https://github.com/ronnix/fabtools.git).  The given URL
-                       will be the ``origin`` remote of the working copy.
+    :param remote_url: URL of the remote repository
     :type remote_url: str
 
     :param path: Absolute or relative path of the working copy on the
                  filesystem.  If this directory doesn't exist yet, a new
-                 working copy is created through ``git clone``.  If the
+                 working copy is created through ``hg clone``.  If the
                  directory does exist *and* ``update == True``, a
-                 ``git fetch`` is issued.  If ``path is None`` the
-                 ``git clone`` is issued in the current working directory and
-                 the directory name of the working copy is created by ``git``.
+                 ``hg pull && hg up`` is issued.  If ``path is None`` the
+                 ``hg clone`` is issued in the current working directory and
+                 the directory name of the working copy is created by ``hg``.
     :type path: str
 
     :param branch: Branch or tag to check out.  If the given value is a tag
@@ -87,10 +82,10 @@ def working_copy(remote_url, path=None, branch="master", update=True,
                    fail.
     :type branch: str
 
-    :param update: Whether or not to fetch and merge remote changesets.
+    :param update: Whether or not to pull and update remote changesets.
     :type update: bool
 
-    :param use_sudo: If ``True`` execute ``git`` with
+    :param use_sudo: If ``True`` execute ``hg`` with
                      :func:`fabric.operations.sudo`, else with
                      :func:`fabric.operations.run`.
     :type use_sudo: bool
@@ -105,20 +100,14 @@ def working_copy(remote_url, path=None, branch="master", update=True,
 
     if path is None:
         path = remote_url.split('/')[-1]
-        if path.endswith('.git'):
-            path = path[:-4]
 
     if is_dir(path, use_sudo=use_sudo):
-        # always fetch changesets from remote and checkout branch / tag
-        git.fetch(path=path, use_sudo=use_sudo, user=user)
-        git.checkout(path=path, branch=branch, use_sudo=use_sudo, user=user)
+        mercurial.pull(path, use_sudo=use_sudo, user=user)
         if update:
-            # only 'merge' if update is True
-            git.pull(path=path, use_sudo=use_sudo, user=user)
-
+            mercurial.update(path=path, branch=branch, use_sudo=use_sudo,
+                             user=user)
     elif not is_dir(path, use_sudo=use_sudo):
-        git.clone(remote_url, path=path, use_sudo=use_sudo, user=user)
-        git.checkout(path=path, branch=branch, use_sudo=use_sudo, user=user)
-
+        mercurial.clone(remote_url, path=path, use_sudo=use_sudo, user=user)
+        mercurial.update(path=path, branch=branch, use_sudo=use_sudo, user=user)
     else:
         raise ValueError("Invalid combination of parameters.")

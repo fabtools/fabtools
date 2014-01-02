@@ -76,7 +76,7 @@ def locales(names):
                 warn('Unsupported locale name "%s"' % name)
 
     if config.changed:
-        if distrib_id() == "Archlinux":
+        if distrib_id() in ("Archlinux", "Gentoo"):
             run_as_root('locale-gen')
         else:
             run_as_root('dpkg-reconfigure --frontend=noninteractive locales')
