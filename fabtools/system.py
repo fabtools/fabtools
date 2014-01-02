@@ -112,7 +112,7 @@ def distrib_family():
     Returns one of ``debian``, ``redhat``, ``sun``, ``other``.
     """
     distrib = distrib_id()
-    if distrib in ['Debian', 'Ubuntu']:
+    if distrib in ['Debian', 'Ubuntu', 'LinuxMint']:
         return 'debian'
     elif distrib in ['RHEL', 'CentOS', 'Fedora']:
         return 'redhat'
