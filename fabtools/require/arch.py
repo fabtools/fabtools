@@ -12,7 +12,6 @@ from fabtools.arch import (
     install,
     is_installed,
     uninstall,
-    update_index,
 )
 
 

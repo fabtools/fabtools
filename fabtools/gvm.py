@@ -26,7 +26,7 @@ def install(java_version=None):
     from fabtools.require.pkg import packages as require_pkg_packages
     from fabtools.require.rpm import packages as require_rpm_packages
     from fabtools.require.oracle_jdk import installed as java
-    from fabtools.system import distrib_family, distrib_codename
+    from fabtools.system import distrib_family
     from fabric.contrib.files import sed
 
     res = run('gvm help', quiet=True)
