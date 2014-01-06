@@ -7,6 +7,11 @@
 
     .. seealso:: :ref:`require_mysql_module`
 
+    Queries
+    ~~~~~~~
+
+    .. autofunction:: query
+
     Manage users
     ~~~~~~~~~~~~
 

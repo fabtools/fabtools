@@ -30,9 +30,9 @@ def mysql():
 
     # Test that we can run queries as user foo
     with settings(mysql_user='myuser', mysql_password='foo'):
-        fabtools.mysql._query('select 1;')
+        fabtools.mysql.query('select 1;')
 
     # Test that we can run queries without supplying the password
     require.file('.my.cnf', contents="[mysql]\npassword=foo")
     with settings(mysql_user='myuser'):
-        fabtools.mysql._query('select 2;')
+        fabtools.mysql.query('select 2;')
