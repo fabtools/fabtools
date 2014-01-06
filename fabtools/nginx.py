@@ -2,7 +2,7 @@
 Nginx
 =====
 
-This module provides tools for managing Nginx config files.
+This module provides tools for managing the Nginx web server.
 
 """
 from pipes import quote

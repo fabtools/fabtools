@@ -2,8 +2,8 @@
 Apache
 ======
 
-This module provides high-level tools for installing the `apache2 <http://httpd.apache.org/>`_
-web server and managing the configuration of web sites.
+This module provides high-level tools for installing and configuring
+the `Apache HTTP Server <http://httpd.apache.org/>`_.
 
 """
 from __future__ import with_statement
@@ -31,13 +31,14 @@ from fabtools.utils import run_as_root
 
 def server():
     """
-    Require apache2 server to be installed and running.
+    Require the Apache HTTP server to be installed and running.
 
     ::
 
         from fabtools import require
 
         require.apache.server()
+
     """
     package('apache2')
     require_started('apache2')
@@ -45,8 +46,16 @@ def server():
 
 def module_enabled(module):
     """
-    Ensure link to /etc/apache2/mods-available/module exists and reload apache2
-    configuration if needed.
+    Require an Apache module to be enabled.
+
+    This will cause Apache to reload its configuration.
+
+    ::
+
+        from fabtools import require
+
+        require.apache.module_enabled('rewrite')
+
     """
     enable_module(module)
     reload_service('apache2')
@@ -54,8 +63,16 @@ def module_enabled(module):
 
 def module_disabled(module):
     """
-    Ensure link to /etc/apache2/mods-available/module doesn't exist and reload
-    apache2 configuration if needed.
+    Require an Apache module to be disabled.
+
+    This will cause Apache to reload its configuration.
+
+    ::
+
+        from fabtools import require
+
+        require.apache.module_disabled('rewrite')
+
     """
     disable_module(module)
     reload_service('apache2')
@@ -63,8 +80,16 @@ def module_disabled(module):
 
 def site_enabled(config):
     """
-    Ensure link to /etc/apache2/sites-available/config exists and reload apache2
-    configuration if needed.
+    Require an Apache site to be enabled.
+
+    This will cause Apache to reload its configuration.
+
+    ::
+
+        from fabtools import require
+
+        require.apache.site_enabled('mysite')
+
     """
     enable_site(config)
     reload_service('apache2')
@@ -72,8 +97,16 @@ def site_enabled(config):
 
 def site_disabled(config):
     """
-    Ensure link to /etc/apache2/sites-available/config doesn't exist and reload
-    apache2 configuration if needed.
+    Require an Apache site to be disabled.
+
+    This will cause Apache to reload its configuration.
+
+    ::
+
+        from fabtools import require
+
+        require.apache.site_disabled('default')
+
     """
     disable_site(config)
     reload_service('apache2')
@@ -81,7 +114,7 @@ def site_disabled(config):
 
 def site(config_name, template_contents=None, template_source=None, enabled=True, check_config=True, **kwargs):
     """
-    Require an apache2 site.
+    Require an Apache site.
 
     You must provide a template for the site configuration, either as a
     string (*template_contents*) or as the path to a local template
@@ -148,3 +181,9 @@ def site(config_name, template_contents=None, template_source=None, enabled=True
 # backward compatibility (deprecated)
 enabled = site_enabled
 disabled = site_disabled
+
+
+__all__ = [
+    'server', 'module_enabled', 'module_disabled',
+    'site_enabled', 'site_disabled', 'site',
+]

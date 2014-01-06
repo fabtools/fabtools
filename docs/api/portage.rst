@@ -1,7 +1,7 @@
 .. _portage_module:
 
 :mod:`fabtools.portage`
--------------------
+-----------------------
 
 .. automodule:: fabtools.portage
     :members:

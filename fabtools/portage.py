@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-portage packages
+Gentoo packages
 ===============
 
-This module provides tools to manage Portage packages and repositories.
+This module provides tools for managing Gentoo packages and repositories
+using the Portage_ package manager.
+
+.. _Portage: http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=2&chap=1
 
 """
 from __future__ import with_statement
@@ -19,7 +22,7 @@ MANAGER = 'emerge --color n'
 
 def update_index(quiet=True):
     """
-    Update portage package definitions.
+    Update Portage package definitions.
     """
     manager = MANAGER
 
@@ -33,7 +36,7 @@ def update_index(quiet=True):
 
 def is_installed(pkg_name):
     """
-    Check if a package is installed.
+    Check if a Portage package is installed.
     """
     manager = MANAGER
 
@@ -60,7 +63,7 @@ def is_installed(pkg_name):
 
 def install(packages, update=False, options=None):
     """
-    Install one or more packages.
+    Install one or more Portage packages.
 
     If *update* is ``True``, the package definitions will be updated
     first, using :py:func:`~fabtools.portage.update_index`.
@@ -98,7 +101,7 @@ def install(packages, update=False, options=None):
 
 def uninstall(packages, options=None):
     """
-    Remove one or more packages.
+    Remove one or more Portage packages.
 
     Extra *options* may be passed to ``emerge`` if necessary.
     """

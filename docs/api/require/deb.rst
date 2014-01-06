@@ -7,11 +7,20 @@
 
     .. seealso:: :ref:`deb_module`
 
-    Repositories
-    ~~~~~~~~~~~~
+    Keys
+    ~~~~
+
+    .. autofunction:: key
+
+    Sources
+    ~~~~~~~
 
     .. autofunction:: source
     .. autofunction:: ppa
+
+    Index
+    ~~~~~
+
     .. autofunction:: uptodate_index
 
     Packages

@@ -1,7 +1,7 @@
 .. _mercurial_module:
 
 :mod:`fabtools.mercurial`
--------------------
+-------------------------
 
 .. automodule:: fabtools.mercurial
     :members:

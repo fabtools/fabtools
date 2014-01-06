@@ -5,3 +5,5 @@
 
 .. automodule:: fabtools.require.apache
     :members:
+
+    .. seealso:: :ref:`apache_module`

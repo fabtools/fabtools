@@ -5,13 +5,18 @@ fabtools
    :maxdepth: 1
 
    apache
+   arch
    cron
    deb
+   disk
    files
    git
+   gvm
    group
+   mercurial
    mysql
    network
+   nginx
    nodejs
    openvz
    opkg
@@ -24,6 +29,7 @@ fabtools
    rpm
    service
    shorewall
+   ssh
    supervisor
    system
    systemd

@@ -1,3 +1,11 @@
+"""
+Apache
+======
+
+This module provides tools for configuring
+the `Apache HTTP Server <http://httpd.apache.org/>`_.
+
+"""
 from fabtools.files import is_link
 from fabtools.utils import run_as_root
 
@@ -14,20 +22,27 @@ def _get_config_name(config):
 
 
 def is_module_enabled(module):
+    """
+    Check if an Apache module is enabled.
+    """
     return is_link('/etc/apache2/mods-enabled/%s.load' % module)
 
 
 def enable_module(module):
     """
-    Create link from /etc/apache2/mods-available/ in /etc/apache2/mods-enabled/
+    Enable an Apache module.
 
-    (does not reload apache config)
+    This creates a symbolic link from ``/etc/apache2/mods-available/``
+    into ``/etc/apache2/mods-enabled/``.
+
+    This does not cause Apache to reload its configuration.
 
     ::
 
-        from fabtools import require
+        import fabtools
 
-        require.apache.enable_module('rewrite')
+        fabtools.apache.enable_module('rewrite')
+        fabtools.service.reload('apache2')
 
     .. seealso:: :py:func:`fabtools.require.apache.module_enabled`
     """
@@ -37,15 +52,18 @@ def enable_module(module):
 
 def disable_module(module):
     """
-    Delete link in /etc/apache/mods-enabled/
+    Disable an Apache module.
 
-    (does not reload apache config)
+    This deletes the symbolink link in ``/etc/apache2/mods-enabled/``.
+
+    This does not cause Apache to reload its configuration.
 
     ::
 
-        from fabtools import require
+        import fabtools
 
-        require.apache.disable_module('rewrite')
+        fabtools.apache.disable_module('rewrite')
+        fabtools.service.reload('apache2')
 
     .. seealso:: :py:func:`fabtools.require.apache.module_disabled`
     """
@@ -54,6 +72,9 @@ def disable_module(module):
 
 
 def is_site_enabled(config):
+    """
+    Check if an Apache site is enabled.
+    """
     config = _get_config_name(config)
     if config == 'default':
         config = '000-default'
@@ -63,15 +84,19 @@ def is_site_enabled(config):
 
 def enable_site(config):
     """
-    Create link from /etc/apache2/sites-available/ in /etc/apache2/sites-enabled/
+    Enable an Apache site.
 
-    (does not reload apache config)
+    This creates a symbolic link from ``/etc/apache2/sites-available/``
+    into ``/etc/apache2/sites-enabled/``.
+
+    This does not cause Apache to reload its configuration.
 
     ::
 
-        from fabtools import require
+        import fabtools
 
-        require.apache.enable_site('default')
+        fabtools.apache.enable_site('default')
+        fabtools.service.reload('apache2')
 
     .. seealso:: :py:func:`fabtools.require.apache.site_enabled`
     """
@@ -81,15 +106,18 @@ def enable_site(config):
 
 def disable_site(config):
     """
-    Delete link in /etc/apache/sites-enabled/
+    Disable an Apache site.
 
-    (does not reload apache config)
+    This deletes the symbolink link in ``/etc/apache2/sites-enabled/``.
+
+    This does not cause Apache to reload its configuration.
 
     ::
 
-        from fabtools import require
+        import fabtools
 
-        require.apache.disable_site('default')
+        fabtools.apache.disable_site('default')
+        fabtools.service.reload('apache2')
 
     .. seealso:: :py:func:`fabtools.require.apache.site_disabled`
     """
@@ -100,3 +128,8 @@ def disable_site(config):
 # backward compatibility (deprecated)
 enable = enable_site
 disable = disable_site
+
+__all__ = [
+    'is_module_enabled', 'enable_module', 'disable_module',
+    'is_site_enabled', 'enable_site', 'disable_site',
+]

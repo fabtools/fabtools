@@ -18,7 +18,7 @@ from fabtools.arch import (
 
 def package(pkg_name, update=False):
     """
-    Require a archlinux package to be installed.
+    Require an Archlinux package to be installed.
 
     Example::
 
@@ -32,7 +32,7 @@ def package(pkg_name, update=False):
 
 def packages(pkg_list, update=False):
     """
-    Require several arch packages to be installed.
+    Require several Archlinux packages to be installed.
 
     Example::
 
@@ -51,7 +51,7 @@ def packages(pkg_list, update=False):
 
 def nopackage(pkg_name):
     """
-    Require a arch package to be uninstalled.
+    Require an Archlinux package to be uninstalled.
 
     Example::
 
@@ -65,7 +65,7 @@ def nopackage(pkg_name):
 
 def nopackages(pkg_list):
     """
-    Require several arch packages to be uninstalled.
+    Require several Archlinux packages to be uninstalled.
 
     Example::
 

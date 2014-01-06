@@ -47,7 +47,7 @@ def upgrade():
 
 def is_installed(pkg_name):
     """
-    Check if a package is installed.
+    Check if an Archlinux package is installed.
     """
 
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
@@ -57,7 +57,7 @@ def is_installed(pkg_name):
 
 def install(packages, update=False, options=None):
     """
-    Install one or more packages.
+    Install one or more Archlinux packages.
 
     If *update* is ``True``, the package definitions will be updated
     first, using :py:func:`~fabtools.arch.update_index`.
@@ -92,7 +92,7 @@ def install(packages, update=False, options=None):
 
 def uninstall(packages, options=None):
     """
-    Remove one or more packages.
+    Remove one or more Archlinux packages.
 
     Extra *options* may be passed to ``pacman`` if necessary.
     """

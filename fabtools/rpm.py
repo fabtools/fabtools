@@ -21,7 +21,6 @@ def update(kernel=False):
     Upgrade all packages, skip obsoletes if ``obsoletes=0`` in ``yum.conf``.
 
     Exclude *kernel* upgrades by default.
-
     """
     manager = MANAGER
     cmds = {'yum -y --color=never': {False: '--exclude=kernel* update', True: 'update'}}
@@ -34,7 +33,6 @@ def upgrade(kernel=False):
     Upgrade all packages, including obsoletes.
 
     Exclude *kernel* upgrades by default.
-
     """
     manager = MANAGER
     cmds = {'yum -y --color=never': {False: '--exclude=kernel* upgrade', True: 'upgrade'}}
@@ -47,7 +45,6 @@ def groupupdate(group, options=None):
     Update an existing software group, skip obsoletes if ``obsoletes=1`` in ``yum.conf``.
 
     Extra *options* may be passed to ``yum`` if necessary.
-
     """
     manager = MANAGER
     if options is None:
@@ -60,8 +57,7 @@ def groupupdate(group, options=None):
 
 def is_installed(pkg_name):
     """
-    Check if a *package* is installed.
-
+    Check if an RPM package is installed.
     """
     manager = MANAGER
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
@@ -73,16 +69,16 @@ def is_installed(pkg_name):
 
 def install(packages, repos=None, yes=None, options=None):
     """
-    Install one or more *packages*.
+    Install one or more RPM packages.
 
     Extra *repos* may be passed to ``yum`` to enable extra repositories at install time.
 
     Extra *yes* may be passed to ``yum`` to validate license if necessary.
 
-    Extra *options* may be passed to ``yum`` if necessary like:
-    ['--nogpgcheck', '--exclude=package']
+    Extra *options* may be passed to ``yum`` if necessary
+    (e.g. ``['--nogpgcheck', '--exclude=package']``).
 
-    Example::
+    ::
 
         import fabtools
 
@@ -115,12 +111,14 @@ def install(packages, repos=None, yes=None, options=None):
 
 def groupinstall(group, options=None):
     """
-    Install a *group* of packages. Use ``yum grouplist`` to get the list of groups.
+    Install a group of packages.
 
-    Extra *options* may be passed to ``yum`` if necessary like:
-    ['--nogpgcheck', '--exclude=package']
+    You can use ``yum grouplist`` to get the list of groups.
 
-    Example::
+    Extra *options* may be passed to ``yum`` if necessary like
+    (e.g. ``['--nogpgcheck', '--exclude=package']``).
+
+    ::
 
         import fabtools
 
@@ -139,7 +137,7 @@ def groupinstall(group, options=None):
 
 def uninstall(packages, options=None):
     """
-    Remove one or more *packages*.
+    Remove one or more packages.
 
     Extra *options* may be passed to ``yum`` if necessary.
 
@@ -173,13 +171,14 @@ def groupuninstall(group, options=None):
 
 def repolist(status='', media=None):
     """
-    Get the list of ``yum`` repositories. Returns enabled repositories by default.
+    Get the list of ``yum`` repositories.
 
-    Extra *status* may be passed to list disabled repositories if necessary.
+    Returns enabled repositories by default. Extra *status* may be passed
+    to list disabled repositories if necessary.
 
     Media and debug repositories are kept disabled, except if you pass *media*.
 
-    Example::
+    ::
 
         import fabtools
 

@@ -2,8 +2,8 @@
 Python environments and packages
 ================================
 
-This module includes tools for using `virtual environments`_
-and installing packages using `pip`_.
+This module provides high-level tools for using Python `virtual environments`_
+and installing Python packages using the `pip`_ installer.
 
 .. _virtual environments: http://www.virtualenv.org/
 .. _pip: http://www.pip-installer.org/
@@ -90,7 +90,7 @@ def package(pkg_name, url=None, pip_cmd='pip', python_cmd='python', **kwargs):
         from fabtools.python import virtualenv
         from fabtools import require
 
-        # Install package system-wide
+        # Install package system-wide (not recommended)
         require.python.package('foo', use_sudo=True)
 
         # Install package in an existing virtual environment
@@ -119,6 +119,15 @@ def packages(pkg_list, pip_cmd='pip', python_cmd='python', **kwargs):
 def requirements(filename, pip_cmd='pip', python_cmd='python', **kwargs):
     """
     Require Python packages from a pip `requirements file`_.
+
+    ::
+
+        from fabtools.python import virtualenv
+        from fabtools import require
+
+        # Install requirements in an existing virtual environment
+        with virtualenv('/path/to/venv'):
+            require.python.requirements('requirements.txt')
 
     .. _requirements file: http://www.pip-installer.org/en/latest/requirements.html
     """

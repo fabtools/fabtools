@@ -2,8 +2,8 @@
 RPM packages
 ============
 
-This module provides high-level tools for managing CentOS/RHEL/SL packages
-and repositories.
+This module provides high-level tools for managing CentOS/RHEL/SL/Fedora
+packages and repositories.
 
 """
 from __future__ import with_statement
@@ -20,7 +20,7 @@ from fabtools.utils import run_as_root
 
 def package(pkg_name, repos=None, yes=None, options=None):
     """
-    Require a rpm package to be installed.
+    Require an RPM package to be installed.
 
     Example::
 
@@ -34,7 +34,7 @@ def package(pkg_name, repos=None, yes=None, options=None):
 
 def packages(pkg_list, repos=None, yes=None, options=None):
     """
-    Require several rpm packages to be installed.
+    Require several RPM packages to be installed.
 
     Example::
 
@@ -53,7 +53,7 @@ def packages(pkg_list, repos=None, yes=None, options=None):
 
 def nopackage(pkg_name, options=None):
     """
-    Require a rpm package to be uninstalled.
+    Require an RPM package to be uninstalled.
 
     Example::
 
@@ -67,7 +67,7 @@ def nopackage(pkg_name, options=None):
 
 def nopackages(pkg_list, options=None):
     """
-    Require several rpm packages to be uninstalled.
+    Require several RPM packages to be uninstalled.
 
     Example::
 

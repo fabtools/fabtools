@@ -1,6 +1,6 @@
 """
 opkg packages
-===============
+=============
 
 This module provides tools to manage opkg packages
 and repositories.

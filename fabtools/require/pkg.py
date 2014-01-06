@@ -2,7 +2,9 @@
 SmartOS packages
 ================
 
-This module provides high-level tools for managing SmartOS packages.
+This module provides high-level tools to manage `SmartOS`_ packages.
+
+.. _SmartOS: http://smartos.org/
 
 """
 from __future__ import with_statement

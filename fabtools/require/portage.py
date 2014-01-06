@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-Portage packages
+Gentoo packages
 ===============
 
-This module provides high-level tools for managing portage packages
-and repositories.
+This module provides high-level tools for managing Gentoo packages
+and repositories using the Portage_ package manager.
+
+.. _Portage: http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=2&chap=1
 
 """
 from __future__ import with_statement
@@ -19,7 +21,7 @@ from fabtools.portage import (
 
 def package(pkg_name, update=False):
     """
-    Require a portage package to be installed.
+    Require a Portage package to be installed.
 
     Example::
 
@@ -33,7 +35,7 @@ def package(pkg_name, update=False):
 
 def packages(pkg_list, update=False):
     """
-    Require several portage packages to be installed.
+    Require several Portage packages to be installed.
 
     Example::
 
@@ -52,7 +54,7 @@ def packages(pkg_list, update=False):
 
 def nopackage(pkg_name):
     """
-    Require a portage package to be uninstalled.
+    Require a Portage package to be uninstalled.
 
     Example::
 
@@ -66,7 +68,7 @@ def nopackage(pkg_name):
 
 def nopackages(pkg_list):
     """
-    Require several portage packages to be uninstalled.
+    Require several Portage packages to be uninstalled.
 
     Example::
 

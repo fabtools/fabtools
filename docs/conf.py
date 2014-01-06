@@ -48,7 +48,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'fabtools'
-copyright = u'2012, Ronan Amicel'
+copyright = u'2011-2014, Ronan Amicel and contributors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

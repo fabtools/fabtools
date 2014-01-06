@@ -1,7 +1,7 @@
 .. _opkg_module:
 
 :mod:`fabtools.opkg`
--------------------
+--------------------
 
 .. automodule:: fabtools.opkg
     :members:

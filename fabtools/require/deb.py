@@ -217,17 +217,24 @@ def _to_seconds(var):
 
 def uptodate_index(quiet=True, max_age=86400):
     """
-    Update APT package definitions (``apt-get update``) only
-    if specified time since last update already elapsed.
+    Require an up-to-date package index.
 
-    Example::
+    This will update the package index (using ``apt-get update``) if the last
+    update occured more than *max_age* ago.
+
+    *max_age* can be specified either as an integer (a value in seconds),
+    or as a dictionary whose keys are units (``seconds``, ``minutes``,
+    ``hours``, ``days``, ``weeks``, ``months``) and values are integers.
+    The default value is 1 hour.
+
+    Examples: ::
 
         from fabtools import require
 
-        # do not update in 1 day
+        # Update index if last time was more than 1 day ago
         require.deb.uptodate_index(max_age={'day': 1})
 
-        # do not update in 1 hour and 30 minutes
+        # Update index if last time was more than 1 hour and 30 minutes ago
         require.deb.uptodate_index(max_age={'hour': 1, 'minutes': 30})
 
     """

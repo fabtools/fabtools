@@ -5,3 +5,5 @@
 
 .. automodule:: fabtools.require.nginx
     :members:
+
+    .. seealso:: :ref:`nginx_module`

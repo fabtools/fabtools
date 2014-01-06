@@ -2,8 +2,8 @@
 Python environments and packages
 ================================
 
-This module includes tools for using `virtual environments`_
-and installing packages using `pip`_.
+This module provides tools for using Python `virtual environments`_
+and installing Python packages using the `pip`_ installer.
 
 .. _virtual environments: http://www.virtualenv.org/
 .. _pip: http://www.pip-installer.org/
