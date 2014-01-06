@@ -8,14 +8,13 @@ and creating MySQL users and databases.
 """
 from __future__ import with_statement
 
-from fabric.api import hide, settings
+from fabric.api import hide, prompt, settings
 
 from fabtools.deb import is_installed, preseed_package
 from fabtools.mysql import (
     create_database,
     create_user,
     database_exists,
-    prompt_password,
     user_exists,
 )
 from fabtools.require.deb import package
@@ -40,7 +39,7 @@ def server(version=None, password=None):
 
     if not is_installed(pkg_name):
         if password is None:
-            password = prompt_password()
+            password = prompt('Please enter password for MySQL user "root":' % user)
 
         with settings(hide('running')):
             preseed_package('mysql-server', {

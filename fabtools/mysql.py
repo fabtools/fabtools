@@ -7,16 +7,11 @@ This module provides tools for creating MySQL users and databases.
 """
 from __future__ import with_statement
 
-from fabric.api import env, hide, prompt, puts, run, settings
+from pipes import quote
+
+from fabric.api import env, hide, puts, run, settings
 
 from fabtools.utils import run_as_root
-
-
-def prompt_password(user='root'):
-    """
-    Ask MySQL password interactively.
-    """
-    return prompt('Please enter password for MySQL user "%s":' % user)
 
 
 def _query(query, use_sudo=True, **kwargs):
@@ -27,13 +22,21 @@ def _query(query, use_sudo=True, **kwargs):
 
     user = kwargs.get('mysql_user') or env.get('mysql_user')
     password = kwargs.get('mysql_password') or env.get('mysql_password')
-    if user and not password:
-        password = prompt_password(user)
 
-    return func("mysql --batch --raw --skip-column-names --user=%(user)s --password='%(password)s' --execute=\"%(query)s\"" % {
-        'user': user,
-        'password': password,
-        'query': query
+    options = [
+        '--batch',
+        '--raw',
+        '--skip-column-names',
+    ]
+    if user:
+        options.append('--user=%s' % quote(user))
+    if password:
+        options.append('--password=%s' % quote(password))
+    options = ' '.join(options)
+
+    return func('mysql %(options)s --execute=%(query)s' % {
+        'options': options,
+        'query': quote(query),
     })
 
 
