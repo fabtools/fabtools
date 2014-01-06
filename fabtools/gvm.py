@@ -41,7 +41,7 @@ def install(java_version=None):
             require_pkg_packages(packages)
         else:
             raise NotImplementedError()
-        
+
         if java_version is None:
             java()
         else:

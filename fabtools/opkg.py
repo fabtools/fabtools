@@ -95,4 +95,3 @@ def uninstall(packages, options=None):
     options = " ".join(options)
     cmd = '%(manager)s %(command)s %(options)s %(packages)s' % locals()
     run_as_root(cmd, pty=False)
-

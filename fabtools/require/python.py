@@ -53,7 +53,6 @@ def setuptools(version=MIN_SETUPTOOLS_VERSION, python_cmd='python'):
             ])
 
         elif family == 'redhat':
-
             require_rpm_packages([
                 'curl',
                 'python-devel',

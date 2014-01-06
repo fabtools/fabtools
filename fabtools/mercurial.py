@@ -115,4 +115,3 @@ def pull(path, use_sudo=False, user=None):
             sudo(cmd, user=user)
         else:
             run(cmd)
-

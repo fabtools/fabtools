@@ -78,7 +78,7 @@ def add_remote(path, name, remote_url, use_sudo=False, user=None, fetch=True):
 
     :param fetch: If ``True`` execute ``git remote add -f``
     :type fetch: bool
-    """    
+    """
     if path is None:
         raise ValueError("Path to the working copy is needed to add a remote")
 

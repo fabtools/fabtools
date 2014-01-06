@@ -10,6 +10,7 @@ using the Portage_ package manager.
 
 """
 from __future__ import with_statement
+
 import re
 
 from fabric.api import hide, run, settings

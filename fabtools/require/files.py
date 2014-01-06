@@ -51,6 +51,7 @@ def directory(path, use_sudo=False, owner='', group='', mode=''):
     if mode and fabtools.files.mode(path, use_sudo) != mode:
         func('chmod %(mode)s "%(path)s"' % locals())
 
+
 def directories(path_list, use_sudo=False, owner='', group='', mode=''):
     """
     Require a list of directories to exist.
