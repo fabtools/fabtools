@@ -11,6 +11,13 @@ Version 0.18.0 (unreleased)
 * Add support for Gentoo / portage (Travis Shirk)
 * Add support for Mercurial (Travis Shirk)
 * Add support for GVM (Groovy environment manager) (Bryan Folliot)
+* Documentation fixes and updates
+* MySQL improvements:
+  * do not require a password when a specific user is specified
+  * expose ``mysql.query`` in the public API
+* Switch to pip 1.5 in ``python`` modules (**warning**: you will need
+  to use the ``allow_external`` and/or ``allow_unverified`` options
+  to install packages not hosted on PyPI)
 
 
 Version 0.17.0 (2013-12-06)
