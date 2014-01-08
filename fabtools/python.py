@@ -80,6 +80,7 @@ def install_pip(python_cmd='python', use_sudo=True):
 
         run('rm -f get-pip.py')
 
+
 def is_installed(package, pip_cmd='pip'):
     """
     Check if a Python package is installed (using pip).
@@ -103,12 +104,19 @@ def is_installed(package, pip_cmd='pip'):
     return (package.lower() in packages)
 
 
-def install(packages, upgrade=False, use_mirrors=False, use_sudo=False,
-            user=None, download_cache=None, quiet=False, pip_cmd='pip'):
+def install(packages, upgrade=False, download_cache=None, allow_external=None,
+            allow_unverified=None, quiet=False, pip_cmd='pip', use_sudo=False,
+            user=None):
     """
     Install Python package(s) using `pip`_.
 
     Package names are case insensitive.
+
+    Starting with version 1.5, pip no longer scrapes insecure external
+    urls by default and no longer installs externally hosted files by
+    default. Use ``allow_external=['foo', 'bar']`` or
+    ``allow_unverified=['bar', 'baz']`` to change these behaviours
+    for specific packages.
 
     Examples::
 
@@ -122,19 +130,33 @@ def install(packages, upgrade=False, use_mirrors=False, use_sudo=False,
 
     .. _pip: http://www.pip-installer.org/
     """
-    if not isinstance(packages, basestring):
-        packages = ' '.join(packages)
+    if isinstance(packages, basestring):
+        packages = [packages]
+
+    if allow_external in (None, False):
+        allow_external = []
+    elif allow_external == True:
+        allow_external = packages
+
+    if allow_unverified in (None, False):
+        allow_unverified = []
+    elif allow_unverified == True:
+        allow_unverified = packages
 
     options = []
-    if use_mirrors:
-        options.append('--use-mirrors')
     if upgrade:
         options.append('--upgrade')
     if download_cache:
         options.append('--download-cache="%s"' % download_cache)
     if quiet:
         options.append('--quiet')
+    for package in allow_external:
+        options.append('--allow-external="%s"' % package)
+    for package in allow_unverified:
+        options.append('--allow-unverified="%s"' % package)
     options = ' '.join(options)
+
+    packages = ' '.join(packages)
 
     command = '%(pip_cmd)s install %(options)s %(packages)s' % locals()
 
@@ -144,9 +166,9 @@ def install(packages, upgrade=False, use_mirrors=False, use_sudo=False,
         run(command, pty=False)
 
 
-def install_requirements(filename, upgrade=False, use_mirrors=False,
-                         use_sudo=False, user=None, download_cache=None,
-                         quiet=False, pip_cmd='pip'):
+def install_requirements(filename, upgrade=False, download_cache=None,
+                         allow_external=None, allow_unverified=None,
+                         quiet=False, pip_cmd='pip', use_sudo=False, user=None):
     """
     Install Python packages from a pip `requirements file`_.
 
@@ -158,13 +180,21 @@ def install_requirements(filename, upgrade=False, use_mirrors=False,
 
     .. _requirements file: http://www.pip-installer.org/en/latest/requirements.html
     """
+    if allow_external is None:
+        allow_external = []
+
+    if allow_unverified is None:
+        allow_unverified = []
+
     options = []
-    if use_mirrors:
-        options.append('--use-mirrors')
     if upgrade:
         options.append('--upgrade')
     if download_cache:
         options.append('--download-cache="%s"' % download_cache)
+    for package in allow_external:
+        options.append('--allow-external="%s"' % package)
+    for package in allow_unverified:
+        options.append('--allow-unverified="%s"' % package)
     if quiet:
         options.append('--quiet')
     options = ' '.join(options)

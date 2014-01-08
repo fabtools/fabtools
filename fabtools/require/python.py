@@ -27,7 +27,7 @@ from fabtools.system import distrib_family
 
 
 MIN_SETUPTOOLS_VERSION = '0.7'
-MIN_PIP_VERSION = '1.3.1'
+MIN_PIP_VERSION = '1.5'
 
 
 def setuptools(version=MIN_SETUPTOOLS_VERSION, python_cmd='python'):
@@ -75,7 +75,8 @@ def pip(version=MIN_PIP_VERSION, pip_cmd='pip', python_cmd='python'):
         install_pip(python_cmd=python_cmd)
 
 
-def package(pkg_name, url=None, pip_cmd='pip', python_cmd='python', **kwargs):
+def package(pkg_name, url=None, pip_cmd='pip', python_cmd='python',
+            allow_external=False, allow_unverified=False, **kwargs):
     """
     Require a Python package.
 
@@ -83,6 +84,11 @@ def package(pkg_name, url=None, pip_cmd='pip', python_cmd='python', **kwargs):
     using the `pip installer`_.
 
     Package names are case insensitive.
+
+    Starting with version 1.5, pip no longer scrapes insecure external
+    urls by default and no longer installs externally hosted files by
+    default. Use ``allow_external=True`` or ``allow_unverified=True``
+    to change these behaviours.
 
     ::
 
@@ -100,24 +106,53 @@ def package(pkg_name, url=None, pip_cmd='pip', python_cmd='python', **kwargs):
     """
     pip(MIN_PIP_VERSION, python_cmd=python_cmd)
     if not is_installed(pkg_name, pip_cmd=pip_cmd):
-        install(url or pkg_name, pip_cmd=pip_cmd, **kwargs)
+        install(url or pkg_name,
+                pip_cmd=pip_cmd,
+                allow_external=[url or pkg_name] if allow_external else [],
+                allow_unverified=[url or pkg_name] if allow_unverified else [],
+                **kwargs)
 
 
-def packages(pkg_list, pip_cmd='pip', python_cmd='python', **kwargs):
+def packages(pkg_list, pip_cmd='pip', python_cmd='python',
+             allow_external=None, allow_unverified=None, **kwargs):
     """
     Require several Python packages.
 
     Package names are case insensitive.
+
+    Starting with version 1.5, pip no longer scrapes insecure external
+    urls by default and no longer installs externally hosted files by
+    default. Use ``allow_external=['foo', 'bar']`` or
+    ``allow_unverified=['bar', 'baz']`` to change these behaviours
+    for specific packages.
     """
+    if allow_external is None:
+        allow_external = []
+
+    if allow_unverified is None:
+        allow_unverified = []
+
     pip(MIN_PIP_VERSION, python_cmd=python_cmd)
+
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg, pip_cmd=pip_cmd)]
     if pkg_list:
-        install(pkg_list, pip_cmd=pip_cmd, **kwargs)
+        install(pkg_list,
+                pip_cmd=pip_cmd,
+                allow_external=allow_external,
+                allow_unverified=allow_unverified,
+                **kwargs)
 
 
-def requirements(filename, pip_cmd='pip', python_cmd='python', **kwargs):
+def requirements(filename, pip_cmd='pip', python_cmd='python',
+                 allow_external=None, allow_unverified=None,  **kwargs):
     """
     Require Python packages from a pip `requirements file`_.
+
+    Starting with version 1.5, pip no longer scrapes insecure external
+    urls by default and no longer installs externally hosted files by
+    default. Use ``allow_external=['foo', 'bar']`` or
+    ``allow_unverified=['bar', 'baz']`` to change these behaviours
+    for specific packages.
 
     ::
 
@@ -131,7 +166,8 @@ def requirements(filename, pip_cmd='pip', python_cmd='python', **kwargs):
     .. _requirements file: http://www.pip-installer.org/en/latest/requirements.html
     """
     pip(MIN_PIP_VERSION, python_cmd=python_cmd)
-    install_requirements(filename, pip_cmd=pip_cmd, **kwargs)
+    install_requirements(filename, pip_cmd=pip_cmd, allow_external=allow_external,
+                         allow_unverified=allow_unverified, **kwargs)
 
 
 def virtualenv(directory, system_site_packages=False, venv_python=None,
