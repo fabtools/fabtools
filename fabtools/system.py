@@ -10,6 +10,31 @@ from fabtools.files import is_file
 from fabtools.utils import run_as_root
 
 
+class UnsupportedFamily(Exception):
+    """
+    Operation not supported on this system family.
+
+    ::
+
+        from fabtools.system import UnsupportedFamily, distrib_family
+
+        family = distrib_family()
+        if family == 'debian':
+            do_some_stuff()
+        elif family == 'redhat':
+            do_other_stuff()
+        else:
+            raise UnsupportedFamily(supported=['debian', 'redhat'])
+
+    """
+
+    def __init__(self, supported):
+        self.supported = supported
+        self.distrib = distrib_id()
+        msg = "Unsupported system %s (supported families: %s)" % (self.distrib, ', '.join(supported))
+        super(UnsupportedFamily, self).__init__(msg)
+
+
 def distrib_id():
     """
     Get the OS distribution ID.

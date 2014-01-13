@@ -15,7 +15,7 @@ from fabtools.require.deb import packages as require_deb_packages
 from fabtools.require.oracle_jdk import installed as java
 from fabtools.require.pkg import packages as require_pkg_packages
 from fabtools.require.rpm import packages as require_rpm_packages
-from fabtools.system import distrib_family
+from fabtools.system import UnsupportedFamily, distrib_family
 
 
 def install(java_version=None):
@@ -41,7 +41,7 @@ def install(java_version=None):
         elif family == 'sun':
             require_pkg_packages(packages)
         else:
-            raise NotImplementedError()
+            raise UnsupportedFamily(supported=['debian', 'redhat', 'sun'])
 
         if java_version is None:
             java()

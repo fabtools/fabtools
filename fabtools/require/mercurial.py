@@ -14,6 +14,7 @@ from fabric.api import run
 
 from fabtools import mercurial
 from fabtools.files import is_dir
+from fabtools.system import UnsupportedFamily
 
 
 def command():
@@ -44,8 +45,7 @@ def command():
         elif family == 'redhat':
             require_rpm_package('mercurial')
         else:
-            raise NotImplementedError("Mercurial install package for %s "
-                                      "not known." % family)
+            raise UnsupportedFamily(supported=['debian', 'redhat', 'gentoo'])
 
 
 def working_copy(remote_url, path=None, branch="default", update=True,
