@@ -14,8 +14,9 @@ def distrib_id():
     """
     Get the OS distribution ID.
 
-    Returns one of ``"Debian"``, ``"Ubuntu"``, ``"RHEL"``, ``"CentOS"``,
-    ``"Fedora"``, ``"Archlinux"``, ``"SunOS"``...
+    Returns a string such as ``"Debian"``, ``"Ubuntu"``, ``"RHEL"``,
+    ``"CentOS"``, ``"SLES"``, ``"Fedora"``, ``"Archlinux"``, ``"Gentoo"``,
+    ``"SunOS"``...
 
     Example::
 
@@ -112,17 +113,20 @@ def distrib_family():
     """
     Get the distribution family.
 
-    Returns one of ``debian``, ``redhat``, ``sun``, ``other``.
+    Returns one of ``debian``, ``redhat``, ``arch``, ``gentoo``,
+    ``sun``, ``other``.
     """
     distrib = distrib_id()
     if distrib in ['Debian', 'Ubuntu', 'LinuxMint']:
         return 'debian'
-    elif distrib in ['RHEL', 'CentOS', 'Fedora']:
+    elif distrib in ['RHEL', 'CentOS', 'SLES', 'Fedora']:
         return 'redhat'
     elif distrib in ['SunOS']:
         return 'sun'
     elif distrib in ['Gentoo']:
         return 'gentoo'
+    elif distrib in ['Archlinux']:
+        return 'arch'
     else:
         return 'other'
 

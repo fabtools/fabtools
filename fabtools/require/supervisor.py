@@ -83,7 +83,7 @@ def process(name, **kwargs):
     # Upload config file
     if family == 'debian':
         filename = '/etc/supervisor/conf.d/%(name)s.conf' % locals()
-    elif family == 'redhat' or distrib_id() is 'Archlinux':
+    elif family in ['redhat', 'arch']:
         filename = '/etc/supervisord.d/%(name)s.ini' % locals()
     with watch(filename, callback=update_config, use_sudo=True):
         require_file(filename, contents='\n'.join(lines), use_sudo=True)
