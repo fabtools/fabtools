@@ -23,6 +23,7 @@ from fabric.utils import puts
 
 from fabtools.files import is_file
 from fabtools.utils import abspath, run_as_root
+from fabtools.system import distrib_family
 
 
 def is_pip_installed(version=None, pip_cmd='pip'):
@@ -68,7 +69,22 @@ def install_pip(python_cmd='python', use_sudo=True):
     .. _pip: http://www.pip-installer.org/
     """
 
+    from fabtools.require.deb import packages as require_deb_packages
+    from fabtools.require.rpm import packages as require_rpm_packages
+
     with cd('/tmp'):
+
+        family = distrib_family()
+
+        if family == 'debian':
+            require_deb_packages([
+                'curl',
+            ])
+
+        elif family == 'redhat':
+            require_rpm_packages([
+                'curl',
+            ])
 
         run('curl --silent -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py')
 
