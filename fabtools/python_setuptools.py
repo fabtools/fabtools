@@ -74,6 +74,10 @@ def _install_from_scratch(python_cmd, use_sudo):
     """
     Install setuptools from scratch using installer
     """
+    from fabtools.require.curl import command as require_curl
+
+    require_curl()
+
     with cd("/tmp"):
         run('curl --silent -O %s' % EZ_SETUP_URL)
 

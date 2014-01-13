@@ -6,6 +6,7 @@ fabtools.require
 
    apache
    arch
+   curl
    deb
    files
    git

@@ -23,7 +23,7 @@ from fabtools.python_setuptools import (
     install_setuptools,
     is_setuptools_installed,
 )
-from fabtools.system import distrib_family
+from fabtools.system import UnsupportedFamily, distrib_family
 
 
 MIN_SETUPTOOLS_VERSION = '0.7'
@@ -40,23 +40,18 @@ def setuptools(version=MIN_SETUPTOOLS_VERSION, python_cmd='python'):
     .. _setuptools: http://pythonhosted.org/setuptools/
     """
 
-    from fabtools.require.deb import packages as require_deb_packages
-    from fabtools.require.rpm import packages as require_rpm_packages
+    from fabtools.require.deb import package as require_deb_package
+    from fabtools.require.rpm import package as require_rpm_package
 
     if not is_setuptools_installed(python_cmd=python_cmd):
         family = distrib_family()
 
         if family == 'debian':
-            require_deb_packages([
-                'curl',
-                'python-dev',
-            ])
-
+            require_deb_package('python-dev')
         elif family == 'redhat':
-            require_rpm_packages([
-                'curl',
-                'python-devel',
-            ])
+            require_rpm_package('python-devel')
+        else:
+            raise UnsupportedFamily(supported=['debian', 'redhat'])
 
         install_setuptools(python_cmd=python_cmd)
 
