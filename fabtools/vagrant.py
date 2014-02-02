@@ -144,3 +144,10 @@ def _status_human_readable():
         state = re.match(r'(.{25}) ([^\(]+)( \(.+\))?$', line).group(2)
         states.append((target, state))
     return states
+
+
+def machines():
+    """
+    Get the list of vagrant machines
+    """
+    return [name for name, state in _status()]
