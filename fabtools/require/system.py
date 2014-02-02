@@ -11,6 +11,7 @@ from fabric.contrib.files import append, uncomment
 
 from fabtools.files import is_file, watch
 from fabtools.system import (
+    UnsupportedFamily,
     distrib_family, distrib_id,
     get_hostname, set_hostname,
     get_sysctl, set_sysctl,
@@ -76,10 +77,13 @@ def locales(names):
                 warn('Unsupported locale name "%s"' % name)
 
     if config.changed:
-        if distrib_id() in ("Archlinux", "Gentoo"):
+        family = distrib_family()
+        if family == 'debian':
+            run_as_root('dpkg-reconfigure --frontend=noninteractive locales')
+        elif family in ['arch', 'gentoo']:
             run_as_root('locale-gen')
         else:
-            run_as_root('dpkg-reconfigure --frontend=noninteractive locales')
+            raise UnsupportedFamily(supported=['debian', 'arch', 'gentoo'])
 
 
 def locale(name):
