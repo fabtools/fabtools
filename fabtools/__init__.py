@@ -1,5 +1,6 @@
 # Keep imports sorted alphabetically
 import fabtools.arch
+import fabtools.crux
 import fabtools.cron
 import fabtools.deb
 import fabtools.disk
@@ -28,5 +29,5 @@ import fabtools.system
 import fabtools.tomcat
 import fabtools.user
 
-import fabtools.require
-icanhaz = require
+import fabtools.require  # noqa
+icanhaz = require  # noqa

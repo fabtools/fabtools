@@ -40,8 +40,8 @@ def distrib_id():
     Get the OS distribution ID.
 
     Returns a string such as ``"Debian"``, ``"Ubuntu"``, ``"RHEL"``,
-    ``"CentOS"``, ``"SLES"``, ``"Fedora"``, ``"Arch"``, ``"Gentoo"``,
-    ``"SunOS"``...
+    ``"CentOS"``, ``"SLES"``, ``"Fedora"``, ``"Archlinux"``, ``"Gentoo"``,
+    ``"SunOS"``, ``"CRUX"``, ...
 
     Example::
 
@@ -80,6 +80,8 @@ def distrib_id():
                         return "SLES"
                 elif is_file('/etc/gentoo-release'):
                     return "Gentoo"
+                elif is_file("/usr/bin/crux"):
+                    return "CRUX"
         elif kernel == "SunOS":
             return "SunOS"
 
@@ -141,7 +143,7 @@ def distrib_family():
     Get the distribution family.
 
     Returns one of ``debian``, ``redhat``, ``arch``, ``gentoo``,
-    ``sun``, ``other``.
+    ``sun``, ``crux``, ``other``.
     """
     distrib = distrib_id()
     if distrib in ['Debian', 'Ubuntu', 'LinuxMint', 'elementary OS']:
@@ -154,6 +156,8 @@ def distrib_family():
         return 'gentoo'
     elif distrib in ['Arch', 'ManjaroLinux']:
         return 'arch'
+    elif distrib in ["CRUX"]:
+        return "crux"
     else:
         return 'other'
 
@@ -170,9 +174,13 @@ def set_hostname(hostname, persist=True):
     """
     Set the hostname.
     """
+    distrib = distrib_id()
     run_as_root('hostname %s' % hostname)
     if persist:
-        run_as_root('echo %s >/etc/hostname' % hostname)
+        if distrib == "CRUX":
+            run_as_root("""sed -i -e "s|^HOSTNAME=.*$|HOSTNAME={}|""".format(hostname))
+        else:
+            run_as_root('echo %s >/etc/hostname' % hostname)
 
 
 def get_sysctl(key):
