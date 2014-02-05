@@ -1,3 +1,6 @@
 Sphinx
 sphinx_rtd_theme
 tox>=2.0.0
+fabric>=1.6.0
+
+-e .
