@@ -12,7 +12,7 @@ from fabric.state import connections
 
 import fabtools
 from fabtools import require
-from fabtools.vagrant import version
+from fabtools.vagrant import base_boxes, version
 
 
 def halt_and_destroy():
@@ -28,7 +28,7 @@ def halt_and_destroy():
                 local('vagrant destroy')
 
 
-def base_boxes():
+def test_boxes():
     """
     Get the list of vagrant base boxes to use
 
@@ -40,12 +40,7 @@ def base_boxes():
     if boxes is not None:
         return boxes.split()
     else:
-        with settings(warn_only=True):
-            res = local('vagrant box list', capture=True)
-        if res.failed:
-            return []
-        else:
-            return res.splitlines()
+        return base_boxes()
 
 
 class VagrantTestSuite(unittest.BaseTestSuite):

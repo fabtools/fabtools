@@ -15,8 +15,8 @@ def load_tests(loader, suite, patterns):
     exclude_files = os.environ.get('FABTOOLS_TEST_EXCLUDE', '').split()
 
     # Try to add vagrant functional tests
-    from .vagrant import base_boxes, VagrantTestCase, VagrantTestSuite
-    boxes = base_boxes()
+    from .vagrant import test_boxes, VagrantTestCase, VagrantTestSuite
+    boxes = test_boxes()
     if boxes:
         vagrant_suite = VagrantTestSuite(boxes)
 
