@@ -12,20 +12,7 @@ from fabric.state import connections
 
 import fabtools
 from fabtools import require
-
-
-def version():
-    """
-    Get the vagrant version as a tuple
-    """
-    with settings(hide('running')):
-        res = local('vagrant --version', capture=True)
-    parts = res.split()
-    if len(parts) == 3:
-        ver = parts[2]
-    else:
-        ver = parts[1]
-    return tuple(map(int, ver.split('.')))
+from fabtools.vagrant import version
 
 
 def halt_and_destroy():

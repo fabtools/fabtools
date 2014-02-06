@@ -4,7 +4,27 @@ Vagrant helpers
 """
 from __future__ import with_statement
 
+import re
+
 from fabric.api import env, hide, local, settings, task
+
+
+def version():
+    """
+    Get the Vagrant version.
+    """
+    with settings(hide('running')):
+        output = local('vagrant --version', capture=True)
+    line = output.splitlines()[-1]
+    version = re.match(r'Vagrant (?:v(?:ersion )?)?(.*)', line).group(1)
+    return tuple(_to_int(part) for part in version.split('.'))
+
+
+def _to_int(val):
+    try:
+        return int(val)
+    except ValueError:
+        return val
 
 
 def ssh_config(name=''):
