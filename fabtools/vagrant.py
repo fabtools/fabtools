@@ -108,3 +108,39 @@ def vagrant_settings(name='', *args, **kwargs):
     kwargs.update(extra_args)
 
     return settings(*args, **kwargs)
+
+
+def status(name='default'):
+    """
+    Get the status of a vagrant machine
+    """
+    machine_states = dict(_status())
+    return machine_states[name]
+
+
+def _status():
+    if version() >= (1, 4):
+        return _status_machine_readable()
+    else:
+        return _status_human_readable()
+
+
+def _status_machine_readable():
+    with settings(hide('running')):
+        output = local('vagrant status --machine-readable', capture=True)
+    tuples = [tuple(line.split(',')) for line in output.splitlines() if line.strip() != '']
+    return [(target, data) for timestamp, target, type_, data in tuples if type_ == 'state-human-short']
+
+
+def _status_human_readable():
+    with settings(hide('running')):
+        output = local('vagrant status', capture=True)
+    lines = output.splitlines()[2:]
+    states = []
+    for line in lines:
+        if line == '':
+            break
+        target = line[:25].strip()
+        state = re.match(r'(.{25}) ([^\(]+)( \(.+\))?$', line).group(2)
+        states.append((target, state))
+    return states
