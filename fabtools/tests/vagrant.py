@@ -12,7 +12,7 @@ from fabric.state import connections
 
 import fabtools
 from fabtools import require
-from fabtools.vagrant import base_boxes, version
+from fabtools.vagrant import base_boxes, status, version
 
 
 def halt_and_destroy():
@@ -109,7 +109,8 @@ class VagrantTestSuite(unittest.BaseTestSuite):
                 local('vagrant init %s' % box_name)
 
                 # Clean up
-                halt_and_destroy()
+                if status() != 'not created':
+                    halt_and_destroy()
 
             if provider:
                 options = ' --provider %s' % provider
