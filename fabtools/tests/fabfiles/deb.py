@@ -24,15 +24,6 @@ def test_add_apt_key_with_key_id_from_url():
 
 
 @task
-def test_add_apt_key_with_key_id_from_default_key_server():
-    from fabtools.deb import add_apt_key
-    reset()
-    add_apt_key(keyid='7BD9BF62')
-    add_apt_key(keyid='7BD9BF62') # Intentionally repeated
-    run_as_root('apt-key finger | grep -q 7BD9BF62')
-
-
-@task
 def test_add_apt_key_with_key_id_from_specific_key_server():
     from fabtools.deb import add_apt_key
     reset()
@@ -58,14 +49,6 @@ def test_add_apt_key_without_key_id_from_url():
 
 
 @task
-def test_add_apt_key_without_key_id_from_default_key_server():
-    from fabtools.deb import add_apt_key
-    reset()
-    add_apt_key(keyid='7BD9BF62')
-    run_as_root('apt-key finger | grep -q 7BD9BF62')
-
-
-@task
 def test_add_apt_key_without_key_id_from_file():
     from fabtools.deb import add_apt_key
     reset()
@@ -80,15 +63,6 @@ def test_require_deb_key_from_url():
     reset()
     require_key(keyid='C4DEFFEB', url='http://repo.varnish-cache.org/debian/GPG-key.txt')
     run_as_root('apt-key finger | grep -q C4DEFFEB')
-
-
-@task
-def test_require_deb_key_from_default_key_server():
-    from fabtools.require.deb import key as require_key
-    reset()
-    require_key(keyid='7BD9BF62')
-    require_key(keyid='7BD9BF62') # Intentionally repeated
-    run_as_root('apt-key finger | grep -q 7BD9BF62')
 
 
 @task
