@@ -74,7 +74,8 @@ def directories(path_list, use_sudo=False, owner='', group='', mode=''):
 
 
 def file(path=None, contents=None, source=None, url=None, md5=None,
-         use_sudo=False, owner=None, group='', mode=None, verify_remote=True):
+         use_sudo=False, owner=None, group='', mode=None, verify_remote=True,
+         temp_dir=''):
     """
     Require a file to exist and have specific contents and properties.
 
@@ -156,7 +157,7 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
                 (verify_remote and
                     md5sum(path, use_sudo=use_sudo) != digest.hexdigest())):
             with settings(hide('running')):
-                put(source, path, use_sudo=use_sudo)
+                put(source, path, use_sudo=use_sudo, temp_dir=temp_dir)
 
         if t is not None:
             os.unlink(source)
