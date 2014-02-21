@@ -2,23 +2,46 @@ from pipes import quote
 import logging
 import os
 
+from nose.plugins.skip import SkipTest
+
 from fabric.api import env, hide, lcd, local, settings
 from fabric.state import connections
+
+from fabtools.vagrant import version
+
+
+MIN_VAGRANT_VERSION = (1, 3)
 
 
 HERE = os.path.dirname(__file__)
 
 
 def setup_package():
-    base_box = os.environ.get('FABTOOLS_TEST_BOX', 'precise64')
-    provider = os.environ.get('FABTOOLS_TEST_PROVIDER')
+    _check_vagrant_version()
+
+    vagrant_box = os.environ.get('FABTOOLS_TEST_BOX')
+    if vagrant_box is None:
+        raise SkipTest("Functional tests (set FABTOOLS_TEST_BOX to choose a Vagrant base box)")
+
+    vagrant_provider = os.environ.get('FABTOOLS_TEST_PROVIDER')
+
     _configure_logging()
     _stop_vagrant_machine()
-    _init_vagrant_machine(base_box)
-    _start_vagrant_machine(provider)
+    _init_vagrant_machine(vagrant_box)
+    _start_vagrant_machine(vagrant_provider)
     _target_vagrant_machine()
     _set_optional_http_proxy()
     _update_package_index()
+
+
+def _check_vagrant_version():
+    vagrant_version = version()
+    if vagrant_version is None:
+        raise SkipTest("Functional tests: Vagrant is required")
+    elif vagrant_version < MIN_VAGRANT_VERSION:
+        min_version = ".".join(map(str, MIN_VAGRANT_VERSION))
+        found_version = ".".join(map(str, vagrant_version))
+        raise SkipTest("Functional tests: Vagrant >= %s is required (%s found)" % (min_version, found_version))
 
 
 def _configure_logging():

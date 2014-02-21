@@ -12,9 +12,11 @@ def version():
     """
     Get the Vagrant version.
     """
-    with settings(hide('running')):
-        output = local('vagrant --version', capture=True)
-    line = output.splitlines()[-1]
+    with settings(hide('running', 'warnings'), warn_only=True):
+        res = local('vagrant --version', capture=True)
+    if res.failed:
+        return None
+    line = res.splitlines()[-1]
     version = re.match(r'Vagrant (?:v(?:ersion )?)?(.*)', line).group(1)
     return tuple(_to_int(part) for part in version.split('.'))
 
