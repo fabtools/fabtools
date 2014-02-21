@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 
 try:
     from setuptools import setup, find_packages
@@ -8,11 +9,26 @@ except ImportError:
     use_setuptools()
     from setuptools import setup, find_packages
 
+from setuptools.command.test import test as TestCommand
+
 
 def read(filename):
     path = os.path.join(os.path.dirname(__file__), filename)
     contents = open(path).read()
     return re.sub(r'.*travis-ci\.org/.*', '', contents)
+
+
+class Tox(TestCommand):
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        import tox
+        errno = tox.cmdline(self.test_args)
+        sys.exit(errno)
 
 
 setup(
@@ -29,9 +45,11 @@ setup(
     ],
     setup_requires=[],
     tests_require=[
-        "unittest2",
-        "mock",
+        'tox',
     ],
+    cmdclass = {
+        'test': Tox,
+    },
     packages=find_packages(exclude=['ez_setup', 'tests']),
     include_package_data=True,
     zip_safe=False,
