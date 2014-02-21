@@ -1,6 +1,3 @@
-.. image:: https://api.travis-ci.org/ronnix/fabtools.png
-    :target: http://travis-ci.org/ronnix/fabtools
-
 About
 =====
 

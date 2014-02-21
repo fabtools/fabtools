@@ -1,5 +1,4 @@
 import os
-import re
 import sys
 
 try:
@@ -14,8 +13,7 @@ from setuptools.command.test import test as TestCommand
 
 def read(filename):
     path = os.path.join(os.path.dirname(__file__), filename)
-    contents = open(path).read()
-    return re.sub(r'.*travis-ci\.org/.*', '', contents)
+    return open(path).read()
 
 
 class Tox(TestCommand):
