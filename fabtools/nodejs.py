@@ -156,7 +156,7 @@ def package_version(package, local=False, npm='npm'):
     with hide('running', 'stdout'):
         res = run('%(npm)s list %(options)s' % locals())
 
-    dependencies = json.loads(res)['dependencies']
+    dependencies = json.loads(res).get('dependencies', {})
     pkg_data = dependencies.get(package)
     if pkg_data:
         return pkg_data['version']
