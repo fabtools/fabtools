@@ -1,42 +1,64 @@
-from __future__ import with_statement
+from pipes import quote
+import functools
+import posixpath
 
-from fabtools.tests.vagrant_test_case import VagrantTestCase
+import pytest
+
+from fabric.api import run
+
+from fabtools.files import is_dir, is_file
 
 
-class TestPython(VagrantTestCase):
+pytestmark = pytest.mark.network
 
-    def test_require_setuptools(self):
-        """
-        Test Python setuptools installation
-        """
 
-        from fabtools import require
+def test_require_setuptools():
+    """
+    Test Python setuptools installation
+    """
 
-        require.python.setuptools()
+    from fabtools.require.python import setuptools
 
-    def test_require_virtualenv(self):
-        """
-        Test Python virtualenv creation
-        """
+    setuptools()
 
-        from fabtools import require
-        import fabtools
+    assert run('easy_install --version', warn_only=True).succeeded
 
-        require.python.virtualenv('/tmp/venv')
 
-        self.assertTrue(fabtools.files.is_dir('/tmp/venv'))
-        self.assertTrue(fabtools.files.is_file('/tmp/venv/bin/python'))
+def test_require_virtualenv():
+    """
+    Test Python virtualenv creation
+    """
 
-    def test_require_python_package(self):
-        """
-        Test Python package installation
-        """
+    from fabtools.require.python import virtualenv
 
-        from fabtools import require
-        import fabtools
+    try:
+        virtualenv('/tmp/venv')
 
-        require.python.virtualenv('/tmp/venv')
-        with fabtools.python.virtualenv('/tmp/venv'):
-            require.python.package('fabric')
+        assert is_dir('/tmp/venv')
+        assert is_file('/tmp/venv/bin/python')
 
-        self.assertTrue(fabtools.files.is_file('/tmp/venv/bin/fab'))
+    finally:
+        run('rm -rf /tmp/venv')
+
+
+@pytest.fixture
+def venv(request):
+    from fabtools.require.python import virtualenv
+    path = '/tmp/venv'
+    virtualenv(path)
+    request.addfinalizer(functools.partial(run, 'rm -rf %s' % quote(path)))
+    return path
+
+
+def test_require_python_package(venv):
+    """
+    Test Python package installation
+    """
+
+    from fabtools import require
+    import fabtools
+
+    with fabtools.python.virtualenv(venv):
+        require.python.package('fabric')
+
+    assert is_file(posixpath.join(venv, 'bin/fab'))

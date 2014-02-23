@@ -1,7 +1,5 @@
 import socket
 
-from fabtools.tests.vagrant_test_case import VagrantTestCase
-
 
 def is_valid_ipv4_address(address):
     try:
@@ -29,26 +27,27 @@ def is_valid_address(address):
     return is_valid_ipv4_address(address) or is_valid_ipv6_address()
 
 
-class TestNetwork(VagrantTestCase):
+def test_interfaces_ipv4_addresses():
 
-    def test_interfaces_ipv4_addresses(self):
+    from fabtools.network import interfaces
+    from fabtools.network import address
 
-        from fabtools.network import interfaces
-        from fabtools.network import address
+    for interface in interfaces():
+        ipv4_address = address(interface)
+        assert is_valid_ipv4_address(ipv4_address)
 
-        for interface in interfaces():
-            ipv4_address = address(interface)
-            self.assertTrue(is_valid_ipv4_address(ipv4_address))
 
-    def test_loopback_interface_exists(self):
-        from fabtools.network import interfaces
-        self.assertIn('lo', interfaces())
+def test_loopback_interface_exists():
+    from fabtools.network import interfaces
+    assert 'lo' in interfaces()
 
-    def test_loopback_interface_address(self):
-        from fabtools.network import address
-        self.assertEqual(address('lo'), '127.0.0.1')
 
-    def test_name_servers(self):
-        from fabtools.network import nameservers
-        for address in nameservers():
-            self.assertTrue(is_valid_address(address), address)
+def test_loopback_interface_address():
+    from fabtools.network import address
+    assert address('lo') == '127.0.0.1'
+
+
+def test_name_servers():
+    from fabtools.network import nameservers
+    for address in nameservers():
+        assert is_valid_address(address)

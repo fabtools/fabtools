@@ -1,37 +1,41 @@
 import os
 
+import pytest
+
 from fabtools.files import is_file
-from fabtools.tests.vagrant_test_case import VagrantTestCase
+
+
+pytestmark = pytest.mark.network
 
 
 PATH = "/usr/share/tomcat"
 
 
-class TestTomcat(VagrantTestCase):
+@pytest.fixture(scope='module')
+def jdk():
+    from fabtools.require.oracle_jdk import installed
+    installed()
 
-    @classmethod
-    def setUpClass(cls):
-        from fabtools.require.oracle_jdk import installed
-        installed()
 
-    def test_tomcat_7_version(self):
+def test_tomcat_7_version(jdk):
 
-        from fabtools.require.tomcat import installed
-        from fabtools.tomcat import version, DEFAULT_VERSION
+    from fabtools.require.tomcat import installed
+    from fabtools.tomcat import version, DEFAULT_VERSION
 
-        installed()
+    installed()
 
-        self.assertTrue(is_file(os.path.join(PATH, 'bin/catalina.sh')))
-        self.assertEqual(version(PATH), DEFAULT_VERSION)
+    assert is_file(os.path.join(PATH, 'bin/catalina.sh'))
+    assert version(PATH) == DEFAULT_VERSION
 
-    def test_tomcat_6_version(self):
 
-        TOMCAT6_VERSION = '6.0.36'
+def test_tomcat_6_version(jdk):
 
-        from fabtools.require.tomcat import installed
-        from fabtools.tomcat import version
+    TOMCAT6_VERSION = '6.0.36'
 
-        installed(version=TOMCAT6_VERSION)
+    from fabtools.require.tomcat import installed
+    from fabtools.tomcat import version
 
-        self.assertTrue(is_file(os.path.join(PATH, 'bin/catalina.sh')))
-        self.assertEqual(version(PATH), TOMCAT6_VERSION)
+    installed(version=TOMCAT6_VERSION)
+
+    assert is_file(os.path.join(PATH, 'bin/catalina.sh'))
+    assert version(PATH) == TOMCAT6_VERSION

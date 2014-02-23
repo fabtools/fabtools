@@ -1,242 +1,302 @@
-from __future__ import with_statement
-
 import os
 from pipes import quote
 from tempfile import mkstemp
 from functools import partial
 
-from fabric.api import cd, env, run, sudo
+import pytest
 
-from fabtools import require
+from fabric.api import cd, env, run
+
+from fabtools.files import is_dir, is_file, owner
 from fabtools.utils import run_as_root
-import fabtools
-
-from fabtools.tests.vagrant_test_case import VagrantTestCase
 
 
-class TestRequireFile(VagrantTestCase):
+def test_require_file():
     """
-    Check file creation
+    Require that a file exists, whose contents should come from a URL
     """
+    from fabtools.require import file as require_file
 
-    @classmethod
-    def setUpClass(cls):
-        run('rm -f foo bar baz robots.txt')
+    try:
+        require_file('foo')
 
-    @classmethod
-    def tearDownClass(cls):
-        run('rm -f foo bar baz robots.txt')
+        assert is_file('foo')
+        assert run('cat foo') == ''
 
-    def test_require_file(self):
-        """
-        Require that a file exists, whose contents should come from a URL
-        """
-        require.file('foo')
-        self.assertTrue(fabtools.files.is_file('foo'))
-        self.assertEqual(run('cat foo'), '')
+    finally:
+        run('rm -f foo')
 
-    def test_require_file_from_url(self):
-        """
-        Require that a file exists, whose contents should come from a URL
-        """
-        require.file(url='http://www.google.com/robots.txt')
-        self.assertTrue(fabtools.files.is_file('robots.txt'))
 
-    def test_require_file_from_string(self):
-        """
-        Require that a file exists, whose contents should be this string
-        """
-        bar_contents = '''This is the contents of the bar file'''
-        require.file('bar', contents=bar_contents)
-        self.assertTrue(fabtools.files.is_file('bar'))
-        self.assertEqual(run('cat bar'), bar_contents)
+@pytest.mark.network
+def test_require_file_from_url():
+    """
+    Require that a file exists, whose contents should come from a URL
+    """
+    from fabtools.require import file as require_file
 
-    def test_require_file_from_local_file(self):
-        """
-        Require that a file exists, whose contents should be this local file
-        """
-        baz_contents = '''This is the contents of the bar file'''
+    try:
+        require_file(url='http://www.google.com/robots.txt')
+
+        assert is_file('robots.txt')
+
+    finally:
+        run('rm -f robots.txt')
+
+
+def test_require_file_from_string():
+    """
+    Require that a file exists, whose contents should be this string
+    """
+    from fabtools.require import file as require_file
+
+    try:
+        bar_contents = "This is the contents of the bar file"
+
+        require_file('bar', contents=bar_contents)
+
+        assert is_file('bar')
+        assert run('cat bar') == bar_contents
+
+    finally:
+        run('rm -f bar')
+
+
+def test_require_file_from_local_file():
+    """
+    Require that a file exists, whose contents should be this local file
+    """
+    from fabtools.require import file as require_file
+
+    try:
+        baz_contents = "This is the contents of the bar file"
         fd, filename = mkstemp()
         tmp_file = os.fdopen(fd, 'w')
         tmp_file.write(baz_contents)
         tmp_file.close()
 
-        require.file('baz', source=filename)
+        require_file('baz', source=filename)
 
+        assert is_file('baz')
+        assert run('cat baz') == baz_contents
+
+    finally:
         os.remove(filename)
-
-        self.assertTrue(fabtools.files.is_file('baz'))
-        self.assertEqual(run('cat baz'), baz_contents)
-
-    def test_empty_file_has_correct_permissions(self):
-
-        from fabtools.files import owner, group, mode
-        from fabtools.require.files import file as require_file
-
-        try:
-            sudo('touch foo')
-            require_file('bar', use_sudo=True)
-
-            assert owner('foo') == owner('bar')
-            assert group('foo') == group('bar')
-            assert mode('foo') == mode('bar')
-
-        finally:
-            sudo('rm -f foo bar')
-
-    def test_file_with_contents_has_correct_permissions(self):
-
-        from fabtools.files import owner, group, mode
-        from fabtools.require.files import file as require_file
-
-        try:
-            sudo('echo "something" > foo')
-            require_file('bar', contents='something', use_sudo=True)
-
-            assert owner('foo') == owner('bar')
-            assert group('foo') == group('bar')
-            assert mode('foo') == mode('bar')
-
-        finally:
-            sudo('rm -f foo bar')
-
-    def test_file_changes_ownership(self):
-
-        from fabtools.files import owner
-        from fabtools.require.files import file as require_file
-
-        try:
-            run('touch foo')
-            assert owner('foo') == env.user
-
-            require_file('foo', use_sudo=True)
-            assert owner('foo') == 'root'
-
-        finally:
-            sudo('rm -f foo')
+        run('rm -f baz')
 
 
-class TestWatch(VagrantTestCase):
-    """
-    Check behaviour of the watch context manager
-    """
+def test_empty_file_has_correct_permissions():
 
-    @classmethod
-    def setUpClass(cls):
-        run('rm -f watch modified1 modified2', quiet=True)
+    from fabtools.files import owner, group, mode
+    from fabtools.require.files import file as require_file
 
-    @classmethod
-    def tearDownClass(cls):
-        run('rm -f watched modified1 modified2', quiet=True)
+    try:
+        run_as_root('touch foo')
+        require_file('bar', use_sudo=True)
 
-    def setUp(self):
-        require.file('watched', contents='aaa')
+        assert owner('foo') == owner('bar')
+        assert group('foo') == group('bar')
+        assert mode('foo') == mode('bar')
 
-    def test_flag_is_set_when_watched_file_is_modified(self):
-        with fabtools.files.watch('watched') as f:
-            require.file('watched', contents='bbb')
-        self.assertTrue(f.changed)
+    finally:
+        run_as_root('rm -f foo bar')
 
-    def test_flag_is_not_set_when_watched_file_is_not_modified(self):
-        with fabtools.files.watch('watched') as f:
+
+def test_file_with_contents_has_correct_permissions():
+
+    from fabtools.files import owner, group, mode
+    from fabtools.require.files import file as require_file
+
+    try:
+        run_as_root('echo "something" > foo')
+        require_file('bar', contents='something', use_sudo=True)
+
+        assert owner('foo') == owner('bar')
+        assert group('foo') == group('bar')
+        assert mode('foo') == mode('bar')
+
+    finally:
+        run_as_root('rm -f foo bar')
+
+
+def test_file_changes_ownership():
+
+    from fabtools.files import owner
+    from fabtools.require.files import file as require_file
+
+    try:
+        run('touch foo')
+        assert owner('foo') == env.user
+
+        require_file('foo', use_sudo=True)
+        assert owner('foo') == 'root'
+
+    finally:
+        run_as_root('rm -f foo')
+
+
+@pytest.fixture()
+def watched_file():
+    from fabtools.require import file as require_file
+    filename= 'watched'
+    require_file('watched', contents='aaa')
+    return filename
+
+
+def test_flag_is_set_when_watched_file_is_modified(watched_file):
+
+    from fabtools.files import watch
+    from fabtools.require import file as require_file
+
+    with watch('watched') as f:
+        require_file('watched', contents='bbb')
+
+    assert f.changed
+
+
+def test_flag_is_not_set_when_watched_file_is_not_modified(watched_file):
+
+    from fabtools.files import watch
+
+    with watch('watched') as f:
+        pass
+
+    assert not f.changed
+
+
+def test_callback_is_called_when_watched_file_is_modified(watched_file):
+
+    from fabtools.files import watch
+    from fabtools.require import file as require_file
+
+    try:
+        with watch('watched', callback=partial(require_file, 'modified1')):
+            require_file('watched', contents='bbb')
+
+        assert is_file('modified1')
+
+    finally:
+        run('rm -f modified1')
+
+
+def test_callback_is_not_called_when_watched_file_is_not_modified(watched_file):
+
+    from fabtools.files import watch
+    from fabtools.require import file as require_file
+
+    try:
+        with watch('watched', callback=partial(require_file, 'modified2')):
             pass
-        self.assertFalse(f.changed)
 
-    def test_callback_is_called_when_watched_file_is_modified(self):
-        with fabtools.files.watch('watched', callback=partial(require.file, 'modified1')):
-            require.file('watched', contents='bbb')
-        assert fabtools.files.is_file('modified1')
+        assert not is_file('modified2')
 
-    def test_callback_is_not_called_when_watched_file_is_not_modified(self):
-        with fabtools.files.watch('watched', callback=partial(require.file, 'modified2')):
-            pass
-        assert not fabtools.files.is_file('modified2')
+    finally:
+        run('rm -f modified2')
 
 
-class TestRequireDirectory(VagrantTestCase):
-    """
-    Check directory creation and modification
-    """
+@pytest.fixture(scope='module')
+def users(request):
 
-    @classmethod
-    def setUpClass(cls):
-        require.user('testuser', create_home=False)
-        require.user('testuser2', create_home=False)
+    from fabtools.require import user as require_user
 
-    @classmethod
-    def tearDownClass(cls):
-        for user in ['testuser', 'testuser2']:
-            if fabtools.user.exists(user):
+    TEST_USERS = ['testuser', 'testuser2']
+
+    for name in TEST_USERS:
+        require_user(name, create_home=False)
+
+    def remove_users():
+        from fabtools.user import exists
+        for user in TEST_USERS:
+            if exists(user):
                 run_as_root('userdel %s' % user)
 
-    def setUp(self):
-        run_as_root('rm -rf testdir')
-
-    def tearDown(self):
-        run_as_root('rm -rf testdir')
-
-    def test_directory_creation(self):
-        require.directory('testdir')
-        self.assertTrue(fabtools.files.is_dir('testdir'))
-        self.assertEqual(fabtools.files.owner('testdir'), env.user)
-
-    def test_initial_owner_requirement(self):
-        require.directory('testdir', owner='testuser', use_sudo=True)
-        self.assertTrue(fabtools.files.is_dir('testdir'))
-        self.assertEqual(fabtools.files.owner('testdir'), 'testuser')
-
-    def test_changed_owner_requirement(self):
-        require.directory('testdir', owner='testuser', use_sudo=True)
-        require.directory('testdir', owner='testuser2', use_sudo=True)
-        self.assertTrue(fabtools.files.is_dir('testdir'))
-        self.assertEqual(fabtools.files.owner('testdir'), 'testuser2')
-
-    def test_permissions(self):
-
-        from fabtools.files import owner, group, mode
-        from fabtools.require.files import directory as require_directory
-
-        try:
-            sudo('mkdir foo')
-            require_directory('bar', use_sudo=True)
-
-            assert owner('foo') == owner('bar')
-            assert group('foo') == group('bar')
-            assert mode('foo') == mode('bar')
-
-        finally:
-            sudo('rmdir foo bar')
+    request.addfinalizer(remove_users)
 
 
-class TestTemporaryDirectory(VagrantTestCase):
-    """
-    Check temporary directories
-    """
+def test_directory_creation():
 
-    def test_temporary_directory_as_function(self):
+    from fabtools.require import directory
 
-        from fabtools.files import is_dir
-        from fabtools.require.files import temporary_directory
+    try:
+        directory('testdir')
 
-        path1 = temporary_directory()
-        path2 = temporary_directory()
+        assert is_dir('testdir')
+        assert owner('testdir') == env.user
 
-        assert is_dir(path1)
-        assert is_dir(path2)
-        assert path1 != path2
+    finally:
+        run('rmdir testdir')
 
-        run('rmdir %s' % quote(path1))
-        run('rmdir %s' % quote(path2))
 
-    def test_temporary_directory_as_context_manager(self):
+def test_initial_owner_requirement(users):
 
-        from fabtools.files import is_dir
-        from fabtools.require.files import temporary_directory
+    from fabtools.require import directory
 
-        with temporary_directory() as path:
-            assert is_dir(path)
+    try:
+        directory('testdir', owner='testuser', use_sudo=True)
 
-            with cd(path):
-                run('touch foo')
+        assert is_dir('testdir')
+        assert owner('testdir') == 'testuser'
 
-        assert not is_dir(path)
+    finally:
+        run_as_root('rmdir testdir')
+
+
+def test_changed_owner_requirement(users):
+
+    from fabtools.require import directory
+
+    try:
+        directory('testdir', owner='testuser', use_sudo=True)
+        directory('testdir', owner='testuser2', use_sudo=True)
+
+        assert is_dir('testdir')
+        assert owner('testdir') == 'testuser2'
+
+    finally:
+        run_as_root('rmdir testdir')
+
+
+def test_permissions():
+
+    from fabtools.files import owner, group, mode
+    from fabtools.require.files import directory as require_directory
+
+    try:
+        run_as_root('mkdir foo')
+        require_directory('bar', use_sudo=True)
+
+        assert owner('foo') == owner('bar')
+        assert group('foo') == group('bar')
+        assert mode('foo') == mode('bar')
+
+    finally:
+        run_as_root('rmdir foo bar')
+
+
+def test_temporary_directory_as_function():
+
+    from fabtools.files import is_dir
+    from fabtools.require.files import temporary_directory
+
+    path1 = temporary_directory()
+    path2 = temporary_directory()
+
+    assert is_dir(path1)
+    assert is_dir(path2)
+    assert path1 != path2
+
+    run('rmdir %s' % quote(path1))
+    run('rmdir %s' % quote(path2))
+
+
+def test_temporary_directory_as_context_manager():
+
+    from fabtools.files import is_dir
+    from fabtools.require.files import temporary_directory
+
+    with temporary_directory() as path:
+        assert is_dir(path)
+
+        with cd(path):
+            run('touch foo')
+
+    assert not is_dir(path)

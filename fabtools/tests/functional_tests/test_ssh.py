@@ -1,16 +1,17 @@
-from __future__ import with_statement
+"""
+Test SSH hardening operations
+"""
 
 from textwrap import dedent
 
-from fabric.api import (
-    quiet,
-    # run,
-)
+import pytest
+
+from fabric.api import quiet
+
 from fabric.contrib.files import contains
 
 
 from fabtools.require import file as require_file
-from fabtools.tests.vagrant_test_case import VagrantTestCase
 
 
 SSHD_CONFIG = '/tmp/sshd_config'
@@ -42,59 +43,49 @@ SSHD_CONFIG_CONTENTS = [
 ]
 
 
-class TestSSHHardening(VagrantTestCase):
-    """
-    Test SSH hardening operations
-    """
+@pytest.fixture(scope='module', params=SSHD_CONFIG_CONTENTS)
+def sshd_config(request):
+    require_file(SSHD_CONFIG, contents=dedent(request.param))
 
-    def test_disable_password_auth(self):
 
-        def check_disable_password_auth(contents):
-            from fabtools.ssh import disable_password_auth
-            require_file(SSHD_CONFIG, contents=contents)
-            disable_password_auth(sshd_config=SSHD_CONFIG)
-            with quiet():
-                assert contains(SSHD_CONFIG, 'PasswordAuthentication no', exact=True)
-                assert not contains(SSHD_CONFIG, 'PasswordAuthentication yes', exact=True)
+def test_disable_password_auth(sshd_config):
 
-        for contents in SSHD_CONFIG_CONTENTS:
-            yield check_disable_password_auth, dedent(contents)
+    from fabtools.ssh import disable_password_auth
 
-    def test_disable_root_login(self):
+    disable_password_auth(sshd_config=SSHD_CONFIG)
 
-        def check_disable_root_login(contents):
-            from fabtools.ssh import disable_root_login
-            require_file(SSHD_CONFIG, contents=contents)
-            disable_root_login(sshd_config=SSHD_CONFIG)
-            with quiet():
-                assert contains(SSHD_CONFIG, 'PermitRootLogin no', exact=True)
-                assert not contains(SSHD_CONFIG, 'PermitRootLogin yes', exact=True)
+    with quiet():
+        assert contains(SSHD_CONFIG, 'PasswordAuthentication no', exact=True)
+        assert not contains(SSHD_CONFIG, 'PasswordAuthentication yes', exact=True)
 
-        for contents in SSHD_CONFIG_CONTENTS:
-            yield check_disable_root_login, dedent(contents)
 
-    def test_enable_password_auth(self):
+def test_disable_root_login(sshd_config):
 
-        def check_enable_password_auth(contents):
-            from fabtools.ssh import enable_password_auth
-            require_file(SSHD_CONFIG, contents=contents)
-            enable_password_auth(sshd_config=SSHD_CONFIG)
-            with quiet():
-                assert contains(SSHD_CONFIG, 'PasswordAuthentication yes', exact=True)
-                assert not contains(SSHD_CONFIG, 'PasswordAuthentication no', exact=True)
+    from fabtools.ssh import disable_root_login
 
-        for contents in SSHD_CONFIG_CONTENTS:
-            yield check_enable_password_auth, dedent(contents)
+    disable_root_login(sshd_config=SSHD_CONFIG)
 
-    def test_enable_root_login(self):
+    with quiet():
+        assert contains(SSHD_CONFIG, 'PermitRootLogin no', exact=True)
+        assert not contains(SSHD_CONFIG, 'PermitRootLogin yes', exact=True)
 
-        def check_enable_root_login(contents):
-            from fabtools.ssh import enable_root_login
-            require_file(SSHD_CONFIG, contents=contents)
-            enable_root_login(sshd_config=SSHD_CONFIG)
-            with quiet():
-                assert contains(SSHD_CONFIG, 'PermitRootLogin yes', exact=True)
-                assert not contains(SSHD_CONFIG, 'PermitRootLogin no', exact=True)
 
-        for contents in SSHD_CONFIG_CONTENTS:
-            yield check_enable_root_login, dedent(contents)
+def test_enable_password_auth(sshd_config):
+
+    from fabtools.ssh import enable_password_auth
+
+    enable_password_auth(sshd_config=SSHD_CONFIG)
+    with quiet():
+        assert contains(SSHD_CONFIG, 'PasswordAuthentication yes', exact=True)
+        assert not contains(SSHD_CONFIG, 'PasswordAuthentication no', exact=True)
+
+
+def test_enable_root_login(sshd_config):
+
+    from fabtools.ssh import enable_root_login
+
+    enable_root_login(sshd_config=SSHD_CONFIG)
+
+    with quiet():
+        assert contains(SSHD_CONFIG, 'PermitRootLogin yes', exact=True)
+        assert not contains(SSHD_CONFIG, 'PermitRootLogin no', exact=True)

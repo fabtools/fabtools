@@ -1,124 +1,159 @@
-from __future__ import with_statement
-
 import os
 
 from fabric.api import run
 
 
 from fabtools.files import is_dir
+from fabtools.utils import run_as_root
 
-from fabtools.tests.vagrant_test_case import VagrantTestCase
 
+def test_create_user_without_home_directory():
 
-class TestCreateUser(VagrantTestCase):
+    from fabtools.user import create, exists
 
-    def test_create_user_without_home_directory(self):
-
-        from fabtools.user import create, exists
-
+    try:
         create('user1', create_home=False)
 
-        self.assertTrue(exists('user1'))
-        self.assertFalse(is_dir('/home/user1'))
+        assert exists('user1')
+        assert not is_dir('/home/user1')
 
-    def test_create_user_with_default_home_directory(self):
+    finally:
+        run_as_root('userdel -r user1')
 
-        from fabtools.user import create, exists
 
+def test_create_user_with_default_home_directory():
+
+    from fabtools.user import create, exists
+
+    try:
         create('user2')
 
-        self.assertTrue(exists('user2'))
-        self.assertTrue(is_dir('/home/user2'))
+        assert exists('user2')
+        assert is_dir('/home/user2')
 
-    def test_create_user_with_home_directory(self):
+    finally:
+        run_as_root('userdel -r user2')
 
-        from fabtools.user import create, exists
 
+def test_create_user_with_home_directory():
+
+    from fabtools.user import create, exists
+
+    try:
         create('user3', home='/tmp/user3')
 
-        self.assertTrue(exists('user3'))
-        self.assertFalse(is_dir('/home/user3'))
-        self.assertTrue(is_dir('/tmp/user3'))
+        assert exists('user3')
+        assert not is_dir('/home/user3')
+        assert is_dir('/tmp/user3')
 
-    def test_create_system_user_without_home_directory(self):
+    finally:
+        run_as_root('userdel -r user3')
 
-        from fabtools.user import create, exists
 
+def test_create_system_user_without_home_directory():
+
+    from fabtools.user import create, exists
+
+    try:
         create('user4', system=True)
 
-        self.assertTrue(exists('user4'))
-        self.assertFalse(is_dir('/home/user4'))
+        assert exists('user4')
+        assert not is_dir('/home/user4')
 
-    def test_create_system_user_with_home_directory(self):
+    finally:
+        run_as_root('userdel -r user4')
 
-        from fabtools.user import create, exists
 
+def test_create_system_user_with_home_directory():
+
+    from fabtools.user import create, exists
+
+    try:
         create('user5', system=True, create_home=True, home='/var/lib/foo')
 
-        self.assertTrue(exists('user5'))
-        self.assertTrue(is_dir('/var/lib/foo'))
+        assert exists('user5')
+        assert is_dir('/var/lib/foo')
 
-    def test_two_users_with_the_same_uid(self):
-
-        from fabtools.user import create, exists
-
-        create('user6', uid='1000', non_unique=True)
-        self.assertTrue(exists('user6'))
-
-        create('user7', uid='1000', non_unique=True)
-        self.assertTrue(exists('user7'))
-
-        uid6 = int(run("id -u user6"))
-        self.assertEqual(uid6, 1000)
-
-        uid7 = int(run("id -u user7"))
-        self.assertEqual(uid7, 1000)
+    finally:
+        run_as_root('userdel -r user5')
 
 
-class TestRequireUser(VagrantTestCase):
-    """
-    Check user creation and modification using fabtools.require
-    """
+def test_create_two_users_with_the_same_uid():
 
-    def test_require_user_without_home(self):
+    from fabtools.user import create, exists
 
-        from fabtools.require import user
-        from fabtools.user import exists
+    create('user6', uid='2000')
+    assert exists('user6')
 
+    create('user7', uid='2000', non_unique=True)
+    assert exists('user7')
+
+    uid6 = int(run("id -u user6"))
+    uid7 = int(run("id -u user7"))
+    assert uid7 == uid6 == 2000
+
+    run_as_root('userdel -r user6')
+    assert not exists('user6')
+
+    run_as_root('userdel -r user7')
+    assert not exists('user7')
+
+
+def test_require_user_without_home():
+
+    from fabtools.require import user
+    from fabtools.user import exists
+
+    try:
         user('req1', create_home=False)
 
-        self.assertTrue(exists('req1'))
-        self.assertFalse(is_dir('/home/req1'))
+        assert exists('req1')
+        assert not is_dir('/home/req1')
 
         # require again
         user('req1')
 
-    def test_require_user_with_default_home(self):
+    finally:
+        run_as_root('userdel -r req1')
 
-        from fabtools.require import user
-        from fabtools.user import exists
 
+def test_require_user_with_default_home():
+
+    from fabtools.require import user
+    from fabtools.user import exists
+
+    try:
         user('req2', create_home=True)
 
-        self.assertTrue(exists('req2'))
-        self.assertTrue(is_dir('/home/req2'))
+        assert exists('req2')
+        assert is_dir('/home/req2')
 
-    def test_require_user_with_custom_home(self):
+    finally:
+        run_as_root('userdel -r req2')
 
-        from fabtools.require import user
-        from fabtools.user import exists
 
+def test_require_user_with_custom_home():
+
+    from fabtools.require import user
+    from fabtools.user import exists
+
+    try:
         user('req3', home='/home/other')
 
-        self.assertTrue(exists('req3'))
-        self.assertFalse(is_dir('/home/req3'))
-        self.assertTrue(is_dir('/home/other'))
+        assert exists('req3')
+        assert not is_dir('/home/req3')
+        assert is_dir('/home/other')
 
-    def test_require_user_with_ssh_public_keys(self):
+    finally:
+        run_as_root('userdel -r req3')
 
-        from fabtools.user import authorized_keys
-        from fabtools.require import user
 
+def test_require_user_with_ssh_public_keys():
+
+    from fabtools.user import authorized_keys
+    from fabtools.require import user
+
+    try:
         tests_dir = os.path.dirname(os.path.dirname(__file__))
         public_key_filename = os.path.join(tests_dir, 'id_test.pub')
 
@@ -128,10 +163,13 @@ class TestRequireUser(VagrantTestCase):
         user('req4', home='/tmp/req4', ssh_public_keys=public_key_filename)
 
         keys = authorized_keys('req4')
-        self.assertEqual(keys, [public_key])
+        assert keys == [public_key]
 
         # let's try add same keys second time
         user('req4', home='/tmp/req4', ssh_public_keys=public_key_filename)
 
         keys = authorized_keys('req4')
-        self.assertEqual(keys, [public_key])
+        assert keys == [public_key]
+
+    finally:
+        run_as_root('userdel -r req4')

@@ -1,249 +1,259 @@
-from __future__ import with_statement
-
 import time
 
-from fabric.api import cd, local, put, run, settings, sudo
+import pytest
 
-from nose.plugins.skip import SkipTest
+from fabric.api import cd, local, put, run, settings, sudo
 
 from fabtools.files import is_dir, is_file
 from fabtools.require import file as require_file
 from fabtools.require import directory as require_directory
 from fabtools.require.system import sysctl as require_sysctl
-from fabtools.tests.vagrant_test_case import VagrantTestCase
 
 
-def setup_module():
-    # Skip this module if the kernel does not support OpenVZ
+pytestmark = pytest.mark.network
+
+
+@pytest.fixture(scope='module', autouse=True)
+def check_for_openvz_kernel():
     if not is_dir('/proc/vz'):
-        raise SkipTest("Kernel does not support OpenVZ")
+        pytest.skip("Kernel does not support OpenVZ")
 
 
-NAME = 'debian'
-TEMPLATE = 'debian-6.0-x86_64'
-IPADD = '192.168.1.100'
+@pytest.fixture(scope='module')
+def container(request):
 
+    NAME = 'debian'
+    TEMPLATE = 'debian-6.0-x86_64'
+    IPADD = '192.168.1.100'
 
-class TestOpenVZ(VagrantTestCase):
+    setup_host_networking()
+    setup_container(NAME, TEMPLATE, IPADD)
 
-    @classmethod
-    def setUpClass(cls):
-        cls.setup_host_networking()
-        cls.setup_containers()
-
-    @classmethod
-    def tearDownClass(cls):
-        from fabtools.openvz import list_ctids
+    def remove_container():
         from fabtools.require.openvz import container
         with container(NAME, TEMPLATE, hostname=NAME, ipadd=IPADD) as ct:
             ct.stop()
             ct.destroy()
-        assert 'debian' not in list_ctids()
 
-    @classmethod
-    def setup_host_networking(cls):
-        cls.setup_ip_forwarding()
-        cls.setup_firewall()
+    request.addfinalizer(remove_container)
 
-    @classmethod
-    def setup_ip_forwarding(cls):
-        require_sysctl('net.ipv4.ip_forward', 1)
+    return NAME
 
-    @classmethod
-    def setup_firewall(cls):
-        """
-        Shorewall config
-        (based on http://www.shorewall.net/OpenVZ.html)
-        """
 
-        from fabtools.require.shorewall import firewall, started
+def setup_host_networking():
+    setup_ip_forwarding()
+    setup_firewall()
 
-        zones = [
-            {
-                'name': 'fw',
-                'type': 'firewall',
-            },
-            {
-                'name': 'net',
-                'type': 'ipv4',
-            },
-            {
-                'name': 'vz',
-                'type': 'ipv4',
-            },
-        ]
 
-        interfaces = [
-            {
-                'zone':      'net',
-                'interface': 'eth0',
-                'options':   'proxyarp=1',
+def setup_ip_forwarding():
+    require_sysctl('net.ipv4.ip_forward', 1)
 
-            },
-            {
-                'zone':      'vz',
-                'interface': 'venet0',
-                'options':   'routeback,arp_filter=0',
-            },
-        ]
 
-        masq = [
-            {
-                'interface': 'eth0',
-                'source':    '192.168.1.0/24',
-            }
-        ]
+def setup_firewall():
+    """
+    Shorewall config
+    (based on http://www.shorewall.net/OpenVZ.html)
+    """
 
-        policy = [
-            {
-                'source': '$FW',
-                'dest':   'net',
-                'policy': 'ACCEPT',
-            },
-            {
-                'source': '$FW',
-                'dest':   'vz',
-                'policy': 'ACCEPT',
-            },
-            {
-                'source': 'vz',
-                'dest':   'net',
-                'policy': 'ACCEPT',
-            },
-            {
-                'source':    'net',
-                'dest':      'all',
-                'policy':    'DROP',
-                'log_level': 'info',
-            },
-            {
-                'source':    'all',
-                'dest':      'all',
-                'policy':    'REJECT',
-                'log_level': 'info',
-            },
-        ]
+    from fabtools.require.shorewall import firewall, started
 
-        firewall(
-            zones=zones,
-            interfaces=interfaces,
-            policy=policy,
-            masq=masq,
-        )
+    zones = [
+        {
+            'name': 'fw',
+            'type': 'firewall',
+        },
+        {
+            'name': 'net',
+            'type': 'ipv4',
+        },
+        {
+            'name': 'vz',
+            'type': 'ipv4',
+        },
+    ]
 
-        started()
+    interfaces = [
+        {
+            'zone':      'net',
+            'interface': 'eth0',
+            'options':   'proxyarp=1',
 
-    @classmethod
-    def setup_containers(cls):
+        },
+        {
+            'zone':      'vz',
+            'interface': 'venet0',
+            'options':   'routeback,arp_filter=0',
+        },
+    ]
 
-        from fabtools import require
-        from fabtools.require.openvz import container
-        from fabtools.system import distrib_family
-        import fabtools
+    masq = [
+        {
+            'interface': 'eth0',
+            'source':    '192.168.1.0/24',
+        }
+    ]
 
-        if distrib_family() == 'debian':
-            require.deb.package('vzctl')
+    policy = [
+        {
+            'source': '$FW',
+            'dest':   'net',
+            'policy': 'ACCEPT',
+        },
+        {
+            'source': '$FW',
+            'dest':   'vz',
+            'policy': 'ACCEPT',
+        },
+        {
+            'source': 'vz',
+            'dest':   'net',
+            'policy': 'ACCEPT',
+        },
+        {
+            'source':    'net',
+            'dest':      'all',
+            'policy':    'DROP',
+            'log_level': 'info',
+        },
+        {
+            'source':    'all',
+            'dest':      'all',
+            'policy':    'REJECT',
+            'log_level': 'info',
+        },
+    ]
 
-        require.openvz.template(TEMPLATE)
+    firewall(
+        zones=zones,
+        interfaces=interfaces,
+        policy=policy,
+        masq=masq,
+    )
 
-        with container(NAME, TEMPLATE, hostname=NAME, ipadd=IPADD) as ct:
+    started()
 
-            # Make sure the container is started
-            if not ct.running():
-                ct.start()
 
-            # Set up name servers
-            NAMESERVERS = fabtools.network.nameservers()
-            ct.set(nameserver=NAMESERVERS)
+def setup_container(name, template, ipadd):
 
-            # Wait until we can ping the container from the host
-            with settings(warn_only=True):
-                timeout = 0
-                while True:
-                    if run('ping -c 1 %s' % IPADD).succeeded:
-                        break
-                    time.sleep(1)
-                    timeout += 1
-                    assert timeout < 10, "Timeout trying to ping container"
+    from fabtools import require
+    from fabtools.require.openvz import container
+    from fabtools.system import distrib_family
+    import fabtools
 
-    def test_list_container_ids(self):
-        from fabtools.openvz import list_ctids
-        self.assertIn('debian', list_ctids())
+    if distrib_family() == 'debian':
+        require.deb.package('vzctl')
 
-    def test_run_in_guest_context_manager(self):
-        from fabtools.openvz import guest
+    require.openvz.template(template)
 
-        with guest(NAME):
-            assert run('whoami') == 'root'
+    with container(name, template, hostname=name, ipadd=ipadd) as ct:
 
-    def test_sudo_root_in_guest_context_manager(self):
-        from fabtools.openvz import guest
+        # Make sure the container is started
+        if not ct.running():
+            ct.start()
 
-        with guest(NAME):
-            assert sudo('whoami') == 'root'
+        # Set up name servers
+        NAMESERVERS = fabtools.network.nameservers()
+        ct.set(nameserver=NAMESERVERS)
 
-    def test_sudo_nobody_in_guest_context_manager(self):
-        from fabtools.openvz import guest
+        # Wait until we can ping the container from the host
+        with settings(warn_only=True):
+            timeout = 0
+            while True:
+                if run('ping -c 1 %s' % ipadd).succeeded:
+                    break
+                time.sleep(1)
+                timeout += 1
+                assert timeout < 10, "Timeout trying to ping container"
 
-        with guest(NAME):
-            assert sudo('whoami', user='nobody') == 'nobody'
 
-    def test_sudo_nobody_file_ownership_in_guest_context_manager(self):
-        from fabtools.openvz import guest
+def test_list_container_ids(container):
+    from fabtools.openvz import list_ctids
+    assert 'debian' in list_ctids()
 
-        with guest(NAME):
-            with cd('/tmp'):
-                sudo('touch tata', user='nobody')
-                assert run('stat -c "%U" tata') == 'nobody'
 
-    def test_put_in_guest_context_manager(self):
-        from fabtools.openvz import guest
+def test_run_in_guest_context_manager(container):
+    from fabtools.openvz import guest
 
-        with guest(NAME):
-            local('echo "toto" > /tmp/toto')
-            put('/tmp/toto', '/tmp/toto')
-            assert run('test -f /tmp/toto').succeeded
+    with guest(container):
+        assert run('whoami') == 'root'
 
-    def test_require_file_in_guest_context_manager(self):
-        from fabtools.openvz import guest
 
-        with guest(NAME):
-            require_file('/tmp/foo')
-            assert is_file('/tmp/foo')
+def test_sudo_root_in_guest_context_manager(container):
+    from fabtools.openvz import guest
 
-    def test_cd_in_guest_context_manager(self):
-        from fabtools.openvz import guest
+    with guest(container):
+        assert sudo('whoami') == 'root'
 
-        with guest(NAME):
-            with cd('/tmp'):
-                run('touch bar')
-                assert is_file('bar')
-            assert is_file('/tmp/bar')
 
-    def test_require_directory_in_guest_context_manager(self):
-        from fabtools.openvz import guest
+def test_sudo_nobody_in_guest_context_manager(container):
+    from fabtools.openvz import guest
 
-        with guest(NAME):
-            require_directory('/tmp/newdir')
-            with cd('/tmp/newdir'):
-                run('touch baz')
-            assert is_file('/tmp/newdir/baz')
+    with guest(container):
+        assert sudo('whoami', user='nobody') == 'nobody'
 
-    def test_install_debian_package_in_guest_context_manager(self):
-        from fabtools.deb import update_index
-        from fabtools.openvz import guest
-        from fabtools.require.deb import package
 
-        with guest(NAME):
-            update_index()
-            package('htop')
-            assert is_file('/usr/bin/htop')
+def test_sudo_nobody_file_ownership_in_guest_context_manager(container):
+    from fabtools.openvz import guest
 
-    def test_install_redis_in_guest_context_manager(self):
-        from fabtools.openvz import guest
-        from fabtools.require.redis import VERSION, instance
+    with guest(container):
+        with cd('/tmp'):
+            sudo('touch tata', user='nobody')
+            assert run('stat -c "%U" tata') == 'nobody'
 
-        with guest(NAME):
-            instance('test')
-            assert is_file('/etc/redis/test.conf')
-            assert run('echo PING | /opt/redis-%s/redis-cli' % VERSION) == 'PONG'
+
+def test_put_in_guest_context_manager(container):
+    from fabtools.openvz import guest
+
+    with guest(container):
+        local('echo "toto" > /tmp/toto')
+        put('/tmp/toto', '/tmp/toto')
+        assert run('test -f /tmp/toto').succeeded
+
+
+def test_require_file_in_guest_context_manager(container):
+    from fabtools.openvz import guest
+
+    with guest(container):
+        require_file('/tmp/foo')
+        assert is_file('/tmp/foo')
+
+
+def test_cd_in_guest_context_manager(container):
+    from fabtools.openvz import guest
+
+    with guest(container):
+        with cd('/tmp'):
+            run('touch bar')
+            assert is_file('bar')
+        assert is_file('/tmp/bar')
+
+
+def test_require_directory_in_guest_context_manager(container):
+    from fabtools.openvz import guest
+
+    with guest(container):
+        require_directory('/tmp/newdir')
+        with cd('/tmp/newdir'):
+            run('touch baz')
+        assert is_file('/tmp/newdir/baz')
+
+
+def test_install_debian_package_in_guest_context_manager(container):
+    from fabtools.deb import update_index
+    from fabtools.openvz import guest
+    from fabtools.require.deb import package
+
+    with guest(container):
+        update_index()
+        package('htop')
+        assert is_file('/usr/bin/htop')
+
+
+def test_install_redis_in_guest_context_manager(container):
+    from fabtools.openvz import guest
+    from fabtools.require.redis import VERSION, instance
+
+    with guest(container):
+        instance('test')
+        assert is_file('/etc/redis/test.conf')
+        assert run('echo PING | /opt/redis-%s/redis-cli' % VERSION) == 'PONG'

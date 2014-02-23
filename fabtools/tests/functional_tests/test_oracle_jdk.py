@@ -1,25 +1,28 @@
+import pytest
+
 from fabtools.files import is_file
-from fabtools.tests.vagrant_test_case import VagrantTestCase
 
 
-class TestOracleJDK(VagrantTestCase):
+pytestmark = pytest.mark.network
 
-    def test_require_default_jdk_version(self):
 
-        from fabtools.oracle_jdk import version, DEFAULT_VERSION
-        from fabtools.require.oracle_jdk import installed
+def test_require_default_jdk_version():
 
-        installed()
+    from fabtools.oracle_jdk import version, DEFAULT_VERSION
+    from fabtools.require.oracle_jdk import installed
 
-        self.assertTrue(is_file('/opt/jdk/bin/java'))
-        self.assertEqual(version(), DEFAULT_VERSION)
+    installed()
 
-    def test_require_jdk_version_6(self):
+    assert is_file('/opt/jdk/bin/java')
+    assert version() == DEFAULT_VERSION
 
-        from fabtools.oracle_jdk import version
-        from fabtools.require.oracle_jdk import installed
 
-        installed('6u45-b06')
+def test_require_jdk_version_6():
 
-        self.assertTrue(is_file('/opt/jdk/bin/java'))
-        self.assertEqual(version(), '6u45-b06')
+    from fabtools.oracle_jdk import version
+    from fabtools.require.oracle_jdk import installed
+
+    installed('6u45-b06')
+
+    assert is_file('/opt/jdk/bin/java')
+    assert version() == '6u45-b06'
