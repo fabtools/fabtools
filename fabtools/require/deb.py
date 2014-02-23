@@ -238,5 +238,11 @@ def uptodate_index(quiet=True, max_age=86400):
         require.deb.uptodate_index(max_age={'hour': 1, 'minutes': 30})
 
     """
+
+    from fabtools.require import file as require_file
+    require_file('/etc/apt/apt.conf.d/15fabtools-update-stamp', contents='''\
+APT::Update::Post-Invoke-Success {"touch /var/lib/apt/periodic/fabtools-update-success-stamp 2>/dev/null || true";};
+''', use_sudo=True)
+
     if system.time() - last_update_time() > _to_seconds(max_age):
         update_index(quiet=quiet)

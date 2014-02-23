@@ -220,9 +220,11 @@ def add_apt_key(filename=None, url=None, keyid=None, keyserver='subkeys.pgp.net'
 
 def last_update_time():
     """
-    Return the time of last update-check.
-    (mtime of ``/var/lib/apt/periodic/update-success-stamp``)
-    Return ``-1`` if there was no update before.
+    Get the time of last APT index update
+
+    This is the last modification time of ``/var/lib/apt/periodic/fabtools-update-success-stamp``.
+
+    Returns ``-1`` if there was no update before.
 
     Example::
 
@@ -230,8 +232,9 @@ def last_update_time():
 
         print(fabtools.deb.last_update_time())
         # 1377603808.02
+
     """
-    STAMP = '/var/lib/apt/periodic/update-success-stamp'
+    STAMP = '/var/lib/apt/periodic/fabtools-update-success-stamp'
     if not is_file(STAMP):
         return -1
     return getmtime(STAMP)
