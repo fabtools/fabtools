@@ -75,7 +75,7 @@ def directories(path_list, use_sudo=False, owner='', group='', mode=''):
 
 def file(path=None, contents=None, source=None, url=None, md5=None,
          use_sudo=False, owner=None, group='', mode=None, verify_remote=True,
-         temp_dir=''):
+         temp_dir='/tmp'):
     """
     Require a file to exist and have specific contents and properties.
 
@@ -106,6 +106,14 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
     source. If this is ``False``, the file will be assumed to be the
     same if it is present. This is useful for very large files, where
     generating an MD5 sum may take a while.
+
+    When providing either the *contents* or the *source* parameter, Fabric's
+    ``put`` function will be used to upload the file to the remote host.
+    When ``use_sudo`` is ``True``, the file will first be uploaded to a temporary
+    directory, then moved to its final location. The default temporary
+    directory is ``/tmp``, but can be overridden with the *temp_dir* parameter.
+    If *temp_dir* is an empty string, then the user's home directory will
+    be used.
 
     .. note:: This function can be accessed directly from the
               ``fabtools.require`` module for convenience.

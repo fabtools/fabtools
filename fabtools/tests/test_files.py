@@ -41,16 +41,24 @@ class FilesTestCase(unittest.TestCase):
     @patch('fabtools.require.files.is_file')
     def test_temp_dir(self, is_file, md5sum, put):
         from fabtools import require
-        require.file('/var/tmp/foo', source=__file__, use_sudo=True, temp_dir='/tmp')
-        put.assert_called_with(__file__, '/var/tmp/foo', use_sudo=True, temp_dir='/tmp')
+        require.file('/var/tmp/foo', source=__file__, use_sudo=True, temp_dir='/somewhere')
+        put.assert_called_with(__file__, '/var/tmp/foo', use_sudo=True, temp_dir='/somewhere')
 
     @patch('fabtools.require.files.put')
     @patch('fabtools.require.files.md5sum')
     @patch('fabtools.require.files.is_file')
-    def test_no_temp_dir(self, is_file, md5sum, put):
+    def test_home_as_temp_dir(self, is_file, md5sum, put):
+        from fabtools import require
+        require.file('/var/tmp/foo', source=__file__, use_sudo=True, temp_dir='')
+        put.assert_called_with(__file__, '/var/tmp/foo', use_sudo=True, temp_dir='')
+
+    @patch('fabtools.require.files.put')
+    @patch('fabtools.require.files.md5sum')
+    @patch('fabtools.require.files.is_file')
+    def test_default_temp_dir(self, is_file, md5sum, put):
         from fabtools import require
         require.file('/var/tmp/foo', source=__file__, use_sudo=True)
-        put.assert_called_with(__file__, '/var/tmp/foo', use_sudo=True, temp_dir='')
+        put.assert_called_with(__file__, '/var/tmp/foo', use_sudo=True, temp_dir='/tmp')
 
 
 class TestUploadTemplate(unittest.TestCase):
