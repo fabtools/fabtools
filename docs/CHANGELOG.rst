@@ -18,6 +18,7 @@ Version 0.18.0 (unreleased)
 * Switch to pip 1.5 in ``python`` modules (**warning**: you will need
   to use the ``allow_external`` and/or ``allow_unverified`` options
   to install packages not hosted on PyPI)
+* Add require.files.temporary_directory()
 
 
 Version 0.17.0 (2013-12-06)

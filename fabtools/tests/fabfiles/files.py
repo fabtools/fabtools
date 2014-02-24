@@ -1,6 +1,7 @@
 from __future__ import with_statement
 
 import os
+from pipes import quote
 from tempfile import mkstemp
 from functools import partial
 
@@ -99,3 +100,39 @@ def directories():
 
         assert fabtools.files.is_dir('dir2')
         assert fabtools.files.owner('dir2') == 'dirtest2'
+
+
+@task
+def temporary_directories():
+    """
+    Check temporary directories
+    """
+    from fabtools.files import is_dir
+    from fabtools.require.files import temporary_directory
+
+    path1 = temporary_directory()
+    path2 = temporary_directory()
+
+    assert is_dir(path1)
+    assert is_dir(path2)
+    assert path1 != path2
+
+    run('rmdir %s' % quote(path1))
+    run('rmdir %s' % quote(path2))
+
+
+@task
+def temporary_directory_as_context_manager():
+    """
+    Check temporary directory used as a context manager
+    """
+    from fabtools.files import is_dir
+    from fabtools.require.files import temporary_directory
+
+    with temporary_directory() as path:
+        assert is_dir(path)
+
+        with cd(path):
+            run('touch foo')
+
+    assert not is_dir(path)

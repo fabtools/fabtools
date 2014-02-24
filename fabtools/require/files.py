@@ -8,6 +8,7 @@ directories.
 """
 from __future__ import with_statement
 
+from pipes import quote
 from tempfile import mkstemp
 from urlparse import urlparse
 import hashlib
@@ -192,3 +193,21 @@ def template_file(path=None, template_contents=None, template_source=None, conte
         context = {}
 
     file(path=path, contents=template_contents % context, **kwargs)
+
+
+def temporary_directory():
+    """
+    Require a file whose contents is defined by a template.
+    """
+    with hide('running', 'stdout'):
+        path = run('mktemp --directory')
+    return TemporaryDirectory(path)
+
+
+class TemporaryDirectory(str):
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, tb):
+        run('rm -rf %s' % quote(self))
