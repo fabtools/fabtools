@@ -100,6 +100,19 @@ def mode(path, use_sudo=False):
             return result
 
 
+def umask(use_sudo=False):
+    """
+    Get the user's umask.
+
+    Returns a string such as ``'0002'``, representing the user's umask
+    as an octal number.
+
+    If `use_sudo` is `True`, this function returns root's umask.
+    """
+    func = use_sudo and run_as_root or run
+    return func('umask')
+
+
 def upload_template(filename, destination, context=None, use_jinja=False,
                     template_dir=None, use_sudo=False, backup=True,
                     mirror_local_mode=False, mode=None,
