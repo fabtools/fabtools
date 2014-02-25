@@ -5,7 +5,7 @@ from pipes import quote
 from tempfile import mkstemp
 from functools import partial
 
-from fabric.api import cd, env, run, task
+from fabric.api import cd, env, run, sudo, task
 
 from fabtools.utils import run_as_root
 
@@ -136,3 +136,74 @@ def temporary_directory_as_context_manager():
             run('touch foo')
 
     assert not is_dir(path)
+
+
+@task
+def require_directory_has_correct_permissions():
+
+    from fabtools.files import owner, group, mode
+    from fabtools.require.files import directory as require_directory
+
+    try:
+        sudo('mkdir foo')
+        require_directory('bar', use_sudo=True)
+
+        assert owner('foo') == owner('bar')
+        assert group('foo') == group('bar')
+        assert mode('foo') == mode('bar')
+
+    finally:
+        sudo('rmdir foo bar')
+
+
+@task
+def require_empty_file_has_correct_permissions():
+
+    from fabtools.files import owner, group, mode
+    from fabtools.require.files import file as require_file
+
+    try:
+        sudo('touch foo')
+        require_file('bar', use_sudo=True)
+
+        assert owner('foo') == owner('bar')
+        assert group('foo') == group('bar')
+        assert mode('foo') == mode('bar')
+
+    finally:
+        sudo('rm -f foo bar')
+
+
+@task
+def require_file_with_contents_has_correct_permissions():
+
+    from fabtools.files import owner, group, mode
+    from fabtools.require.files import file as require_file
+
+    try:
+        sudo('echo "something" > foo')
+        require_file('bar', contents='something', use_sudo=True)
+
+        assert owner('foo') == owner('bar')
+        assert group('foo') == group('bar')
+        assert mode('foo') == mode('bar')
+
+    finally:
+        sudo('rm -f foo bar')
+
+
+@task
+def require_file_changes_ownership():
+
+    from fabtools.files import owner
+    from fabtools.require.files import file as require_file
+
+    try:
+        run('touch foo')
+        assert owner('foo') == env.user
+
+        require_file('foo', use_sudo=True)
+        assert owner('foo') == 'root'
+
+    finally:
+        sudo('rm -f foo')

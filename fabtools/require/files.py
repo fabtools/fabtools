@@ -16,7 +16,15 @@ import os
 
 from fabric.api import hide, put, run, settings
 
-from fabtools.files import is_file, is_dir, md5sum
+from fabtools.files import (
+    group as _group,
+    is_file,
+    is_dir,
+    md5sum,
+    mode as _mode,
+    owner as _owner,
+    umask,
+)
 from fabtools.utils import run_as_root
 import fabtools.files
 
@@ -44,12 +52,12 @@ def directory(path, use_sudo=False, owner='', group='', mode=''):
         func('mkdir -p "%(path)s"' % locals())
 
     # Ensure correct owner
-    if (owner and fabtools.files.owner(path, use_sudo) != owner) or \
-       (group and fabtools.files.group(path, use_sudo) != group):
+    if (owner and _owner(path, use_sudo) != owner) or \
+       (group and _group(path, use_sudo) != group):
         func('chown %(owner)s:%(group)s "%(path)s"' % locals())
 
     # Ensure correct mode
-    if mode and fabtools.files.mode(path, use_sudo) != mode:
+    if mode and _mode(path, use_sudo) != mode:
         func('chmod %(mode)s "%(path)s"' % locals())
 
 
@@ -116,6 +124,10 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
     If *temp_dir* is an empty string, then the user's home directory will
     be used.
 
+    If `use_sudo` is `True`, then the remote file will be owned by root,
+    and its mode will reflect root's default *umask*. The optional *owner*,
+    *group* and *mode* parameters can be used to override these properties.
+
     .. note:: This function can be accessed directly from the
               ``fabtools.require`` module for convenience.
 
@@ -172,12 +184,16 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
             os.unlink(source)
 
     # Ensure correct owner
-    if (owner and fabtools.files.owner(path, use_sudo) != owner) or \
-       (group and fabtools.files.group(path, use_sudo) != group):
+    if use_sudo and owner is None:
+        owner = 'root'
+    if (owner and _owner(path, use_sudo) != owner) or \
+       (group and _group(path, use_sudo) != group):
         func('chown %(owner)s:%(group)s "%(path)s"' % locals())
 
     # Ensure correct mode
-    if mode and fabtools.files.mode(path, use_sudo) != mode:
+    if use_sudo and mode is None:
+        mode = oct(0666 & ~int(umask(use_sudo=True), base=8))
+    if mode and _mode(path, use_sudo) != mode:
         func('chmod %(mode)s "%(path)s"' % locals())
 
 

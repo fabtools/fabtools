@@ -4,6 +4,12 @@ import unittest
 from mock import patch
 
 
+@patch('fabtools.require.files._mode')
+@patch('fabtools.require.files._owner')
+@patch('fabtools.require.files.umask')
+@patch('fabtools.require.files.put')
+@patch('fabtools.require.files.md5sum')
+@patch('fabtools.require.files.is_file')
 class FilesTestCase(unittest.TestCase):
 
     def _file(self, *args, **kwargs):
@@ -12,9 +18,7 @@ class FilesTestCase(unittest.TestCase):
         from fabtools import require
         require.files.file(*args, **kwargs)
 
-    @patch('fabtools.require.files.md5sum')
-    @patch('fabtools.require.files.is_file')
-    def test_verify_remote_false(self, is_file, md5sum):
+    def test_verify_remote_false(self, is_file, md5sum, put, umask, owner, mode):
         """ If verify_remote is set to False, then we should find that
         only is_file is used to check for the file's existence. Hashlib's
         md5 should not have been called.
@@ -24,9 +28,7 @@ class FilesTestCase(unittest.TestCase):
         self.assertTrue(is_file.called)
         self.assertFalse(md5sum.called)
 
-    @patch('fabtools.require.files.md5sum')
-    @patch('fabtools.require.files.is_file')
-    def test_verify_remote_true(self, is_file, md5sum):
+    def test_verify_remote_true(self, is_file, md5sum, put, umask, owner, mode):
         """ If verify_remote is True, then we should find that an MD5 hash is
         used to work out whether the file is different.
         """
@@ -36,26 +38,26 @@ class FilesTestCase(unittest.TestCase):
         self.assertTrue(is_file.called)
         self.assertTrue(md5sum.called)
 
-    @patch('fabtools.require.files.put')
-    @patch('fabtools.require.files.md5sum')
-    @patch('fabtools.require.files.is_file')
-    def test_temp_dir(self, is_file, md5sum, put):
+    def test_temp_dir(self, is_file, md5sum, put, umask, owner, mode):
+        owner.return_value = 'root'
+        umask.return_value = '0002'
+        mode.return_value = '0664'
         from fabtools import require
         require.file('/var/tmp/foo', source=__file__, use_sudo=True, temp_dir='/somewhere')
         put.assert_called_with(__file__, '/var/tmp/foo', use_sudo=True, temp_dir='/somewhere')
 
-    @patch('fabtools.require.files.put')
-    @patch('fabtools.require.files.md5sum')
-    @patch('fabtools.require.files.is_file')
-    def test_home_as_temp_dir(self, is_file, md5sum, put):
+    def test_home_as_temp_dir(self, is_file, md5sum, put, umask, owner, mode):
+        owner.return_value = 'root'
+        umask.return_value = '0002'
+        mode.return_value = '0664'
         from fabtools import require
         require.file('/var/tmp/foo', source=__file__, use_sudo=True, temp_dir='')
         put.assert_called_with(__file__, '/var/tmp/foo', use_sudo=True, temp_dir='')
 
-    @patch('fabtools.require.files.put')
-    @patch('fabtools.require.files.md5sum')
-    @patch('fabtools.require.files.is_file')
-    def test_default_temp_dir(self, is_file, md5sum, put):
+    def test_default_temp_dir(self, is_file, md5sum, put, umask, owner, mode):
+        owner.return_value = 'root'
+        umask.return_value = '0002'
+        mode.return_value = '0664'
         from fabtools import require
         require.file('/var/tmp/foo', source=__file__, use_sudo=True)
         put.assert_called_with(__file__, '/var/tmp/foo', use_sudo=True, temp_dir='/tmp')
