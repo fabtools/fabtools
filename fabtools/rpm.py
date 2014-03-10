@@ -61,7 +61,7 @@ def is_installed(pkg_name):
     """
     manager = MANAGER
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        res = run("%(manager)s list installed %(pkg_name)s" % locals())
+        res = run("rpm --query %(pkg_name)s" % locals())
         if res.succeeded:
             return True
         return False
