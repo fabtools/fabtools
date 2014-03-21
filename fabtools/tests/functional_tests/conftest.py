@@ -1,8 +1,9 @@
-# from functools import partial
 from pipes import quote
 import logging
 import os
+import sys
 
+from mock import patch
 import pytest
 
 from fabric.api import env, hide, lcd, local, settings
@@ -27,6 +28,7 @@ def setup_package(request):
     vagrant_provider = os.environ.get('FABTOOLS_TEST_PROVIDER')
     reuse_vm = os.environ.get('FABTOOLS_TEST_REUSE_VM')
     _configure_logging()
+    _allow_fabric_to_access_the_real_stdin()
     if not reuse_vm:
         _stop_vagrant_machine()
     _init_vagrant_machine(vagrant_box)
@@ -48,6 +50,12 @@ def _check_vagrant_version():
 def _configure_logging():
     logger = logging.getLogger('paramiko')
     logger.setLevel(logging.WARN)
+
+
+def _allow_fabric_to_access_the_real_stdin():
+    patcher = patch('fabric.io.sys')
+    mock_sys = patcher.start()
+    mock_sys.stdin = sys.__stdin__
 
 
 def _init_vagrant_machine(base_box):
@@ -121,13 +129,3 @@ def _update_package_index():
     if family == 'debian':
         from fabtools.require.deb import uptodate_index
         uptodate_index()
-
-
-# def pytest_funcarg__capture(request):
-#     """
-#     Capture writes to sys.stdout/sys.stderr, but do not replace sys.stdin
-#     by a non-readable pseudo-file.
-#     """
-#     1/0
-#     from _pytest.capture import StdCapture, CaptureFixture
-#     return CaptureFixture(partial(StdCapture, in_=False))
