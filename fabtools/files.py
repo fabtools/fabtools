@@ -288,3 +288,37 @@ def getmtime(path, use_sudo=False):
     func = use_sudo and run_as_root or run
     with settings(hide('running', 'stdout')):
         return int(func('stat -c %%Y "%(path)s" ' % locals()).strip())
+
+
+def copy(source, destination, recursive=False, use_sudo=False):
+    """
+    Copy a file or directory
+    """
+    func = use_sudo and run_as_root or run
+    options = '-r' if recursive else ''
+    func('/bin/cp {} {} {}'.format(options, quote(source), quote(destination)))
+
+
+def move(source, destination, use_sudo=False):
+    """
+    Move a file or directory
+    """
+    func = use_sudo and run_as_root or run
+    func('/bin/mv {} {}'.format(quote(source), quote(destination)))
+
+
+def symlink(source, destination, use_sudo=False):
+    """
+    Create a symbolic link to a file or directory
+    """
+    func = use_sudo and run_as_root or run
+    func('/bin/ln -s {} {}'.format(quote(source), quote(destination)))
+
+
+def remove(path, recursive=False, use_sudo=False):
+    """
+    Remove a file or directory
+    """
+    func = use_sudo and run_as_root or run
+    options = '-r' if recursive else ''
+    func('/bin/rm {} {}'.format(options, quote(path)))
