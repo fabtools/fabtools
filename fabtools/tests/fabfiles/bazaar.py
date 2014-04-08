@@ -76,13 +76,19 @@ def bzr_wc_source_local():
     wt = '%s-test-%s' % (DIR, test)
     puts(magenta('Executing test: %s' % test))
 
+    import os
     from fabric.api import local, settings
+
+    if not os.getenv('BZR_LOCAL_TEST'):
+        puts(('%s: SKIP: interactive test, '
+              'set BZR_LOCAL_TEST env var to enable') % test)
+        return
 
     with settings(warn_only=True):
         bzr = local('which bzr', capture=True)
 
     if bzr.failed:
-        puts('wc_source_local: SKIP: Bazaar not installed on local host')
+        puts('%s: SKIP: Bazaar not installed on local host' % test)
         return
 
     from fabtools.files import is_dir
