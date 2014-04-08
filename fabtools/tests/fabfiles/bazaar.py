@@ -6,6 +6,7 @@ from __future__ import with_statement
 import posixpath as path
 
 from fabric.api import puts, task
+from fabric.colors import magenta
 
 
 REMOTE_URL = 'lp:bzr-hello'
@@ -33,6 +34,8 @@ def bazaar():
         bzr_wc_target_exists_version()
         bzr_wc_target_exists_local_mods_no_force()
         bzr_wc_target_exists_local_mods_force()
+        bzr_wc_target_exists_plain_no_force()
+        bzr_wc_target_exists_plain_force()
         bzr_wc_sudo()
         bzr_wc_sudo_user()
 
@@ -50,7 +53,7 @@ def bzr_wc_source_remote():
 
     test = 'bzr_wc_source_remote'
     wt = '%s-test-%s' % (DIR, test)
-    puts('Executing test: %s' % test)
+    puts(magenta('Executing test: %s' % test))
 
     from fabtools.files import is_dir
     from fabtools import require
@@ -71,7 +74,7 @@ def bzr_wc_source_local():
 
     test = 'bzr_wc_source_local'
     wt = '%s-test-%s' % (DIR, test)
-    puts('Executing test: %s' % test)
+    puts(magenta('Executing test: %s' % test))
 
     from fabric.api import local, settings
 
@@ -82,6 +85,7 @@ def bzr_wc_source_local():
         puts('wc_source_local: SKIP: Bazaar not installed on local host')
         return
 
+    from fabtools.files import is_dir
     from fabtools import require
 
     local('test ! -e %(wt)s || rm -rf %(wt)s' % {'wt': wt})
@@ -101,7 +105,7 @@ def bzr_wc_default_target():
     """
 
     test = 'bzr_wc_default_target'
-    puts('Executing test: %s' % test)
+    puts(magenta('Executing test: %s' % test))
 
     from fabtools.files import is_dir
     from fabtools import require
@@ -119,7 +123,7 @@ def bzr_wc_version():
 
     test = 'bzr_wc_version'
     wt = '%s-test-%s' % (DIR, test)
-    puts('Executing test: %s' % test)
+    puts(magenta('Executing test: %s' % test))
 
     from fabric.api import run
 
@@ -141,17 +145,21 @@ def bzr_wc_target_exists_no_update():
 
     test = 'bzr_wc_target_exists_no_update'
     wt = '%s-test-%s' % (DIR, test)
-    puts('Executing test: %s' % test)
+    puts(magenta('Executing test: %s' % test))
+
+    from fabric.api import run
 
     from fabtools.files import is_dir
     from fabtools import require
 
     assert not is_dir(wt)
-    run('mkdir %s' % wt)
+
+    require.bazaar.working_copy(REMOTE_URL, wt, version='2')
 
     require.bazaar.working_copy(REMOTE_URL, wt, update=False)
 
-    assert not is_dir(path.join(wt, '.bzr'))
+    assert_wc_exists(wt)
+    assert run('bzr revno %s' % wt) == '2'
 
 def bzr_wc_target_exists_update():
     """
@@ -160,7 +168,7 @@ def bzr_wc_target_exists_update():
 
     test = 'bzr_wc_target_exists_update'
     wt = '%s-test-%s' % (DIR, test)
-    puts('Executing test: %s' % test)
+    puts(magenta('Executing test: %s' % test))
 
     from fabric.api import run
 
@@ -183,7 +191,7 @@ def bzr_wc_target_exists_version():
 
     test = 'bzr_wc_target_exists_version'
     wt = '%s-test-%s' % (DIR, test)
-    puts('Executing test: %s' % test)
+    puts(magenta('Executing test: %s' % test))
 
     from fabric.api import run
 
@@ -207,7 +215,7 @@ def bzr_wc_target_exists_local_mods_no_force():
 
     test = 'bzr_wc_target_exists_local_mods_no_force'
     wt = '%s-test-%s' % (DIR, test)
-    puts('Executing test: %s' % test)
+    puts(magenta('Executing test: %s' % test))
 
     from fabric.api import cd, run
 
@@ -240,7 +248,7 @@ def bzr_wc_target_exists_local_mods_force():
 
     test = 'bzr_wc_target_exists_local_mods_force'
     wt = '%s-test-%s' % (DIR, test)
-    puts('Executing test: %s' % test)
+    puts(magenta('Executing test: %s' % test))
 
     from fabric.api import cd, run
 
@@ -262,6 +270,54 @@ def bzr_wc_target_exists_local_mods_force():
 
     assert run('bzr status %s' % wt) == ''
 
+def bzr_wc_target_exists_plain_no_force():
+    """
+    Test working copy when target is an already existing plain directory and
+    force was not specified.
+    """
+
+    test = 'bzr_wc_target_exists_plain_no_force'
+    wt = '%s-test-%s' % (DIR, test)
+    puts(magenta('Executing test: %s' % test))
+
+    from fabric.api import run
+
+    from fabtools.files import is_dir
+    from fabtools import require
+
+    run('mkdir %s' % wt)
+    assert not is_dir(path.join(wt, '.bzr'))
+
+    try:
+        require.bazaar.working_copy(REMOTE_URL, wt)
+    except SystemExit:
+        pass
+    else:
+        assert False, "working_copy didn't raise exception"
+    assert not is_dir(path.join(wt, '.bzr'))
+
+def bzr_wc_target_exists_plain_force():
+    """
+    Test working copy when target is an already existing plain directory and
+    force was specified.
+    """
+
+    test = 'bzr_wc_target_exists_plain_force'
+    wt = '%s-test-%s' % (DIR, test)
+    puts(magenta('Executing test: %s' % test))
+
+    from fabric.api import run
+
+    from fabtools.files import is_dir
+    from fabtools import require
+
+    run('mkdir %s' % wt)
+    assert not is_dir(path.join(wt, '.bzr'))
+
+    require.bazaar.working_copy(REMOTE_URL, wt, force=True)
+
+    assert_wc_exists(wt)
+
 def bzr_wc_sudo():
     """
     Test working copy with sudo.
@@ -269,7 +325,7 @@ def bzr_wc_sudo():
 
     test = 'bzr_wc_sudo'
     wt = '%s-test-%s' % (DIR, test)
-    puts('Executing test: %s' % test)
+    puts(magenta('Executing test: %s' % test))
 
     from fabric.api import sudo
 
@@ -291,7 +347,7 @@ def bzr_wc_sudo_user():
 
     test = 'bzr_wc_sudo_user'
     wt = '%s-test-%s' % (DIR, test)
-    puts('Executing test: %s' % test)
+    puts(magenta('Executing test: %s' % test))
 
     from fabric.api import cd, sudo
 
