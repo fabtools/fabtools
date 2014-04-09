@@ -77,7 +77,7 @@ def bzr_wc_source_local():
     puts(magenta('Executing test: %s' % test))
 
     import os
-    from fabric.api import local, settings
+    from fabric.api import lcd, local, settings
 
     if not os.getenv('BZR_LOCAL_TEST'):
         puts(('%s: SKIP: interactive test, '
@@ -99,7 +99,8 @@ def bzr_wc_source_local():
 
     assert not is_dir(wt)
 
-    require.bazaar.working_copy(wt, wt)
+    with lcd(wt):
+        require.bazaar.working_copy('.', wt)
 
     assert_wc_exists(wt)
 

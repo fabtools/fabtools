@@ -124,7 +124,8 @@ def working_copy(source, target=None, version=None, update=True, force=False,
             bazaar.checkout(dir, **suargs)
 
     if target is None:
-        target = src_url.path.split('/')[-1]
+        src_path = os.getcwd() if src_url.path == '.' else src_url.path
+        target = src_path.split('/')[-1]
 
     if is_dir(target, use_sudo=use_sudo) and not update:
         puts(("Working tree '%s' already exists, "
