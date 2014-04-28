@@ -22,7 +22,10 @@ from fabric.api import cd, hide, prefix, run, settings, sudo
 from fabric.utils import puts
 
 from fabtools.files import is_file
-from fabtools.utils import abspath, run_as_root
+from fabtools.utils import abspath, download, run_as_root
+
+
+GET_PIP_URL = 'https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py'
 
 
 def is_pip_installed(version=None, pip_cmd='pip'):
@@ -68,13 +71,9 @@ def install_pip(python_cmd='python', use_sudo=True):
     .. _pip: http://www.pip-installer.org/
     """
 
-    from fabtools.require.curl import command as require_curl
-
-    require_curl()
-
     with cd('/tmp'):
 
-        run('curl --silent -O https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py')
+        download(GET_PIP_URL)
 
         command = '%(python_cmd)s get-pip.py' % locals()
         if use_sudo:
