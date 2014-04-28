@@ -139,7 +139,7 @@ def packages(pkg_list, pip_cmd='pip', python_cmd='python',
 
 
 def requirements(filename, pip_cmd='pip', python_cmd='python',
-                 allow_external=None, allow_unverified=None,  **kwargs):
+                 allow_external=None, allow_unverified=None, **kwargs):
     """
     Require Python packages from a pip `requirements file`_.
 

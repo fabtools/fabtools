@@ -109,7 +109,7 @@ def is_installed(package, pip_cmd='pip'):
 
 def install(packages, upgrade=False, download_cache=None, allow_external=None,
             allow_unverified=None, quiet=False, pip_cmd='pip', use_sudo=False,
-            user=None):
+            user=None, exists_action=None):
     """
     Install Python package(s) using `pip`_.
 
@@ -157,6 +157,8 @@ def install(packages, upgrade=False, download_cache=None, allow_external=None,
         options.append('--allow-external="%s"' % package)
     for package in allow_unverified:
         options.append('--allow-unverified="%s"' % package)
+    if exists_action:
+        options.append('--exists-action=%s' % exists_action)
     options = ' '.join(options)
 
     packages = ' '.join(packages)
@@ -171,7 +173,8 @@ def install(packages, upgrade=False, download_cache=None, allow_external=None,
 
 def install_requirements(filename, upgrade=False, download_cache=None,
                          allow_external=None, allow_unverified=None,
-                         quiet=False, pip_cmd='pip', use_sudo=False, user=None):
+                         quiet=False, pip_cmd='pip', use_sudo=False,
+                         user=None, exists_action=None):
     """
     Install Python packages from a pip `requirements file`_.
 
@@ -200,6 +203,8 @@ def install_requirements(filename, upgrade=False, download_cache=None,
         options.append('--allow-unverified="%s"' % package)
     if quiet:
         options.append('--quiet')
+    if exists_action:
+        options.append('--exists-action=%s' % exists_action)
     options = ' '.join(options)
 
     command = '%(pip_cmd)s install %(options)s -r %(filename)s' % locals()
