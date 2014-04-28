@@ -74,7 +74,7 @@ def install_pip(python_cmd='python', use_sudo=True):
 
     with cd('/tmp'):
 
-        run('curl --silent -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py')
+        run('curl --silent -O https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py')
 
         command = '%(python_cmd)s get-pip.py' % locals()
         if use_sudo:
