@@ -56,7 +56,7 @@ def add_task(name, timespec, user, command, environment=None):
     )
 
 
-def add_daily(name, user, command):
+def add_daily(name, user, command, environment=None):
     """
     Shortcut to add a daily cron task.
 
@@ -68,4 +68,4 @@ def add_daily(name, user, command):
         fabtools.cron.add_daily('backup', 'root', '/usr/local/bin/backup.sh')
 
     """
-    add_task(name, '@daily', user, command)
+    add_task(name, '@daily', user, command, environment)
