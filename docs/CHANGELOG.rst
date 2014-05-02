@@ -29,6 +29,7 @@ Version 0.18.0 (unreleased)
   * Add helpers to copy, move, symlink or remove files
 * Use ``rpm`` instead of ``yum`` to check if an RPM package is installed
 * Update JDK install to match changes to the Oracle web site
+* Fix ``cron.add_task`` (thanks to Dan Fairs and Ikuya Yamada)
 
 
 Version 0.17.0 (2013-12-06)

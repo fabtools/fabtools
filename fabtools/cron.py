@@ -7,11 +7,6 @@ This module provides tools to manage periodic tasks using cron.
 """
 from __future__ import with_statement
 
-from tempfile import NamedTemporaryFile
-
-from fabtools.files import upload_template
-from fabtools.utils import run_as_root
-
 
 def add_task(name, timespec, user, command, environment=None):
     """
@@ -42,29 +37,23 @@ def add_task(name, timespec, user, command, environment=None):
     if environment is None:
         environment = {}
 
-    with NamedTemporaryFile() as script:
+    lines = []
 
-        # Write optional environment variables first
-        for key, value in environment.iteritems():
-            script.write('%(key)s=%(value)s\n' % locals())
+    # Write optional environment variables first
+    for key, value in environment.iteritems():
+        lines.append('%(key)s=%(value)s\n' % locals())
 
-        # Write the main crontab line
-        script.write('%(timespec)s %(user)s %(command)s\n' % locals())
+    # Write the main crontab line
+    lines.append('%(timespec)s %(user)s %(command)s\n' % locals())
 
-        script.flush()
-
-        # Upload file
-        filename = '/etc/cron.d/%(name)s' % locals()
-        upload_template(
-            filename=script.name,
-            destination=filename,
-            context={},
-            chown=True,
-            use_sudo=True,
-        )
-
-        # Fix permissions
-        run_as_root('chmod 0644 %s' % filename)
+    from fabtools.require.files import file as require_file
+    require_file(
+        path='/etc/cron.d/%(name)s' % locals(),
+        contents=''.join(lines),
+        owner='root',
+        mode='0644',
+        use_sudo=True,
+    )
 
 
 def add_daily(name, user, command):
