@@ -15,10 +15,20 @@ Version 0.18.0 (unreleased)
 * MySQL improvements:
   * do not require a password when a specific user is specified
   * expose ``mysql.query`` in the public API
-* Switch to pip 1.5 in ``python`` modules (**warning**: you will need
-  to use the ``allow_external`` and/or ``allow_unverified`` options
-  to install packages not hosted on PyPI)
-* Add require.files.temporary_directory()
+* Python improvements:
+  * Switch to pip 1.5 in ``python`` modules (**warning**: you will need
+    to use the ``allow_external`` and/or ``allow_unverified`` options
+    to install packages not hosted on PyPI)
+  * Update GitHub download URL for pip installer (Guillaume Andreu Sabater)
+  * Retry when trying to download pip/setuptools installers
+  * Add support for pip's ``--exists-action`` option
+* Files improvements:
+  * Add ``require.files.temporary_directory``
+  * Add ``files.umask`` to get the user's umask
+  * Fix ``require.file`` ownership and permissions when using ``sudo``
+  * Add helpers to copy, move, symlink or remove files
+* Use ``rpm`` instead of ``yum`` to check if an RPM package is installed
+* Update JDK install to match changes to the Oracle web site
 
 
 Version 0.17.0 (2013-12-06)
