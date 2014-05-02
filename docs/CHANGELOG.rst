@@ -1,10 +1,12 @@
 Changelog
 =========
 
-Version 0.18.0 (unreleased)
+Version 0.18.0 (2014-05-02)
 ---------------------------
 
-* Add drop_user and drop_database in ``postgres`` module
+This release requires Fabric >= 1.7.0 and drops support for Python 2.5.
+
+* Add ``drop_user`` and ``drop_database`` in ``postgres`` module
 * Add LinuxMint to the Debian family list (Frank Rousseau)
 * Add support for git remotes (Bryan Folliot)
 * Add support for Tomcat (Jan Kowalski)
@@ -13,20 +15,30 @@ Version 0.18.0 (unreleased)
 * Add support for GVM (Groovy environment manager) (Bryan Folliot)
 * Documentation fixes and updates
 * MySQL improvements:
-  * do not require a password when a specific user is specified
-  * expose ``mysql.query`` in the public API
+    * do not require a password when a specific user is specified
+    * expose ``mysql.query`` in the public API
 * Python improvements:
-  * Switch to pip 1.5 in ``python`` modules (**warning**: you will need
-    to use the ``allow_external`` and/or ``allow_unverified`` options
-    to install packages not hosted on PyPI)
-  * Update GitHub download URL for pip installer (Guillaume Andreu Sabater)
-  * Retry when trying to download pip/setuptools installers
-  * Add support for pip's ``--exists-action`` option
+    * Switch to pip 1.5 (**warning**: you will need to use the
+      ``allow_external`` and/or ``allow_unverified`` options to install
+      packages not hosted on PyPI)
+    * Update GitHub download URL for pip installer (Guillaume Andreu Sabater)
+    * Retry when trying to download pip/setuptools installers
+    * Add support for pip's ``--exists-action`` option
+* Improved OS support in ``distrib_family()`` and new
+  ``UnsupportedFamily`` exception
+* Make sure to install ``curl`` before using it (ponty)
+* Vagrant improvements:
+    * Add function to get the Vagrant version
+    * Add function to get the status of a Vagrant machine
+    * Add function to get the list of Vagrant machines
+    * Add function to get the list of Vagrant base boxes
 * Files improvements:
-  * Add ``require.files.temporary_directory``
-  * Add ``files.umask`` to get the user's umask
-  * Fix ``require.file`` ownership and permissions when using ``sudo``
-  * Add helpers to copy, move, symlink or remove files
+    * Add ``temp_dir`` parameter to ``require.file`` (default is ``tmp``)
+    * Add ``require.files.temporary_directory``
+    * Add ``files.umask`` to get the user's umask
+    * Fix ``require.file`` ownership and permissions when using ``sudo``
+    * Add helpers to copy, move, symlink or remove files
+* Fix ``require.deb.uptodate_index``
 * Use ``rpm`` instead of ``yum`` to check if an RPM package is installed
 * Update JDK install to match changes to the Oracle web site
 * Fix ``cron.add_task`` (thanks to Dan Fairs and Ikuya Yamada)
