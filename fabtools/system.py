@@ -150,7 +150,7 @@ def distrib_family():
         return 'sun'
     elif distrib in ['Gentoo']:
         return 'gentoo'
-    elif distrib in ['Archlinux']:
+    elif distrib in ['Archlinux', 'ManjaroLinux']:
         return 'arch'
     else:
         return 'other'
@@ -210,7 +210,7 @@ def supported_locales():
     Each locale is returned as a ``(locale, charset)`` tuple.
     """
     with settings(hide('running', 'stdout')):
-        if distrib_id() == "Archlinux":
+        if distrib_family() == "arch":
             res = run("cat /etc/locale.gen")
         else:
             res = run('cat /usr/share/i18n/SUPPORTED')
