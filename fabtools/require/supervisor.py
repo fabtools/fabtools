@@ -83,8 +83,10 @@ def process(name, **kwargs):
     # Upload config file
     if family == 'debian':
         filename = '/etc/supervisor/conf.d/%(name)s.conf' % locals()
-    elif family in ['redhat', 'arch']:
+    elif family == 'redhat':
         filename = '/etc/supervisord.d/%(name)s.ini' % locals()
+    elif family == 'arch':
+        filename = '/etc/supervisor.d/%(name)s.ini' % locals()
     else:
         raise UnsupportedFamily(supported=['debian', 'redhat', 'arch'])
 
