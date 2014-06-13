@@ -277,7 +277,7 @@ def virtualenv(directory, local=False):
     path_mod = os.path if local else posixpath
 
     # Build absolute path to the virtualenv activation script
-    venv_path = abspath(directory)
+    venv_path = abspath(directory, local)
     activate_path = path_mod.join(venv_path, 'bin', 'activate')
 
     # Source the activation script
