@@ -104,7 +104,7 @@ def default_locale(name):
 
     # Make it the default
     contents = 'LANG="%s"\n' % name
-    if distrib_id() == "Archlinux":
+    if distrib_family() == 'arch':
         config_file = '/etc/locale.conf'
     else:
         config_file = '/etc/default/locale'

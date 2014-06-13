@@ -40,7 +40,7 @@ def distrib_id():
     Get the OS distribution ID.
 
     Returns a string such as ``"Debian"``, ``"Ubuntu"``, ``"RHEL"``,
-    ``"CentOS"``, ``"SLES"``, ``"Fedora"``, ``"Archlinux"``, ``"Gentoo"``,
+    ``"CentOS"``, ``"SLES"``, ``"Fedora"``, ``"Arch"``, ``"Gentoo"``,
     ``"SunOS"``...
 
     Example::
@@ -57,17 +57,19 @@ def distrib_id():
 
         if kernel == 'Linux':
             # lsb_release works on Ubuntu and Debian >= 6.0
-            # but is not always included in other distros such as:
-            # Gentoo
+            # but is not always included in other distros
             if is_file('/usr/bin/lsb_release'):
-                return run('lsb_release --id --short')
+                id_ = run('lsb_release --id --short')
+                if id in ['arch', 'Archlinux']:  # old IDs used before lsb-release 1.4-14
+                    id_ = 'Arch'
+                return id_
             else:
                 if is_file('/etc/debian_version'):
                     return "Debian"
                 elif is_file('/etc/fedora-release'):
                     return "Fedora"
                 elif is_file('/etc/arch-release'):
-                    return "Archlinux"
+                    return "Arch"
                 elif is_file('/etc/redhat-release'):
                     release = run('cat /etc/redhat-release')
                     if release.startswith('Red Hat Enterprise Linux'):
@@ -150,7 +152,7 @@ def distrib_family():
         return 'sun'
     elif distrib in ['Gentoo']:
         return 'gentoo'
-    elif distrib in ['Archlinux', 'ManjaroLinux']:
+    elif distrib in ['Arch', 'ManjaroLinux']:
         return 'arch'
     else:
         return 'other'

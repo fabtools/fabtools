@@ -64,9 +64,11 @@ def process(name, **kwargs):
     elif family == 'redhat':
         require_rpm_package('supervisor')
         require_started('supervisord')
-    elif distrib_id() is 'Archlinux':
+    elif family == 'arch':
         require_arch_package('supervisor')
         require_started('supervisord')
+    else:
+        raise UnsupportedFamily(supported=['debian', 'redhat', 'arch'])
 
     # Set default parameters
     params = {}
@@ -87,8 +89,6 @@ def process(name, **kwargs):
         filename = '/etc/supervisord.d/%(name)s.ini' % locals()
     elif family == 'arch':
         filename = '/etc/supervisor.d/%(name)s.ini' % locals()
-    else:
-        raise UnsupportedFamily(supported=['debian', 'redhat', 'arch'])
 
     with watch(filename, callback=update_config, use_sudo=True):
         require_file(filename, contents='\n'.join(lines), use_sudo=True)

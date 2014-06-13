@@ -1,8 +1,8 @@
 """
-Archlinux packages
-==================
+Arch Linux packages
+===================
 
-This module provides tools to manage Archlinux packages
+This module provides tools to manage Arch Linux packages
 and repositories.
 
 """
@@ -47,7 +47,7 @@ def upgrade():
 
 def is_installed(pkg_name):
     """
-    Check if an Archlinux package is installed.
+    Check if an Arch Linux package is installed.
     """
 
     with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
@@ -57,7 +57,7 @@ def is_installed(pkg_name):
 
 def install(packages, update=False, options=None):
     """
-    Install one or more Archlinux packages.
+    Install one or more Arch Linux packages.
 
     If *update* is ``True``, the package definitions will be updated
     first, using :py:func:`~fabtools.arch.update_index`.
@@ -92,7 +92,7 @@ def install(packages, update=False, options=None):
 
 def uninstall(packages, options=None):
     """
-    Remove one or more Archlinux packages.
+    Remove one or more Arch Linux packages.
 
     Extra *options* may be passed to ``pacman`` if necessary.
     """

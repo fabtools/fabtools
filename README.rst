@@ -91,6 +91,6 @@ Supported targets
 
 * SmartOS (Joyent)
 
-* Archlinux
+* Arch Linux
 
 Contributions to help support other Unix/Linux distributions are welcome!
