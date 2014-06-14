@@ -15,7 +15,7 @@ from fabric.api import cd, run
 from fabtools.utils import download, run_as_root
 
 
-EZ_SETUP_URL = 'https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py'
+EZ_SETUP_URL = 'https://bootstrap.pypa.io/ez_setup.py'
 
 
 def package_version(name, python_cmd='python'):
