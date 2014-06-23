@@ -107,9 +107,14 @@ def require_ssh_public_keys():
 
     tests_dir = os.path.dirname(os.path.dirname(__file__))
     public_key_filename = os.path.join(tests_dir, 'id_test.pub')
+    public_key_filename2 = os.path.join(tests_dir, 'id_test2.pub')
+    multiple_public_key_filename = os.path.join(tests_dir, 'test_authorized_keys')
 
     with open(public_key_filename) as public_key_file:
         public_key = public_key_file.read().strip()
+
+    with open(public_key_filename2) as public_key_file:
+        public_key2 = public_key_file.read().strip()
 
     require.user('req4', home='/tmp/req4', ssh_public_keys=public_key_filename)
 
@@ -121,3 +126,19 @@ def require_ssh_public_keys():
 
     keys = authorized_keys('req4')
     assert keys == [public_key], keys
+
+    # Now add a file with multiple public keys
+    require.user('req5', home='/tmp/req5', ssh_public_keys=multiple_public_key_filename)
+
+    keys = authorized_keys('req5')
+    assert keys == [public_key, public_key2], keys
+
+    # Now adding them individually or again shouldn't affect anything
+    require.user('req5', home='/tmp/req5', ssh_public_keys=[
+        public_key_filename2,
+        public_key_filename,
+        multiple_public_key_filename
+    ])
+
+    keys = authorized_keys('req5')
+    assert keys == [public_key, public_key2], keys
