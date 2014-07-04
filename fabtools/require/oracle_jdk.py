@@ -7,6 +7,7 @@ This module provides tools for installing `Oracle JDK`_
 .. _Oracle JDK: http://www.oracle.com/technetwork/java/javase/
 
 """
+
 from fabtools import oracle_jdk
 
 

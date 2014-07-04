@@ -6,6 +6,7 @@ This module provides tools to manage periodic tasks using cron.
 
 """
 
+
 def add_task(name, timespec, user, command, environment=None):
     """
     Add a cron task.

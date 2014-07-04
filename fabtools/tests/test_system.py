@@ -19,6 +19,5 @@ class TestUnsupportedFamily(unittest.TestCase):
 
                 raise UnsupportedFamily(supported=['debian', 'redhat'])
 
-
         exception_msg = str(cm.exception)
         self.assertEquals(exception_msg, "Unsupported system foo (supported families: debian, redhat)")

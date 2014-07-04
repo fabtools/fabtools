@@ -45,7 +45,7 @@ def getdevice_by_uuid(uuid):
 
     Example::
 
-        from fabtools.disk import getdevice_by_uuid 
+        from fabtools.disk import getdevice_by_uuid
 
         device = getdevice_by_uuid("356fafdc-21d5-408e-a3e9-2b3f32cb2a8c")
         if device:

@@ -51,7 +51,7 @@ def setuptools(version=MIN_SETUPTOOLS_VERSION, python_cmd='python'):
         elif family == 'redhat':
             require_rpm_package('python-devel')
         elif family == 'arch':
-            pass # ArchLinux installs header with base package
+            pass  # ArchLinux installs header with base package
         else:
             raise UnsupportedFamily(supported=['debian', 'redhat'])
 

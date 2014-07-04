@@ -18,6 +18,7 @@ from fabtools.files import is_file, is_link, is_dir
 from fabtools.service import start, stop
 from fabtools.utils import run_as_root
 
+
 # Default parameters
 DEFAULT_VERSION = '7.0.47'
 DEFAULT_INSTALLATION_PATH = "/usr/share/tomcat"

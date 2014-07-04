@@ -2,6 +2,7 @@
 System users
 ============
 """
+
 from fabtools.files import is_file
 from fabtools.user import create, exists, modify
 from fabtools.utils import run_as_root
