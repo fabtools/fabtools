@@ -59,7 +59,7 @@ def locales(names):
         if not is_file(config_file):
             run_as_root('touch %s' % config_file)
     else:
-         config_file = '/etc/locale.gen'
+        config_file = '/etc/locale.gen'
 
     # Regenerate locales if config file changes
     with watch(config_file, use_sudo=True) as config:

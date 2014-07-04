@@ -104,7 +104,7 @@ def ppa(name, auto_accept=True, keyserver=None):
     if keyserver:
         keyserver = '--keyserver ' + keyserver
     else:
-       keyserver = ''
+        keyserver = ''
 
     distrib = distrib_codename()
     source = '/etc/apt/sources.list.d/%(user)s-%(repo)s-%(distrib)s.list' % locals()
