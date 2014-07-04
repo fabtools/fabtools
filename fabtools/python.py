@@ -137,12 +137,12 @@ def install(packages, upgrade=False, download_cache=None, allow_external=None,
 
     if allow_external in (None, False):
         allow_external = []
-    elif allow_external == True:
+    elif allow_external is True:
         allow_external = packages
 
     if allow_unverified in (None, False):
         allow_unverified = []
-    elif allow_unverified == True:
+    elif allow_unverified is True:
         allow_unverified = packages
 
     options = []
