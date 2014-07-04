@@ -39,8 +39,7 @@ def test_git_require_remote_url():
                 'origin\thttps://github.com/disko/fabtools.git (fetch)\r\n' \
                 'origin\thttps://github.com/disko/fabtools.git (push)'
 
-            branch = run('git branch')
-            assert branch == '* master'
+            assert _current_branch() == 'master'
 
     finally:
         run('rm -rf fabtools')
@@ -65,8 +64,7 @@ def test_git_require_remote_url_and_path():
                 'origin\thttps://github.com/disko/fabtools.git (fetch)\r\n' \
                 'origin\thttps://github.com/disko/fabtools.git (push)'
 
-            branch = run('git branch')
-            assert branch == '* master'
+            assert _current_branch() == 'master'
 
     finally:
         run('rm -rf wc')
@@ -115,8 +113,8 @@ def test_git_require_branch():
                 'origin\thttps://github.com/disko/fabtools.git (fetch)\r\n' \
                 'origin\thttps://github.com/disko/fabtools.git (push)'
 
-            branch = run('git branch')
-            assert branch == 'master\r\n* test_git'
+            assert _current_branch() == 'test_git'
+
 
     finally:
         run('rm -rf wc')
@@ -141,8 +139,7 @@ def test_git_require_sudo():
                 'origin\thttps://github.com/disko/fabtools.git (fetch)\r\n' \
                 'origin\thttps://github.com/disko/fabtools.git (push)'
 
-            branch = run('git branch')
-            assert branch == '* master'
+            assert _current_branch() == 'master'
 
         assert owner('wc_root') == 'root'
         assert group('wc_root') == 'root'
@@ -183,11 +180,14 @@ def test_git_require_sudo_user(gituser):
                     'origin\thttps://github.com/disko/fabtools.git (fetch)\r\n' \
                     'origin\thttps://github.com/disko/fabtools.git (push)'
 
-                branch = sudo('git branch', user=username)
-                assert branch == '* master'
+                assert _current_branch() == 'master'
 
             assert owner('wc_nobody') == username
             assert group('wc_nobody') == groupname
 
         finally:
             run_as_root('rm -rf wc_nobody')
+
+
+def _current_branch():
+    return run('git rev-parse --abbrev-ref HEAD').stdout

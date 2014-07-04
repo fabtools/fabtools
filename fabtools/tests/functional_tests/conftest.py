@@ -77,7 +77,7 @@ def _start_vagrant_machine(provider):
 
 def _stop_vagrant_machine():
     with lcd(HERE):
-        with settings(hide('stdout', 'warnings'), warn_only=True):
+        with settings(hide('stdout', 'stderr', 'warnings'), warn_only=True):
             local('vagrant halt')
             local('vagrant destroy -f')
 
