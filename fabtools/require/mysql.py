@@ -6,7 +6,6 @@ This module provides high-level tools for installing a MySQL server
 and creating MySQL users and databases.
 
 """
-from __future__ import with_statement
 
 from fabric.api import hide, prompt, settings
 

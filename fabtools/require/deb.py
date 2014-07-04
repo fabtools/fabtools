@@ -6,7 +6,6 @@ This module provides high-level tools for managing Debian/Ubuntu packages
 and repositories.
 
 """
-from __future__ import with_statement
 
 from fabric.utils import puts
 

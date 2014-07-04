@@ -7,7 +7,6 @@ This module provides tools for installing `Tomcat`_.
 .. _Tomcat: http://tomcat.apache.org/
 
 """
-from __future__ import with_statement
 
 import os
 import re

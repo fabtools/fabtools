@@ -1,5 +1,3 @@
-from __future__ import with_statement
-
 import time
 
 from fabric.api import cd, local, put, run, settings, sudo, task

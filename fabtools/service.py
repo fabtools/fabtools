@@ -9,7 +9,6 @@ and traditional SysV-style ``/etc/init.d/`` scripts.
 .. _upstart: http://upstart.ubuntu.com/
 
 """
-from __future__ import with_statement
 
 from fabric.api import hide, settings
 

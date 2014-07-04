@@ -2,7 +2,6 @@
 System settings
 ===============
 """
-from __future__ import with_statement
 
 from re import escape
 

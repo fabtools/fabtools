@@ -10,8 +10,6 @@ should normally not use them directly but rather use the high-level wrapper
 
 """
 
-from __future__ import with_statement
-
 from fabric.api import run
 from fabric.api import sudo
 from fabric.context_managers import cd

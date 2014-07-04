@@ -6,7 +6,6 @@ This module provides high-level tools for managing files and
 directories.
 
 """
-from __future__ import with_statement
 
 from pipes import quote
 from tempfile import mkstemp

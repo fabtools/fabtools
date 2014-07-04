@@ -2,7 +2,6 @@
 PostgreSQL users and databases
 ==============================
 """
-from __future__ import with_statement
 
 from fabric.api import cd, hide, run, settings
 from fabtools.files import is_file

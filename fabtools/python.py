@@ -9,7 +9,6 @@ and installing Python packages using the `pip`_ installer.
 .. _pip: http://www.pip-installer.org/
 
 """
-from __future__ import with_statement
 
 from contextlib import contextmanager
 from distutils.version import StrictVersion as V

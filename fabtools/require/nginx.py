@@ -8,7 +8,6 @@ web server and managing the configuration of web sites.
 .. _nginx: http://nginx.org/
 
 """
-from __future__ import with_statement
 
 from fabric.api import (
     abort,

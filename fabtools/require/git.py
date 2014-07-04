@@ -8,8 +8,6 @@ This module provides high-level tools for managing `Git`_ repositories.
 
 """
 
-from __future__ import with_statement
-
 from fabric.api import run
 
 from fabtools import git

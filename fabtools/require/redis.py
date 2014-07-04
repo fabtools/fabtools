@@ -7,7 +7,6 @@ This module provides high-level tools for managing `Redis`_ instances.
 .. _Redis: http://redis.io/
 
 """
-from __future__ import with_statement
 
 from fabric.api import cd, run, settings
 

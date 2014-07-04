@@ -5,8 +5,6 @@ Cron tasks
 This module provides tools to manage periodic tasks using cron.
 
 """
-from __future__ import with_statement
-
 
 def add_task(name, timespec, user, command, environment=None):
     """

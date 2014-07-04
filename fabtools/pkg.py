@@ -7,7 +7,6 @@ This module provides tools to manage `SmartOS`_ packages.
 .. _SmartOS: http://smartos.org/
 
 """
-from __future__ import with_statement
 
 from fabric.api import hide, quiet, run, settings
 

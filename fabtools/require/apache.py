@@ -6,7 +6,6 @@ This module provides high-level tools for installing and configuring
 the `Apache HTTP Server <http://httpd.apache.org/>`_.
 
 """
-from __future__ import with_statement
 
 from fabric.api import (
     abort,

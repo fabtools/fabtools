@@ -1,5 +1,3 @@
-from __future__ import with_statement
-
 import os
 from pipes import quote
 from tempfile import mkstemp

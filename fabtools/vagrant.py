@@ -2,7 +2,6 @@
 Vagrant helpers
 ===============
 """
-from __future__ import with_statement
 
 import re
 

@@ -1,5 +1,3 @@
-from __future__ import with_statement
-
 from textwrap import dedent
 
 from fabric.api import (

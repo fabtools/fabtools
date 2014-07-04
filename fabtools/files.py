@@ -2,7 +2,6 @@
 Files and directories
 =====================
 """
-from __future__ import with_statement
 
 from pipes import quote
 import os

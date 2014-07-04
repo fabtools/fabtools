@@ -8,7 +8,6 @@ the ``easy_install`` command provided by `setuptools`_.
 .. _setuptools: http://pythonhosted.org/setuptools/
 
 """
-from __future__ import with_statement
 
 from fabric.api import cd, run
 

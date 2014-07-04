@@ -2,7 +2,6 @@
 Shorewall firewall
 ==================
 """
-from __future__ import with_statement
 
 from fabric.api import hide, puts, settings, shell_env
 from fabric.contrib.files import sed

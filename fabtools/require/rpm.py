@@ -6,7 +6,6 @@ This module provides high-level tools for managing CentOS/RHEL/SL/Fedora
 packages and repositories.
 
 """
-from __future__ import with_statement
 
 from fabric.api import hide, settings
 from fabtools.rpm import (

@@ -7,7 +7,6 @@ This module provides tools for installing `Oracle JDK`_
 .. _Oracle JDK: http://www.oracle.com/technetwork/java/javase/
 
 """
-from __future__ import with_statement
 
 import re
 

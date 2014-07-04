@@ -6,7 +6,6 @@ This module provides tools to manage Debian/Ubuntu packages
 and repositories.
 
 """
-from __future__ import with_statement
 
 from fabric.api import hide, run, settings
 

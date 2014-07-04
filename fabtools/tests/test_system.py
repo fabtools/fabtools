@@ -1,5 +1,3 @@
-from __future__ import with_statement
-
 try:
     import unittest2 as unittest
 except ImportError:

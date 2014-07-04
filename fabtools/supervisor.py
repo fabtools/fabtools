@@ -8,7 +8,6 @@ processes using `supervisord`_.
 .. _supervisord: http://supervisord.org/
 
 """
-from __future__ import with_statement
 
 from fabric.api import hide, settings
 

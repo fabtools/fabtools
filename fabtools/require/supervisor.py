@@ -8,7 +8,6 @@ processes using `supervisor`_.
 .. _supervisor: http://supervisord.org/
 
 """
-from __future__ import with_statement
 
 from fabtools.files import watch
 from fabtools.supervisor import update_config, process_status, start_process

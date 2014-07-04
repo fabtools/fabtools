@@ -11,7 +11,6 @@ packages using `npm`_.
 .. _npm: http://npmjs.org/
 
 """
-from __future__ import with_statement
 
 try:
     import json
