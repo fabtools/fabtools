@@ -32,7 +32,7 @@ def query(query, use_sudo=True, **kwargs):
         options.append('--user=%s' % quote(user))
     if password:
         options.append('--password=%s' % quote(password))
-    if host:
+    if mysql_host:
         options.append('--host=%s' % quote(mysql_host))
     options = ' '.join(options)
 
