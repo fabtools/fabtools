@@ -8,25 +8,28 @@ the `miniconda`_ distribution.
 .. _miniconda: http://conda.pydata.org/miniconda.html
 
 """
+from contextlib import contextmanager
 from pipes import quote
 import os
+import posixpath
 
-from fabric.api import cd, run, settings, hide
+from fabric.api import cd, run, settings, hide, prefix
 from fabric.contrib import files
 from fabric.operations import sudo
-from fabric.utils import puts
 from fabtools import utils
+import fabtools
 
 from fabtools.utils import download, run_as_root
 
-
 MINICONDA_URL = 'http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh'
 
-def install_miniconda(python_cmd='python', use_sudo=True, prefix='~/miniconda'):
+def install_miniconda(prefix='~/miniconda', use_sudo=False, keep_installer=False):
     """
     Install the latest version of `miniconda`_.
 
     :param prefix: prefix for the miniconda installation
+    :param use_sudo: use sudo for this operation
+    :param keep_installer: keep the miniconda installer after installing
 
     ::
 
@@ -37,9 +40,9 @@ def install_miniconda(python_cmd='python', use_sudo=True, prefix='~/miniconda'):
     """
 
     with cd("/tmp"):
-        download(MINICONDA_URL)
+        if not fabtools.files.is_file('Miniconda-latest-Linux-x86_64.sh'):
+            download(MINICONDA_URL)
 
-        prefix = utils.abspath(prefix)
         command = 'bash Miniconda-latest-Linux-x86_64.sh -b -p %(prefix)s' % locals()
         if use_sudo:
             run_as_root(command)
@@ -47,7 +50,8 @@ def install_miniconda(python_cmd='python', use_sudo=True, prefix='~/miniconda'):
             run(command)
         files.append('~/.bash_profile', 'export PATH=%(prefix)s/bin:$PATH' % locals())
 
-        run('rm -f Miniconda-latest-Linux-x86_64.sh')
+        if not keep_installer:
+            run('rm -f Miniconda-latest-Linux-x86_64.sh')
 
 def is_conda_installed():
     """
@@ -139,29 +143,22 @@ def env_exists(name=None, prefix=None):
         command = "CONDA_ENVS_PATH=%(base)s conda info -e | grep -e '^%(name)s\s'" % locals()
         return run(command, shell_escape=False).succeeded
 
-#
-# @contextmanager
-# def env(directory, local=False):
-#     """
-#     Context manager to activate an existing Python `virtual environment`_.
-#
-#     ::
-#
-#         from fabric.api import run
-#         from fabtools.python import virtualenv
-#
-#         with virtualenv('/path/to/virtualenv'):
-#             run('python -V')
-#
-#     .. _virtual environment: http://www.virtualenv.org/
-#     """
-#
-#     path_mod = os.path if local else posixpath
-#
-#     # Build absolute path to the virtualenv activation script
-#     venv_path = abspath(directory, local)
-#     activate_path = path_mod.join(venv_path, 'bin', 'activate')
-#
-#     # Source the activation script
-#     with prefix('. %s' % quote(activate_path)):
-#         yield
+
+@contextmanager
+def env(envname):
+    """
+    Context manager to activate an existing conda environment.
+
+    :param envname: name or path of the conda environment
+    ::
+
+        from fabric.api import run
+        from fabtools.conda import env
+
+        with env('envname'):
+            run('python -V')
+    """
+
+    # Source the activation script
+    with prefix('source activate ' + envname):
+        yield
