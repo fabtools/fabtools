@@ -65,9 +65,18 @@ def is_conda_installed():
         return res.succeeded
 
 
+def get_sysprefix():
+    """
+    Return the path of the conda installation.
+
+    """
+
+    return run("conda info -s | grep -e 'sys.prefix' | awk '{print $2}'")
+
+
 def create_env(name=None, prefix=None, yes=True, override_channels=False,
-               channels=None, packages=None, use_sudo=False, user=None,
-               quiet=True):
+               channels=None, packages=None, quiet=True, use_sudo=False,
+               user=None):
     """
     Create a conda environment.
 
@@ -126,7 +135,6 @@ def env_exists(name=None, prefix=None):
     """
     if not prefix:  # search in default env dir
         command = "conda info -e | grep -e '^%(name)s\s'" % locals()
-        return run(command, shell_escape=False).succeeded
     else:
         # check if just a prefix or prefix & name are given:
         if name:
@@ -141,7 +149,9 @@ def env_exists(name=None, prefix=None):
             while name == '':
                 base, name = os.path.split(base)
         command = "CONDA_ENVS_PATH=%(base)s conda info -e | grep -e '^%(name)s\s'" % locals()
-        return run(command, shell_escape=False).succeeded
+    with settings(hide('running', 'warnings', 'stderr', 'stdout'), warn_only=True):
+        res = run(command, shell_escape=False)
+        return res.succeeded
 
 
 @contextmanager
@@ -162,3 +172,83 @@ def env(envname):
     # Source the activation script
     with prefix('source activate ' + envname):
         yield
+
+def install(packages=None, yes=True, force=False, file=None, unknown=False,
+            channels=None, override_channels=False, name=None, prefix=None,
+            quiet=True):
+    """
+    Install conda package(s).
+
+    :param packages: package versions to install into conda environment
+    :param yes: do not ask for confirmation
+    :param force: force install (even when package already installed),
+        implies --no-deps
+    :param file: read package versions from FILE
+    :param unknown: use index metadata from the local package cache (which
+        are from unknown channels)
+    :param channels: additional channel to search for packages. These are
+        URLs searched in the order they are given (including
+        file:// for local directories). Then, the defaults or
+        channels from .condarc are searched (unless
+        `override-channels` is given). You can use 'defaults'
+        to get the default packages for conda, and 'system' to
+        get the system packages, which also takes .condarc
+        into account. You can also use any name and the
+        .condarc channel_alias value will be prepended. The
+        default channel_alias is http://conda.binstar.org/
+    :param override_channels: Do not search default or .condarc channels.
+        Requires `channels` .True or False
+    :param name: name of environment (in conda environment directory)
+    :param prefix: full path to environment prefix
+    :param quiet: do not display progress bar
+    """
+
+    if isinstance(packages, basestring):
+        packages = [packages]
+
+    options = []
+    if override_channels:
+        options.append('--override_channels')
+    if name:
+        options.append('--name ' + quote(name))
+    if prefix:
+        options.append('--prefix ' + quote(utils.abspath(prefix)))
+    if yes:
+        options.append('--yes')
+    if quiet:
+        options.append('--quiet')
+    if force:
+        options.append('--force')
+    if unknown:
+        options.append('--unknown')
+    if file:
+        options.append('--file ' + quote(file))
+    for ch in channels or []:
+        options.append('-c ' + quote(ch))
+    options.extend(packages or ['python'])
+
+    options = ' '.join(options)
+
+    command = 'conda install ' + options
+    run(command)
+
+
+def is_installed(package, name=None, prefix=None):
+    """
+    Check if a conda package is installed.
+
+    :param name: name of environment (in conda environment directory)
+    :param prefix: full path to environment prefix
+    """
+    options = []
+    if name:
+        options.append('--name ' + quote(name))
+    if prefix:
+        options.append('--prefix ' + quote(utils.abspath(prefix)))
+
+    options = ' '.join(options)
+
+    command = 'conda list %(options)s | grep -q %(package)s' % locals()
+    with settings(hide('running', 'warnings', 'stderr', 'stdout'), warn_only=True):
+        res = run(command)
+    return res.succeeded
