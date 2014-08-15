@@ -110,7 +110,11 @@ def ppa(name, auto_accept=True, keyserver=None):
     source = '/etc/apt/sources.list.d/%(user)s-%(repo)s-%(distrib)s.list' % locals()
 
     if not is_file(source):
-        package('python-software-properties')
+        if release >= 14.04:
+            # add-apt-repository moved to software-properties-common in 14.04
+            package('software-properties-common')
+        else:
+            package('python-software-properties')
         run_as_root('add-apt-repository %(auto_accept)s %(keyserver)s %(name)s' % locals(), pty=False)
         update_index()
 
