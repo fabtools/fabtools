@@ -37,7 +37,7 @@ def ssh_config(name=''):
 
     config = {}
     for line in output.splitlines()[1:]:
-        key, value = line.strip().split(' ', 2)
+        key, value = line.strip().split(' ', 1)
         config[key] = value
     return config
 
