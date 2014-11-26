@@ -38,7 +38,7 @@ def clone(remote_url, path=None, use_sudo=False, user=None, branch=None):
     :type user: str
 
     :param branch: Instead of pointing the newly created HEAD to the branch
-                   pointed to by the cloned repository’s HEAD, point to
+                   pointed to by the cloned repository's HEAD, point to
                    branch ``branch`` instead.
     :type branch: str
     """
