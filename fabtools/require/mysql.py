@@ -38,7 +38,7 @@ def server(version=None, password=None):
 
     if not is_installed(pkg_name):
         if password is None:
-            password = prompt('Please enter password for MySQL user "root":' % user)
+            password = prompt('Please enter password for MySQL user "root":')
 
         with settings(hide('running')):
             preseed_package('mysql-server', {
