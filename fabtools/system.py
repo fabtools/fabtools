@@ -40,7 +40,7 @@ def distrib_id():
 
     Returns a string such as ``"Debian"``, ``"Ubuntu"``, ``"RHEL"``,
     ``"CentOS"``, ``"SLES"``, ``"Fedora"``, ``"Arch"``, ``"Gentoo"``,
-    ``"SunOS"``...
+    ``"SunOS"``, ``"SUSE"``...
 
     Example::
 
@@ -62,6 +62,8 @@ def distrib_id():
                 if id in ['arch', 'Archlinux']:  # old IDs used before lsb-release 1.4-14
                     id_ = 'Arch'
                 return id_
+                if id in ['SUSE LINUX', 'openSUSE project']:
+                    id_ = 'SUSE'
             else:
                 if is_file('/etc/debian_version'):
                     return "Debian"
@@ -153,6 +155,8 @@ def distrib_family():
         return 'gentoo'
     elif distrib in ['Arch', 'ManjaroLinux']:
         return 'arch'
+    elif distrib in ['SUSE']:
+        return 'suse'
     else:
         return 'other'
 
