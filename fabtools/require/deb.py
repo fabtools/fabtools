@@ -134,7 +134,7 @@ def package(pkg_name, update=False, options=None, version=None):
         install(pkg_name, update=update, options=options, version=version)
 
 
-def packages(pkg_list, update=False):
+def packages(pkg_list, update=False, options=None):
     """
     Require several deb packages to be installed.
 
@@ -150,7 +150,7 @@ def packages(pkg_list, update=False):
     """
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg)]
     if pkg_list:
-        install(pkg_list, update)
+        install(pkg_list, update=update, options=options)
 
 
 def nopackage(pkg_name):
