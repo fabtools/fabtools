@@ -115,7 +115,7 @@ def ppa(name, auto_accept=True, keyserver=None):
         update_index()
 
 
-def package(pkg_name, update=False, version=None):
+def package(pkg_name, update=False, options=None, version=None):
     """
     Require a deb package to be installed.
 
@@ -131,7 +131,7 @@ def package(pkg_name, update=False, version=None):
 
     """
     if not is_installed(pkg_name):
-        install(pkg_name, update=update, version=version)
+        install(pkg_name, update=update, options=options, version=version)
 
 
 def packages(pkg_list, update=False):
