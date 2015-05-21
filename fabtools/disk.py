@@ -30,9 +30,19 @@ def partitions(device=""):
     with settings(hide('running', 'stdout')):
         res = run_as_root('sfdisk -d %(device)s' % locals())
 
-        spart = re.compile(r'(?P<pname>^/.*) : .* Id=(?P<ptypeid>[0-9a-z]+)')
+        # Old SFIDSK
+        spartid = re.compile(r'(?P<pname>^/.*) : .* Id=(?P<ptypeid>[0-9a-z]+)')
+        # NEW SFDISK
+        spartid = re.compile(r'(?P<pname>^/.*) : .* type=(?P<ptypeid>[0-9a-z]+)')
         for line in res.splitlines():
-            m = spart.search(line)
+
+            # Old SFIDSK
+            m = spartid.search(line)
+            if m:
+                partitions_list[m.group('pname')] = int(m.group('ptypeid'), 16)
+
+            # NEW SFDISK
+            m = spartid.search(line)
             if m:
                 partitions_list[m.group('pname')] = int(m.group('ptypeid'), 16)
 
