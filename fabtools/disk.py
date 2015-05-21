@@ -32,19 +32,19 @@ def partitions(device=""):
 
         # Old SFIDSK
         spartid = re.compile(r'(?P<pname>^/.*) : .* Id=(?P<ptypeid>[0-9a-z]+)')
-        # NEW SFDISK
-        spartid = re.compile(r'(?P<pname>^/.*) : .* type=(?P<ptypeid>[0-9a-z]+)')
+        # New SFDISK
+        sparttype = re.compile(r'(?P<pname>^/.*) : .* type=(?P<ptypeid>[0-9a-z]+)')
         for line in res.splitlines():
 
             # Old SFIDSK
             m = spartid.search(line)
             if m:
                 partitions_list[m.group('pname')] = int(m.group('ptypeid'), 16)
-
-            # NEW SFDISK
-            m = spartid.search(line)
-            if m:
-                partitions_list[m.group('pname')] = int(m.group('ptypeid'), 16)
+            else:
+                # New SFDISK
+                m = sparttype.search(line)
+                if m:
+                    partitions_list[m.group('pname')] = int(m.group('ptypeid'), 16)
 
     return partitions_list
 
