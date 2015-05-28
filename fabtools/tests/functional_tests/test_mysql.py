@@ -99,6 +99,6 @@ def test_run_query_without_supplying_the_password(mysql_server, mysql_user):
     try:
         require_file('.my.cnf', contents="[mysql]\npassword={0}".format(password))
         with settings(mysql_user=username):
-            query('select 2;')
+            query('select 2;', use_sudo=False)
     finally:
         run('rm -f .my.cnf')
