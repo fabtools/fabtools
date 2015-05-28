@@ -148,14 +148,18 @@ def test_git_require_sudo():
         run_as_root('rm -rf wc_root')
 
 
-@pytest.fixture(scope='module')
-def gituser(request):
+@pytest.yield_fixture(scope='module')
+def gituser():
     from fabtools.require import user
+
     username = 'gituser'
     groupname = 'gitgroup'
+
     user(username, group=groupname)
-    request.addfinalizer(functools.partial(run_as_root, 'userdel -r %s' % username))
-    return username, groupname
+
+    yield username, groupname
+
+    run_as_root('userdel -r %s' % username)
 
 
 def test_git_require_sudo_user(gituser):

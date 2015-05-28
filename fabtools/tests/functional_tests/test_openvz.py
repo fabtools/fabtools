@@ -19,25 +19,23 @@ def check_for_openvz_kernel():
         pytest.skip("Kernel does not support OpenVZ")
 
 
-@pytest.fixture(scope='module')
-def container(request):
+@pytest.yield_fixture(scope='module')
+def container():
 
-    NAME = 'debian'
-    TEMPLATE = 'debian-6.0-x86_64'
-    IPADD = '192.168.1.100'
+    from fabtools.require.openvz import container
+
+    name = 'debian'
+    template = 'debian-6.0-x86_64'
+    ipadd = '192.168.1.100'
 
     setup_host_networking()
-    setup_container(NAME, TEMPLATE, IPADD)
+    setup_container(name, template, ipadd)
 
-    def remove_container():
-        from fabtools.require.openvz import container
-        with container(NAME, TEMPLATE, hostname=NAME, ipadd=IPADD) as ct:
-            ct.stop()
-            ct.destroy()
+    yield name
 
-    request.addfinalizer(remove_container)
-
-    return NAME
+    with container(name, template, hostname=name, ipadd=ipadd) as ct:
+        ct.stop()
+        ct.destroy()
 
 
 def setup_host_networking():

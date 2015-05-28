@@ -19,8 +19,8 @@ VAGRANT_VERSION = _vagrant_version()
 MIN_VAGRANT_VERSION = (1, 3)
 
 
-@pytest.fixture(scope='session', autouse=True)
-def setup_package(request):
+@pytest.yield_fixture(scope='session', autouse=True)
+def setup_package():
     _check_vagrant_version()
     vagrant_box = os.environ.get('FABTOOLS_TEST_BOX')
     if not vagrant_box:
@@ -36,8 +36,9 @@ def setup_package(request):
     _target_vagrant_machine()
     _set_optional_http_proxy()
     _update_package_index()
+    yield
     if not reuse_vm:
-        request.addfinalizer(_stop_vagrant_machine)
+        _stop_vagrant_machine()
 
 
 def _check_vagrant_version():

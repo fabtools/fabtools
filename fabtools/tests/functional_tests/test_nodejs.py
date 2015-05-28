@@ -63,11 +63,11 @@ def test_install_and_uninstall_local_package(nodejs):
     assert not is_file('node_modules/underscore/underscore.js')
 
 
-@pytest.fixture
-def testdir(request):
+@pytest.yield_fixture
+def testdir():
     require_directory('nodetest')
-    request.addfinalizer(functools.partial(run, 'rm -rf nodetest'))
-    return 'nodetest'
+    yield 'nodetest'
+    run('rm -rf nodetest')
 
 
 def test_install_dependencies_from_package_json_file(nodejs, testdir):
