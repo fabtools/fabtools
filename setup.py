@@ -45,7 +45,7 @@ setup(
     tests_require=[
         'tox',
     ],
-    cmdclass = {
+    cmdclass={
         'test': Tox,
     },
     packages=find_packages(exclude=['ez_setup', 'tests']),
