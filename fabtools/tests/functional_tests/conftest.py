@@ -59,11 +59,25 @@ def _allow_fabric_to_access_the_real_stdin():
     mock_sys.stdin = sys.__stdin__
 
 
+_VAGRANTFILE_TEMPLATE = """\
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "%s"
+
+  # Speed up downloads using a shared cache across boxes
+  if Vagrant.has_plugin?("vagrant-cachier")
+    config.cache.scope = :box
+  end
+
+end
+"""
+
+
 def _init_vagrant_machine(base_box):
-    with lcd(HERE):
-        with settings(hide('stdout')):
-            local('rm -f Vagrantfile')
-            local('vagrant init %s' % quote(base_box))
+    path = os.path.join(HERE, 'Vagrantfile')
+    contents = _VAGRANTFILE_TEMPLATE % base_box
+    with open(path, 'w') as vagrantfile:
+        vagrantfile.write(contents)
 
 
 def _start_vagrant_machine(provider):
