@@ -144,3 +144,21 @@ def _update_package_index():
     if family == 'debian':
         from fabtools.require.deb import uptodate_index
         uptodate_index()
+
+
+@pytest.fixture(scope='session', autouse=True)
+def allow_sudo_user(setup_package):
+    """
+    Fix sudo config if needed
+
+    Some Vagrant boxes come with a too restrictive sudoers config
+    and only allow the vagrant user to run commands as root.
+    """
+    from fabtools.require import file as require_file
+    require_file(
+        '/etc/sudoers.d/fabtools',
+        contents="vagrant ALL=(ALL) NOPASSWD:ALL\n",
+        owner='root',
+        mode='440',
+        use_sudo=True,
+    )
