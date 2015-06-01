@@ -7,7 +7,7 @@ the `Apache HTTP Server <http://httpd.apache.org/>`_.
 
 """
 
-from decimal import Decimal
+from distutils.version import StrictVersion as V
 import posixpath
 
 from fabtools.files import is_link
@@ -151,8 +151,8 @@ def _choose(old_style, new_style):
     family = distrib_family()
     if family == 'debian':
         distrib = distrib_id()
-        at_least_trusty = (distrib == 'Ubuntu' and Decimal(distrib_release()) >= Decimal('14.04'))
-        at_least_jessie = (distrib == 'Debian' and Decimal(distrib_release()) >= Decimal('8.0'))
+        at_least_trusty = (distrib == 'Ubuntu' and V(distrib_release()) >= V('14.04'))
+        at_least_jessie = (distrib == 'Debian' and V(distrib_release()) >= V('8.0'))
         if at_least_trusty or at_least_jessie:
             return new_style
         else:
