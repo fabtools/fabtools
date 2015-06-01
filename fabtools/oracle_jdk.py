@@ -36,7 +36,7 @@ def install_from_oracle_site(version=DEFAULT_VERSION):
 
     """
 
-    prefix='/opt'
+    prefix = '/opt'
 
     release, build = version.split('-')
     major, update = release.split('u')
@@ -52,13 +52,7 @@ def install_from_oracle_site(version=DEFAULT_VERSION):
     download_path = posixpath.join('/tmp', filename)
     url = 'http://download.oracle.com/otn-pub/java/jdk/%(version)s/%(filename)s' % locals()
 
-    # Download
-    run('rm -rf %s' % quote(download_path))
-    options = " ".join([
-        '--header "Cookie: oraclelicense=accept-securebackup-cookie"',
-        '--progress=dot:mega',
-    ])
-    run('wget %(options)s %(url)s -O %(download_path)s' % locals())
+    _download(url, download_path)
 
     # Prepare install dir
     install_dir = 'jdk1.%(major)s.0_%(update)s' % locals()
@@ -87,6 +81,16 @@ def install_from_oracle_site(version=DEFAULT_VERSION):
     run('rm -f %s' % quote(download_path))
 
     _create_profile_d_file(prefix)
+
+
+def _download(url, download_path):
+    from fabtools.require.curl import command as require_curl_command
+    require_curl_command()
+    options = " ".join([
+        '--header "Cookie: oraclelicense=accept-securebackup-cookie"',
+        '--location',
+    ])
+    run('curl %(options)s %(url)s -o %(download_path)s' % locals())
 
 
 def _create_profile_d_file(prefix):
