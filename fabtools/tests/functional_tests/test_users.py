@@ -18,7 +18,7 @@ def test_create_user_without_home_directory():
         assert not is_dir('/home/user1')
 
     finally:
-        run_as_root('userdel -r user1')
+        run_as_root('userdel -r user1', warn_only=True)
 
 
 def test_create_user_with_default_home_directory():
@@ -32,7 +32,7 @@ def test_create_user_with_default_home_directory():
         assert is_dir('/home/user2')
 
     finally:
-        run_as_root('userdel -r user2')
+        run_as_root('userdel -r user2', warn_only=True)
 
 
 def test_create_user_with_home_directory():
@@ -47,7 +47,7 @@ def test_create_user_with_home_directory():
         assert is_dir('/tmp/user3')
 
     finally:
-        run_as_root('userdel -r user3')
+        run_as_root('userdel -r user3', warn_only=True)
 
 
 def test_create_system_user_without_home_directory():
@@ -61,7 +61,7 @@ def test_create_system_user_without_home_directory():
         assert not is_dir('/home/user4')
 
     finally:
-        run_as_root('userdel -r user4')
+        run_as_root('userdel -r user4', warn_only=True)
 
 
 def test_create_system_user_with_home_directory():
@@ -75,7 +75,7 @@ def test_create_system_user_with_home_directory():
         assert is_dir('/var/lib/foo')
 
     finally:
-        run_as_root('userdel -r user5')
+        run_as_root('userdel -r user5', warn_only=True)
 
 
 def test_create_two_users_with_the_same_uid():
@@ -114,7 +114,7 @@ def test_require_user_without_home():
         user('req1')
 
     finally:
-        run_as_root('userdel -r req1')
+        run_as_root('userdel -r req1', warn_only=True)
 
 
 def test_require_user_with_default_home():
@@ -129,7 +129,7 @@ def test_require_user_with_default_home():
         assert is_dir('/home/req2')
 
     finally:
-        run_as_root('userdel -r req2')
+        run_as_root('userdel -r req2', warn_only=True)
 
 
 def test_require_user_with_custom_home():
@@ -145,7 +145,7 @@ def test_require_user_with_custom_home():
         assert is_dir('/home/other')
 
     finally:
-        run_as_root('userdel -r req3')
+        run_as_root('userdel -r req3', warn_only=True)
 
 
 def test_require_user_with_ssh_public_keys():
@@ -172,4 +172,4 @@ def test_require_user_with_ssh_public_keys():
         assert keys == [public_key]
 
     finally:
-        run_as_root('userdel -r req4')
+        run_as_root('userdel -r req4', warn_only=True)
