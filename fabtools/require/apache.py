@@ -21,11 +21,12 @@ from fabtools.apache import (
     enable_site,
     _site_config_path,
 )
-from fabtools.require.deb import package
+from fabtools.service import reload as reload_service
+from fabtools.system import UnsupportedFamily, distrib_family
+from fabtools.utils import run_as_root
+
 from fabtools.require.files import template_file
 from fabtools.require.service import started as require_started
-from fabtools.service import reload as reload_service
-from fabtools.utils import run_as_root
 
 
 def server():
@@ -39,7 +40,18 @@ def server():
         require.apache.server()
 
     """
-    package('apache2')
+    family = distrib_family()
+    if family == 'debian':
+        _server_debian()
+    else:
+        raise UnsupportedFamily(supported=['debian'])
+
+
+def _server_debian():
+
+    from fabtools.require.deb import package as require_deb_package
+
+    require_deb_package('apache2')
     require_started('apache2')
 
 

@@ -9,14 +9,14 @@ and creating MySQL users and databases.
 
 from fabric.api import hide, prompt, settings
 
-from fabtools.deb import is_installed, preseed_package
 from fabtools.mysql import (
     create_database,
     create_user,
     database_exists,
     user_exists,
 )
-from fabtools.require.deb import package
+from fabtools.system import UnsupportedFamily, distrib_family
+
 from fabtools.require.service import started
 
 
@@ -31,6 +31,18 @@ def server(version=None, password=None):
         require.mysql.server(password='s3cr3t')
 
     """
+    family = distrib_family()
+    if family == 'debian':
+        _server_debian(version, password)
+    else:
+        raise UnsupportedFamily(supported=['debian'])
+
+
+def _server_debian(version, password):
+
+    from fabtools.deb import is_installed, preseed_package
+    from fabtools.require.deb import package as require_deb_package
+
     if version:
         pkg_name = 'mysql-server-%s' % version
     else:
@@ -46,7 +58,7 @@ def server(version=None, password=None):
                 'mysql-server/root_password_again': ('password', password),
             })
 
-        package(pkg_name)
+        require_deb_package(pkg_name)
 
     started('mysql')
 

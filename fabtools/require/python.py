@@ -53,7 +53,7 @@ def setuptools(version=MIN_SETUPTOOLS_VERSION, python_cmd='python'):
         elif family == 'arch':
             pass  # ArchLinux installs header with base package
         else:
-            raise UnsupportedFamily(supported=['debian', 'redhat'])
+            raise UnsupportedFamily(supported=['debian', 'redhat', 'arch'])
 
         install_setuptools(python_cmd=python_cmd)
 

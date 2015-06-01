@@ -11,7 +11,7 @@ from distutils.version import StrictVersion as V
 import posixpath
 
 from fabtools.files import is_link
-from fabtools.system import distrib_family, distrib_id, distrib_release, UnsupportedFamily
+from fabtools.system import UnsupportedFamily, distrib_family, distrib_id, distrib_release
 from fabtools.utils import run_as_root
 
 

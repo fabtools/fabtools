@@ -12,7 +12,7 @@ from fabric.api import run
 
 from fabtools import mercurial
 from fabtools.files import is_dir
-from fabtools.system import UnsupportedFamily
+from fabtools.system import UnsupportedFamily, distrib_family
 
 
 def command():
@@ -31,7 +31,6 @@ def command():
     from fabtools.require.deb import package as require_deb_package
     from fabtools.require.rpm import package as require_rpm_package
     from fabtools.require.portage import package as require_portage_package
-    from fabtools.system import distrib_family
 
     res = run('hg --version', quiet=True)
     if res.failed:

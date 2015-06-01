@@ -239,11 +239,11 @@ def test_require_directory_in_guest_context_manager(container):
 def test_install_debian_package_in_guest_context_manager(container):
     from fabtools.deb import update_index
     from fabtools.openvz import guest
-    from fabtools.require.deb import package
+    from fabtools.require.deb import package as require_deb_package
 
     with guest(container):
         update_index()
-        package('htop')
+        require_deb_package('htop')
         assert is_file('/usr/bin/htop')
 
 
