@@ -86,9 +86,7 @@ def locales(names):
 def _locales_generic(names, config_file, command):
 
     supported = supported_locales()
-    missing = set(names) - set([name for name, _ in supported])
-    if missing:
-        raise UnsupportedLocales(missing)
+    _check_for_unsupported_locales(names, supported)
 
     # Regenerate locales if config file changes
     with watch(config_file, use_sudo=True) as config:
@@ -106,8 +104,12 @@ def _locales_generic(names, config_file, command):
 
 
 def _locales_redhat(names):
-    supported = [name for name, _ in supported_locales()]
-    missing = set(names) - set(supported)
+    supported = supported_locales()
+    _check_for_unsupported_locales(names, supported)
+
+
+def _check_for_unsupported_locales(names, supported):
+    missing = set(names) - set([name for name, _ in supported])
     if missing:
         raise UnsupportedLocales(missing)
 
