@@ -215,8 +215,10 @@ def supported_locales():
         return _parse_locales('/usr/share/i18n/SUPPORTED')
     elif family == 'arch':
         return _parse_locales('/etc/locale.gen')
+    elif family == 'redhat':
+        return _supported_locales_redhat()
     else:
-        raise UnsupportedFamily(supported=['debian', 'arch'])
+        raise UnsupportedFamily(supported=['debian', 'arch', 'redhat'])
 
 
 def _parse_locales(path):
@@ -234,6 +236,11 @@ def _strip(lines):
 
 def _remove_comments(lines):
     return (line for line in lines if not line.startswith('#'))
+
+
+def _supported_locales_redhat():
+    res = run('/usr/bin/locale -a')
+    return [(locale, None) for locale in res.splitlines()]
 
 
 def get_arch():
