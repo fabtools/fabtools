@@ -1,8 +1,18 @@
-def test_en_locale():
-    from fabtools.require.system import locale
-    locale('en_US.UTF-8')
+import pytest
 
 
-def test_fr_locale():
-    from fabtools.require.system import locale
-    locale('fr_FR.UTF-8')
+class TestRequireLocale:
+
+    def test_en_locale(self):
+        from fabtools.require.system import locale
+        locale('en_US')
+
+    def test_fr_locale(self):
+        from fabtools.require.system import locale
+        locale('fr_FR')
+
+    def test_non_existing_locale(self):
+        from fabtools.require.system import locale, UnsupportedLocales
+        with pytest.raises(UnsupportedLocales) as excinfo:
+            locale('ZZZZ')
+        assert excinfo.value.locales == ['ZZZZ']
