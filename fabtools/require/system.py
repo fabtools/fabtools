@@ -77,8 +77,10 @@ def locales(names):
         _locales_generic(names, config_file=config_file, command=command)
     elif family in ['arch', 'gentoo']:
         _locales_generic(names, config_file='/etc/locale.gen', command='locale-gen')
+    elif distrib_family() == 'redhat':
+        _locales_redhat(names)
     else:
-        raise UnsupportedFamily(supported=['debian', 'arch', 'gentoo'])
+        raise UnsupportedFamily(supported=['debian', 'arch', 'gentoo', 'redhat'])
 
 
 def _locales_generic(names, config_file, command):
@@ -101,6 +103,13 @@ def _locales_generic(names, config_file, command):
 
     if config.changed:
         run_as_root(command)
+
+
+def _locales_redhat(names):
+    supported = [name for name, _ in supported_locales()]
+    missing = set(names) - set(supported)
+    if missing:
+        raise UnsupportedLocales(missing)
 
 
 def locale(name):
