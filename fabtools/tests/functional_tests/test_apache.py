@@ -13,6 +13,13 @@ from fabtools.system import distrib_family
 pytestmark = pytest.mark.network
 
 
+@pytest.fixture(scope='module', autouse=True)
+def check_for_debian_family():
+    from fabtools.system import distrib_family
+    if distrib_family() != 'debian':
+        pytest.skip("Skipping Apache test on non-Debian distrib")
+
+
 @pytest.fixture(scope='module')
 def hostname():
     from fabtools.system import set_hostname
