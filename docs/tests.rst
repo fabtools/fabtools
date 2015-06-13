@@ -7,9 +7,9 @@ Running tests
 Using tox
 +++++++++
 
-The preferred way to run tests is to use `tox <http://pypi.python.org/pypi/tox>`_.
+The preferred way to run tests is to use `tox <https://tox.readthedocs.org/en/latest/>`_.
 It will take care of everything and run the tests on all supported Python
-versions, each in its own virtual environment:
+versions (each in its own virtualenv) and all target operating systems :
 
 ::
 
@@ -19,18 +19,19 @@ versions, each in its own virtual environment:
 Tox will also build the Sphinx documentation, so it will tell you about any
 reStructuredText syntax errors.
 
-You can ask tox to run tests only against specific Python versions like this:
+Extra options after a ``--`` on the command line will be passed to the
+`py.test <https://pytest.org/>`_ test runner. For example, to stop immediately
+after the first failure:
 
 ::
 
-    $ tox -e py27
+    $ tox -- -x
 
-Extra options after a ``--`` on the command line will be passed to ``py.test``.
-For example, to stop immediately after the first failure:
+Or to only run tests whose name matches ``apache``:
 
 ::
 
-    $ tox -e py27 -- -x
+    $ tox -- -k apache
 
 
 .. note::
@@ -42,7 +43,9 @@ For example, to stop immediately after the first failure:
 Using py.test
 +++++++++++++
 
-Tox calls ``py.test`` for you, but you may want to use ``py.test`` directly:
+If you want to use ``py.test`` directly, you will first need to install the test
+dependencies. You will also need to install fabtools itself in *development
+mode* (also called *editable mode*):
 
 ::
 
@@ -71,28 +74,70 @@ Functional tests are contained in the ``fabtools/tests/functional_tests/`` folde
 Requirements
 ++++++++++++
 
-Running functional tests requires `Vagrant <http://vagrantup.com/>`_ to launch
-virtual machines, against which all the tests will be run.
+Running functional tests requires `Vagrant <https://vagrantup.com/>`_ and
+`VirtualBox <https://www.virtualbox.org>`_ to launch the virtual machines
+against which the tests will be run.
 
-If Vagrant is not installed, the functional tests will be skipped automatically.
+If Vagrant is not installed, the functional tests will be skipped automatically
+and pytest will show a warning message.
 
-Selecting a base box
-++++++++++++++++++++
+Target boxes
+++++++++++++
 
-You can specify which base box should be used as a target by setting the
-``FABTOOLS_TEST_BOX`` environment variable::
+The default tox configuration will run the functional tests using both
+Python 2.6 and 2.7, against a specific list of vagrant boxes. These boxes
+will be downloaded from Atlas (formerly Vagrant Cloud) when needed if
+they're not already installed on your computer.
 
-    $ FABTOOLS_TEST_BOX='hashicorp/precise64' tox -e py27
+================ ==============================================================================
+Target OS        Vagrant Box Name
+================ ==============================================================================
+``centos_6_5``   `chef/centos-6.5     <https://atlas.hashicorp.com/chef/boxes/centos-6.5>`_
+``debian_6``     `chef/debian-6.0.10  <https://atlas.hashicorp.com/chef/boxes/debian-6.0.10>`_
+``debian_7``     `chef/debian-7.8     <https://atlas.hashicorp.com/chef/boxes/debian-7.8>`_
+``debian_8``     `debian/jessie64     <https://atlas.hashicorp.com/debian/boxes/jessie64>`_
+``ubuntu_12_04`` `hashicorp/precise64 <https://atlas.hashicorp.com/hashicorp/boxes/precise64>`_
+``ubuntu_14_04`` `ubuntu/trusty64     <https://atlas.hashicorp.com/ubuntu/boxes/trusty64>`_
+================ ==============================================================================
 
-Selecting a provider
-++++++++++++++++++++
+A tox environment name is the combination of the Python version
+(either ``py26`` or ``py27``) and a target operating system.
 
-If you want to run the tests with a specific Vagrant provider, you can
-use the ``FABTOOLS_TEST_PROVIDER`` environment variable::
+You can use ``tox -l`` to get the list of all test environments.
 
+You can use the ``-e`` option to run tests in one or more specific
+environments. For example, you could run the tests using Python 2.7
+only, against both Ubuntu 12.04 and 14.04 boxes ::
+
+    $ tox -e py27-ubuntu_12_04,py27-ubuntu_14_04
+
+Skipping the functional tests
++++++++++++++++++++++++++++++
+
+To run the unit tests only, you can use the ``none`` target:
+
+::
+
+    $ tox -e py26-none,py27-none
+
+Using a specific Vagrant box
+++++++++++++++++++++++++++++
+
+If you want to run the tests with a specific Vagrant box, you can use
+the ``FABTOOLS_TEST_BOX`` environment variable and the ``none`` target::
+
+    $ export FABTOOLS_TEST_BOX='mybox'
+    $ tox -e py27-none
+
+Using a specific Vagrant provider
++++++++++++++++++++++++++++++++++
+
+If you want to run the tests with a specific Vagrant provider, you can use
+the ``FABTOOLS_TEST_PROVIDER`` environment variable::
+
+    $ export FABTOOLS_TEST_BOX='vmware_box'
     $ export FABTOOLS_TEST_PROVIDER='vmware_fusion'
-    $ export FABTOOLS_TEST_BOX='somebox'
-    $ tox -e py27
+    $ tox -e py27-none
 
 Debugging functional tests
 ++++++++++++++++++++++++++
@@ -104,8 +149,7 @@ variable:
 
 ::
 
-    $ cd fabtools/tests/functional_tests
-    $ export FABTOOLS_TEST_BOX='hashicorp/precise64'
     $ export FABTOOLS_TEST_REUSE_VM=1
-    $ py.test -x test_apache.py
+    $ tox -e py27-ubuntu_14_04 -- -x -k apache
+    $ cd fabtools/tests/functional_tests
     $ vagrant ssh
