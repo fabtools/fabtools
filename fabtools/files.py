@@ -294,8 +294,8 @@ def copy(source, destination, recursive=False, use_sudo=False):
     Copy a file or directory
     """
     func = use_sudo and run_as_root or run
-    options = '-r' if recursive else ''
-    func('/bin/cp {} {} {}'.format(options, quote(source), quote(destination)))
+    options = '-r ' if recursive else ''
+    func('/bin/cp {0}{1} {2}'.format(options, quote(source), quote(destination)))
 
 
 def move(source, destination, use_sudo=False):
@@ -303,7 +303,7 @@ def move(source, destination, use_sudo=False):
     Move a file or directory
     """
     func = use_sudo and run_as_root or run
-    func('/bin/mv {} {}'.format(quote(source), quote(destination)))
+    func('/bin/mv {0} {1}'.format(quote(source), quote(destination)))
 
 
 def symlink(source, destination, use_sudo=False):
@@ -311,7 +311,7 @@ def symlink(source, destination, use_sudo=False):
     Create a symbolic link to a file or directory
     """
     func = use_sudo and run_as_root or run
-    func('/bin/ln -s {} {}'.format(quote(source), quote(destination)))
+    func('/bin/ln -s {0} {1}'.format(quote(source), quote(destination)))
 
 
 def remove(path, recursive=False, use_sudo=False):
@@ -319,5 +319,5 @@ def remove(path, recursive=False, use_sudo=False):
     Remove a file or directory
     """
     func = use_sudo and run_as_root or run
-    options = '-r' if recursive else ''
-    func('/bin/rm {} {}'.format(options, quote(path)))
+    options = '-r ' if recursive else ''
+    func('/bin/rm {0}{1}'.format(options, quote(path)))

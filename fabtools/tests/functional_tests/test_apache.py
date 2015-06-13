@@ -87,8 +87,8 @@ def example_site():
     site_homepage = posixpath.join(site_dir, 'index.html')
     require_file(site_homepage, contents="example page", use_sudo=True)
 
-    site_config_path = '/etc/apache2/sites-available/{}.conf'.format(site_name)
-    site_link_path = '/etc/apache2/sites-enabled/{}.conf'.format(site_name)
+    site_config_path = '/etc/apache2/sites-available/{0}.conf'.format(site_name)
+    site_link_path = '/etc/apache2/sites-enabled/{0}.conf'.format(site_name)
     require_file(site_config_path, use_sudo=True)
 
     require_site(
@@ -108,9 +108,9 @@ def example_site():
 
     yield site_name
 
-    sudo('rm -rf {}'.format(quote(site_dir)))
-    sudo('rm -f {}'.format(quote(site_config_path)))
-    sudo('rm -f {}'.format(quote(site_link_path)))
+    sudo('rm -rf {0}'.format(quote(site_dir)))
+    sudo('rm -f {0}'.format(quote(site_config_path)))
+    sudo('rm -f {0}'.format(quote(site_link_path)))
 
 
 def test_require_module_disabled(apache):
@@ -128,13 +128,13 @@ def test_require_module_enabled(apache):
 def test_require_site_disabled(apache, example_site):
     from fabtools.require.apache import site_disabled
     site_disabled(example_site)
-    assert not is_link('/etc/apache2/sites-enabled/{}.conf'.format(example_site))
+    assert not is_link('/etc/apache2/sites-enabled/{0}.conf'.format(example_site))
 
 
 def test_require_site_enabled(apache, example_site):
     from fabtools.require.apache import site_enabled
     site_enabled(example_site)
-    assert is_link('/etc/apache2/sites-enabled/{}.conf'.format(example_site))
+    assert is_link('/etc/apache2/sites-enabled/{0}.conf'.format(example_site))
 
 
 def test_apache_can_serve_a_web_page(apache, example_site):
@@ -145,6 +145,6 @@ def test_apache_can_serve_a_web_page(apache, example_site):
     site_enabled(example_site)
 
     with shell_env(http_proxy=''):
-        body = run('wget -qO- --header="Host: {}" http://localhost/'.format(example_site))
+        body = run('wget -qO- --header="Host: {0}" http://localhost/'.format(example_site))
 
     assert body == 'example page'
