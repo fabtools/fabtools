@@ -1,4 +1,3 @@
-import functools
 try:
     import json
 except ImportError:
