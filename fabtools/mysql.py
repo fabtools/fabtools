@@ -43,15 +43,13 @@ def user_exists(name, host='localhost', **kwargs):
     """
     Check if a MySQL user exists.
     """
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = query("""
             use mysql;
             SELECT COUNT(*) FROM user
                 WHERE User = '%(name)s' AND Host = '%(host)s';
-            """ % {
-                'name': name,
-                'host': host,
-            }, **kwargs)
+            """ % {'name': name, 'host': host}, **kwargs)
     return res.succeeded and (int(res) == 1)
 
 
@@ -69,11 +67,13 @@ def create_user(name, password, host='localhost', **kwargs):
 
     """
     with settings(hide('running')):
-        query("CREATE USER '%(name)s'@'%(host)s' IDENTIFIED BY '%(password)s';" % {
-            'name': name,
-            'password': password,
-            'host': host
-        }, **kwargs)
+        query(
+            "CREATE USER '%(name)s'@'%(host)s' IDENTIFIED BY '%(password)s';" %
+            {
+                'name': name,
+                'password': password,
+                'host': host
+            }, **kwargs)
     puts("Created MySQL user '%s'." % name)
 
 
@@ -81,7 +81,8 @@ def database_exists(name, **kwargs):
     """
     Check if a MySQL database exists.
     """
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = query("SHOW DATABASES LIKE '%(name)s';" % {
             'name': name
         }, **kwargs)

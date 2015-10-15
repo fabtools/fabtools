@@ -83,8 +83,9 @@ def install_from_source(version=DEFAULT_VERSION, checkinstall=False):
         run('./configure')
         run('make -j%d' % (cpus() + 1))
         if checkinstall:
-            run_as_root('checkinstall -y --pkgname=nodejs --pkgversion=%(version) '
-                        '--showinstall=no make install' % locals())
+            run_as_root(
+                'checkinstall -y --pkgname=nodejs --pkgversion=%(version) '
+                '--showinstall=no make install' % locals())
         else:
             run_as_root('make install')
     run('rm -rf %(filename)s %(foldername)s' % locals())

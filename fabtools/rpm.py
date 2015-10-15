@@ -22,7 +22,11 @@ def update(kernel=False):
     Exclude *kernel* upgrades by default.
     """
     manager = MANAGER
-    cmds = {'yum -y --color=never': {False: '--exclude=kernel* update', True: 'update'}}
+    cmds = {
+        'yum -y --color=never': {
+            False: '--exclude=kernel* update', True: 'update'
+        }
+    }
     cmd = cmds[manager][kernel]
     run_as_root("%(manager)s %(cmd)s" % locals())
 
@@ -34,14 +38,20 @@ def upgrade(kernel=False):
     Exclude *kernel* upgrades by default.
     """
     manager = MANAGER
-    cmds = {'yum -y --color=never': {False: '--exclude=kernel* upgrade', True: 'upgrade'}}
+    cmds = {
+        'yum -y --color=never': {
+            False: '--exclude=kernel* upgrade',
+            True: 'upgrade'
+        }
+    }
     cmd = cmds[manager][kernel]
     run_as_root("%(manager)s %(cmd)s" % locals())
 
 
 def groupupdate(group, options=None):
     """
-    Update an existing software group, skip obsoletes if ``obsoletes=1`` in ``yum.conf``.
+    Update an existing software group, skip obsoletes if ``obsoletes=1``
+    in ``yum.conf``.
 
     Extra *options* may be passed to ``yum`` if necessary.
     """
@@ -59,7 +69,8 @@ def is_installed(pkg_name):
     Check if an RPM package is installed.
     """
     manager = MANAGER
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = run("rpm --query %(pkg_name)s" % locals())
         if res.succeeded:
             return True
@@ -131,7 +142,9 @@ def groupinstall(group, options=None):
     elif isinstance(options, str):
         options = [options]
     options = " ".join(options)
-    run_as_root('%(manager)s %(options)s groupinstall "%(group)s"' % locals(), pty=False)
+    run_as_root(
+        '%(manager)s %(options)s groupinstall "%(group)s"' % locals(),
+        pty=False)
 
 
 def uninstall(packages, options=None):

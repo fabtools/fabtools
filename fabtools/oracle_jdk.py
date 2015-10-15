@@ -50,7 +50,8 @@ def install_from_oracle_site(version=DEFAULT_VERSION):
     extension = 'bin' if self_extracting_archive else 'tar.gz'
     filename = 'jdk-%(release)s-linux-%(arch)s.%(extension)s' % locals()
     download_path = posixpath.join('/tmp', filename)
-    url = 'http://download.oracle.com/otn-pub/java/jdk/%(version)s/%(filename)s' % locals()
+    url = 'http://download.oracle.com/otn-pub/java/jdk/'\
+          '%(version)s/%(filename)s' % locals()
 
     _download(url, download_path)
 

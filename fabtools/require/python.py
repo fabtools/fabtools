@@ -131,7 +131,8 @@ def packages(pkg_list, pip_cmd='pip', python_cmd='python',
 
     pip(MIN_PIP_VERSION, python_cmd=python_cmd)
 
-    pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg, pip_cmd=pip_cmd)]
+    pkg_list = [
+        pkg for pkg in pkg_list if not is_installed(pkg, pip_cmd=pip_cmd)]
     if pkg_list:
         install(pkg_list,
                 pip_cmd=pip_cmd,
@@ -163,13 +164,15 @@ def requirements(filename, pip_cmd='pip', python_cmd='python',
     .. _requirements file: http://www.pip-installer.org/en/latest/requirements.html
     """
     pip(MIN_PIP_VERSION, python_cmd=python_cmd)
-    install_requirements(filename, pip_cmd=pip_cmd, allow_external=allow_external,
+    install_requirements(filename, pip_cmd=pip_cmd,
+                         allow_external=allow_external,
                          allow_unverified=allow_unverified, **kwargs)
 
 
 def virtualenv(directory, system_site_packages=False, venv_python=None,
                use_sudo=False, user=None, clear=False, prompt=None,
-               virtualenv_cmd='virtualenv', pip_cmd='pip', python_cmd='python'):
+               virtualenv_cmd='virtualenv', pip_cmd='pip',
+               python_cmd='python'):
     """
     Require a Python `virtual environment`_.
 
@@ -182,7 +185,8 @@ def virtualenv(directory, system_site_packages=False, venv_python=None,
     .. _virtual environment: http://www.virtualenv.org/
     """
 
-    package('virtualenv', use_sudo=True, pip_cmd=pip_cmd, python_cmd=python_cmd)
+    package('virtualenv', use_sudo=True, pip_cmd=pip_cmd,
+            python_cmd=python_cmd)
 
     if not virtualenv_exists(directory):
         create_virtualenv(

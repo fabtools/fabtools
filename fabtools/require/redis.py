@@ -74,8 +74,10 @@ def installed_from_source(version=VERSION):
                 run('make')
 
                 for filename in BINARIES:
-                    run_as_root('cp -pf src/%(filename)s %(dest_dir)s/' % locals())
-                    run_as_root('chown redis: %(dest_dir)s/%(filename)s' % locals())
+                    run_as_root(
+                        'cp -pf src/%(filename)s %(dest_dir)s/' % locals())
+                    run_as_root(
+                        'chown redis: %(dest_dir)s/%(filename)s' % locals())
 
 
 def _download_url(version):
@@ -188,7 +190,8 @@ def instance(name, version=VERSION, bind='127.0.0.1', port=6379, **kwargs):
     params.update(kwargs)
     params.setdefault('bind', bind)
     params.setdefault('port', port)
-    params.setdefault('logfile', '/var/log/redis/redis-%(name)s.log' % locals())
+    params.setdefault(
+        'logfile', '/var/log/redis/redis-%(name)s.log' % locals())
     params.setdefault('loglevel', 'verbose')
     params.setdefault('dir', '/var/db/redis')
     params.setdefault('dbfilename', 'redis-%(name)s-dump.rdb' % locals())

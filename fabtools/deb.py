@@ -40,7 +40,8 @@ def is_installed(pkg_name):
     """
     Check if a package is installed.
     """
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = run("dpkg -s %(pkg_name)s" % locals())
         for line in res.splitlines():
             if line.startswith("Status: "):
@@ -199,7 +200,8 @@ def add_apt_key(filename=None, url=None, keyid=None, keyserver='subkeys.pgp.net'
         elif url is not None:
             run_as_root('wget %(url)s -O - | apt-key add -' % locals())
         else:
-            raise ValueError('Either filename, url or keyid must be provided as argument')
+            raise ValueError(
+                'Either filename, url or keyid must be provided as argument')
     else:
         if filename is not None:
             _check_pgp_key(filename, keyid)
