@@ -83,7 +83,7 @@ def disabled(config):
 
         from fabtools import require
 
-        require.nginx.site_disabled('default')
+        require.nginx.disabled('default')
 
     """
     disable(config)
