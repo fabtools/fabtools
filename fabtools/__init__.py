@@ -8,6 +8,7 @@ import fabtools.git
 import fabtools.group
 import fabtools.mercurial
 import fabtools.mysql
+import fabtools.mysql_rpm
 import fabtools.network
 import fabtools.nginx
 import fabtools.nodejs
