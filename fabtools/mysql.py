@@ -16,50 +16,15 @@ from fabtools.utils import run_as_root
 
 
 def query(query, use_sudo=True, **kwargs):
+
     family = distrib_family()
     if family == 'debian':
-        _query_debian(query, use_sudo=True, **kwargs)
+        from fabtools.deb import install, is_installed
     elif family == 'redhat':
-        _query_redhat(query, use_sudo=True, **kwargs)
+        from fabtools.rpm import install, is_installed
     else:
         raise UnsupportedFamily(supported=['debian', 'redhat'])
 
-
-def _query_debian(query, use_sudo=True, **kwargs):
-    """
-    Run a MySQL query.
-    """
-    from fabtools.deb import install, is_installed
-
-    func = use_sudo and run_as_root or run
-
-    user = kwargs.get('mysql_user') or env.get('mysql_user')
-    password = kwargs.get('mysql_password') or env.get('mysql_password')
-    func_mysql = 'mysql'
-
-    options = [
-        '--batch',
-        '--raw',
-        '--skip-column-names',
-    ]
-    if user:
-        options.append('--user=%s' % quote(user))
-    if password:
-        if not is_installed('sshpass'):
-            install('sshpass', update=True)
-        func_mysql = 'sshpass -p %(password)s mysql' % {'password': password}
-        options.append('--password')
-    options = ' '.join(options)
-
-    return func('%(cmd)s %(options)s --execute=%(query)s' % {
-        'cmd': func_mysql,
-        'options': options,
-        'query': quote(query),
-    })
-
-
-def _query_redhat(query, use_sudo=True, **kwargs):
-    from fabtools.rpm import install, is_installed
     func = use_sudo and run_as_root or run
 
     user = kwargs.get('mysql_user') or env.get('mysql_user')
