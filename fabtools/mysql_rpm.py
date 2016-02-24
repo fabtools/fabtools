@@ -12,7 +12,7 @@ from pipes import quote
 from fabric.api import env, hide, puts, run, settings
 
 from fabtools.utils import run_as_root
-from fabtools.deb import (
+from fabtools.rpm import (
     install,
     is_installed,
 )
@@ -36,7 +36,7 @@ def query(query, use_sudo=True, **kwargs):
         options.append('--user=%s' % quote(user))
     if password:
         if not is_installed('sshpass'):
-            install('sshpass', update=True)
+            install('sshpass')
         func_mysql = 'sshpass -p %(password)s mysql' % {'password': password}
         options.append('--password')
     options = ' '.join(options)
