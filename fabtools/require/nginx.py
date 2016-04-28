@@ -19,11 +19,12 @@ from fabric.colors import red
 from fabtools.deb import is_installed
 from fabtools.files import is_link
 from fabtools.nginx import disable, enable
-from fabtools.require.deb import package
+from fabtools.service import reload as reload_service
+from fabtools.system import UnsupportedFamily, distrib_family
+from fabtools.utils import run_as_root
+
 from fabtools.require.files import template_file
 from fabtools.require.service import started as require_started
-from fabtools.service import reload as reload_service
-from fabtools.utils import run_as_root
 
 
 def server(package_name='nginx'):
@@ -40,7 +41,18 @@ def server(package_name='nginx'):
         require.nginx.server()
 
     """
-    package(package_name)
+    family = distrib_family()
+    if family == 'debian':
+        _server_debian(package_name)
+    else:
+        raise UnsupportedFamily(supported=['debian'])
+
+
+def _server_debian(package_name):
+
+    from fabtools.require.deb import package as require_deb_package
+
+    require_deb_package(package_name)
     require_started('nginx')
 
 

@@ -8,6 +8,13 @@ from fabtools.utils import run_as_root
 pytestmark = pytest.mark.network
 
 
+@pytest.fixture(scope='module', autouse=True)
+def check_for_debian_family():
+    from fabtools.system import distrib_family
+    if distrib_family() != 'debian':
+        pytest.skip("Skipping apt-key test on non-Debian distrib")
+
+
 def test_add_apt_key_with_key_id_from_url():
     from fabtools.deb import add_apt_key
     try:

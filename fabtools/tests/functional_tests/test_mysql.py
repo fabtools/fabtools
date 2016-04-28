@@ -51,19 +51,22 @@ def test_require_user(mysql_server):
             query('DROP USER myuser@localhost;')
 
 
-@pytest.fixture
-def mysql_user(request):
+@pytest.yield_fixture
+def mysql_user():
 
     from fabtools.mysql import query
     from fabtools.require.mysql import user
 
-    with settings(mysql_user='root', mysql_password=MYSQL_ROOT_PASSWORD):
-        user('myuser', 'foo')
+    username = 'myuser'
+    password = 'foo'
 
-    def drop_user():
-        with settings(mysql_user='root', mysql_password=MYSQL_ROOT_PASSWORD):
-            query('DROP USER myuser@localhost;')
-    request.addfinalizer(drop_user)
+    with settings(mysql_user='root', mysql_password=MYSQL_ROOT_PASSWORD):
+        user(username, password)
+
+    yield username, password
+
+    with settings(mysql_user='root', mysql_password=MYSQL_ROOT_PASSWORD):
+        query('DROP USER {0}@localhost;'.format(username))
 
 
 def test_require_database(mysql_server, mysql_user):
@@ -91,9 +94,11 @@ def test_run_query_without_supplying_the_password(mysql_server, mysql_user):
 
     from fabtools.mysql import query
 
+    username, password = mysql_user
+
     try:
-        require_file('.my.cnf', contents="[mysql]\npassword=foo")
-        with settings(mysql_user='myuser'):
-            query('select 2;')
+        require_file('.my.cnf', contents="[mysql]\npassword={0}".format(password))
+        with settings(mysql_user=username):
+            query('select 2;', use_sudo=False)
     finally:
         run('rm -f .my.cnf')

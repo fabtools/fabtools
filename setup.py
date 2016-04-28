@@ -31,7 +31,7 @@ class Tox(TestCommand):
 
 setup(
     name='fabtools',
-    version='0.19.0',
+    version='0.20.0-dev',
     description='Tools for writing awesome Fabric files',
     long_description=read('README.rst') + '\n' + read('docs/CHANGELOG.rst'),
     author='Ronan Amicel',
@@ -45,7 +45,7 @@ setup(
     tests_require=[
         'tox',
     ],
-    cmdclass = {
+    cmdclass={
         'test': Tox,
     },
     packages=find_packages(exclude=['ez_setup', 'tests']),

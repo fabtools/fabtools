@@ -15,4 +15,4 @@ def test_unsupported_system():
             raise UnsupportedFamily(supported=['debian', 'redhat'])
 
     exception_msg = str(excinfo.value)
-    assert exception_msg == "Unsupported system foo (supported families: debian, redhat)"
+    assert exception_msg == "Unsupported family other (foo). Supported families: debian, redhat"

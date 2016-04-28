@@ -15,7 +15,6 @@ from fabric.api import cd, hide, run, settings
 from fabric.operations import put
 
 from fabtools.files import is_file, is_link, is_dir
-from fabtools.service import start, stop
 from fabtools.utils import run_as_root
 
 
@@ -94,11 +93,17 @@ def install_from_source(path=DEFAULT_INSTALLATION_PATH,
 def configure_tomcat(path, overwrite=False):
     from fabric.contrib.files import append
     startup_script = """
-# Tomcat auto-start
-#
-# description: Auto-starts tomcat
-# processname: tomcat
-# pidfile: /var/run/tomcat.pid
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          tomcat
+# Required-Start:    $local_fs $remote_fs $network $syslog $named
+# Required-Stop:     $local_fs $remote_fs $network $syslog $named
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# X-Interactive:     true
+# Short-Description: Tomcat
+# Description:       Start Tomcat
+### END INIT INFO
 
 case $1 in
 start)
@@ -136,14 +141,14 @@ def start_tomcat():
     """
     Start the Tomcat service.
     """
-    start('tomcat')
+    run_as_root('/etc/init.d/tomcat start')
 
 
 def stop_tomcat():
     """
     Stop the Tomcat service.
     """
-    stop('tomcat')
+    run_as_root('/etc/init.d/tomcat stop')
 
 
 def version(path):

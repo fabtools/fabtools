@@ -193,23 +193,22 @@ def test_callback_is_not_called_when_watched_file_is_not_modified(watched_file):
         run('rm -f modified2')
 
 
-@pytest.fixture(scope='module')
-def users(request):
+@pytest.yield_fixture(scope='module')
+def users():
 
     from fabtools.require import user as require_user
+    from fabtools.user import exists
 
-    TEST_USERS = ['testuser', 'testuser2']
+    test_users = ['testuser', 'testuser2']
 
-    for name in TEST_USERS:
-        require_user(name, create_home=False)
+    for username in test_users:
+        require_user(username, create_home=False)
 
-    def remove_users():
-        from fabtools.user import exists
-        for user in TEST_USERS:
-            if exists(user):
-                run_as_root('userdel %s' % user)
+    yield
 
-    request.addfinalizer(remove_users)
+    for username in test_users:
+        if exists(username):
+            run_as_root('userdel %s' % username)
 
 
 def test_directory_creation():

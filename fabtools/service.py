@@ -12,11 +12,9 @@ and traditional SysV-style ``/etc/init.d/`` scripts.
 
 from fabric.api import hide, settings
 
-from fabtools.utils import run_as_root
-
 from fabtools import systemd
-
 from fabtools.system import using_systemd, distrib_family
+from fabtools.utils import run_as_root
 
 
 def is_running(service):

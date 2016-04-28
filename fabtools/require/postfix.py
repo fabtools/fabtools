@@ -13,6 +13,7 @@ from fabtools.deb import (
     is_installed,
     preseed_package,
 )
+
 from fabtools.require.service import started
 
 

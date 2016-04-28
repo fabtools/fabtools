@@ -61,7 +61,7 @@ def process(name, **kwargs):
         require_deb_package('supervisor')
         require_started('supervisor')
     elif family == 'redhat':
-        require_rpm_package('supervisor')
+        require_rpm_package('supervisord')
         require_started('supervisord')
     elif family == 'arch':
         require_arch_package('supervisor')

@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 0.20.0 (unreleased)
+---------------------------
+
+* Fix Apache support on Ubuntu 14.04 and Debian 8.0
+
+
 Version 0.19.0 (2014-07-05)
 ---------------------------
 

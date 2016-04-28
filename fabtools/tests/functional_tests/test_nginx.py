@@ -12,11 +12,12 @@ def test_require_nginx_server():
         uninstall_nginx()
 
 
-@pytest.fixture
-def nginx_server(request):
+@pytest.yield_fixture
+def nginx_server():
     from fabtools.require.nginx import server
     server()
-    request.addfinalizer(uninstall_nginx)
+    yield
+    uninstall_nginx()
 
 
 def uninstall_nginx():

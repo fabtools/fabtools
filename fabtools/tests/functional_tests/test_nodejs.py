@@ -1,4 +1,3 @@
-import functools
 try:
     import json
 except ImportError:
@@ -6,9 +5,10 @@ except ImportError:
 
 import pytest
 
-from fabric.api import cd, run
+from fabric.api import cd, path, run
 
 from fabtools.files import is_file
+
 from fabtools.require import directory as require_directory
 from fabtools.require import file as require_file
 
@@ -35,16 +35,19 @@ def test_install_and_uninstall_global_package(nodejs):
 
     from fabtools.nodejs import install_package, package_version, uninstall_package
 
-    if not package_version('underscore'):
-        install_package('underscore', version='1.4.2')
+    # This is not in root's PATH on RedHat systems
+    with path('/usr/local/bin'):
 
-    assert package_version('underscore') == '1.4.2'
-    assert is_file('/usr/local/lib/node_modules/underscore/underscore.js')
+        if not package_version('underscore'):
+            install_package('underscore', version='1.4.2')
 
-    uninstall_package('underscore')
+        assert package_version('underscore') == '1.4.2'
+        assert is_file('/usr/local/lib/node_modules/underscore/underscore.js')
 
-    assert package_version('underscore') is None
-    assert not is_file('/usr/local/lib/node_modules/underscore/underscore.js')
+        uninstall_package('underscore')
+
+        assert package_version('underscore') is None
+        assert not is_file('/usr/local/lib/node_modules/underscore/underscore.js')
 
 
 def test_install_and_uninstall_local_package(nodejs):
@@ -63,11 +66,11 @@ def test_install_and_uninstall_local_package(nodejs):
     assert not is_file('node_modules/underscore/underscore.js')
 
 
-@pytest.fixture
-def testdir(request):
+@pytest.yield_fixture
+def testdir():
     require_directory('nodetest')
-    request.addfinalizer(functools.partial(run, 'rm -rf nodetest'))
-    return 'nodetest'
+    yield 'nodetest'
+    run('rm -rf nodetest')
 
 
 def test_install_dependencies_from_package_json_file(nodejs, testdir):
@@ -96,21 +99,24 @@ def test_require_global_package(nodejs):
     from fabtools.require.nodejs import package as require_package
     from fabtools.nodejs import package_version, uninstall_package
 
-    try:
-        # Require specific version
-        require_package('underscore', version='1.4.1')
-        assert package_version('underscore') == '1.4.1'
+    # This is not in root's PATH on RedHat systems
+    with path('/usr/local/bin'):
 
-        # Downgrade
-        require_package('underscore', version='1.4.0')
-        assert package_version('underscore') == '1.4.0'
+        try:
+            # Require specific version
+            require_package('underscore', version='1.4.1')
+            assert package_version('underscore') == '1.4.1'
 
-        # Upgrade
-        require_package('underscore', version='1.4.2')
-        assert package_version('underscore') == '1.4.2'
+            # Downgrade
+            require_package('underscore', version='1.4.0')
+            assert package_version('underscore') == '1.4.0'
 
-    finally:
-        uninstall_package('underscore')
+            # Upgrade
+            require_package('underscore', version='1.4.2')
+            assert package_version('underscore') == '1.4.2'
+
+        finally:
+            uninstall_package('underscore')
 
 
 def test_require_local_package(nodejs):

@@ -12,14 +12,14 @@ def postgres_server():
     server()
 
 
-@pytest.fixture(scope='module')
-def postgres_user(request):
+@pytest.yield_fixture(scope='module')
+def postgres_user():
     from fabtools.postgres import drop_user
     from fabtools.require.postgres import user
     name = 'pguser'
     user(name, password='s3cr3t')
-    request.addfinalizer(functools.partial(drop_user, name))
-    return name
+    yield name
+    drop_user(name)
 
 
 def test_create_and_drop_user(postgres_server):

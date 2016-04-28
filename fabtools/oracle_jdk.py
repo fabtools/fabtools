@@ -8,12 +8,16 @@ This module provides tools for installing `Oracle JDK`_
 
 """
 
+from pipes import quote
+from textwrap import dedent
+import posixpath
 import re
 
 from fabric.api import run, cd, settings, hide
 
-from fabtools.files import is_link
+from fabtools.files import is_dir, is_link
 from fabtools.system import get_arch
+from fabtools.utils import run_as_root
 
 
 DEFAULT_VERSION = '7u25-b15'
@@ -32,57 +36,78 @@ def install_from_oracle_site(version=DEFAULT_VERSION):
 
     """
 
-    from fabtools.require.files import directory as require_directory
+    prefix = '/opt'
 
     release, build = version.split('-')
     major, update = release.split('u')
     if len(update) == 1:
         update = '0' + update
 
-    jdk_arch = _required_jdk_arch()
+    arch = _required_jdk_arch()
 
-    if major == '6':
-        jdk_filename = 'jdk-%(release)s-linux-%(jdk_arch)s.bin' % locals()
+    self_extracting_archive = (major == '6')
+
+    extension = 'bin' if self_extracting_archive else 'tar.gz'
+    filename = 'jdk-%(release)s-linux-%(arch)s.%(extension)s' % locals()
+    download_path = posixpath.join('/tmp', filename)
+    url = 'http://download.oracle.com/otn-pub/java/jdk/%(version)s/%(filename)s' % locals()
+
+    _download(url, download_path)
+
+    # Prepare install dir
+    install_dir = 'jdk1.%(major)s.0_%(update)s' % locals()
+    with cd(prefix):
+        if is_dir(install_dir):
+            run_as_root('rm -rf %s' % quote(install_dir))
+
+    # Extract
+    if self_extracting_archive:
+        run('chmod u+x %s' % quote(download_path))
+        with cd('/tmp'):
+            run_as_root('rm -rf %s' % quote(install_dir))
+            run_as_root('./%s' % filename)
+            run_as_root('mv %s %s' % (quote(install_dir), quote(prefix)))
     else:
-        jdk_filename = 'jdk-%(release)s-linux-%(jdk_arch)s.tar.gz' % locals()
-    jdk_dir = 'jdk1.%(major)s.0_%(update)s' % locals()
+        with cd(prefix):
+            run_as_root('tar xzvf %s' % quote(download_path))
 
-    jdk_url = 'http://download.oracle.com/otn-pub/java/jdk/' +\
-              '%(version)s/%(jdk_filename)s' % locals()
+    # Set up link
+    link_path = posixpath.join(prefix, 'jdk')
+    if is_link(link_path):
+        run_as_root('rm -f %s' % quote(link_path))
+    run_as_root('ln -s %s %s' % (quote(install_dir), quote(link_path)))
 
-    with cd('/tmp'):
-        run('rm -rf %s' % jdk_filename)
-        run('wget --header "Cookie: oraclelicense=accept-securebackup-cookie" ' +
-            '--progress=dot:mega ' +
-            '%(jdk_url)s -O /tmp/%(jdk_filename)s' % locals())
+    # Remove archive
+    run('rm -f %s' % quote(download_path))
 
-    require_directory('/opt', mode='777', use_sudo=True)
-    with cd('/opt'):
-        if major == '6':
-            run('chmod u+x /tmp/%s' % jdk_filename)
-            with cd('/tmp'):
-                run('./%s' % jdk_filename)
-                run('mv %s /opt/' % jdk_dir)
-        else:
-            run('tar -xzvf /tmp/%s' % jdk_filename)
-
-        if is_link('jdk'):
-            run('rm -rf jdk')
-        run('ln -s %s jdk' % jdk_dir)
-
-    _create_profile_d_file()
+    _create_profile_d_file(prefix)
 
 
-def _create_profile_d_file():
+def _download(url, download_path):
+    from fabtools.require.curl import command as require_curl_command
+    require_curl_command()
+    options = " ".join([
+        '--header "Cookie: oraclelicense=accept-securebackup-cookie"',
+        '--location',
+    ])
+    run('curl %(options)s %(url)s -o %(download_path)s' % locals())
+
+
+def _create_profile_d_file(prefix):
     """
     Create profile.d file with Java environment variables set.
     """
     from fabtools.require.files import file as require_file
 
-    require_file('/etc/profile.d/java.sh', contents=
-                 'export JAVA_HOME="/opt/jdk"\n' +
-                 'export PATH="$JAVA_HOME/bin:$PATH"\n',
-                 mode='0755', use_sudo=True)
+    require_file(
+        '/etc/profile.d/java.sh',
+        contents=dedent("""\
+            export JAVA_HOME="%s/jdk"
+            export PATH="$JAVA_HOME/bin:$PATH"
+        """ % prefix),
+        mode='0755',
+        use_sudo=True,
+    )
 
 
 def version():

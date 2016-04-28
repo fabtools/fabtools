@@ -11,7 +11,8 @@ from fabtools.postgres import (
     database_exists,
     user_exists,
 )
-from fabtools.require.deb import package
+from fabtools.system import UnsupportedFamily, distrib_family
+
 from fabtools.require.service import started, restarted
 from fabtools.require.system import locale as require_locale
 
@@ -40,11 +41,23 @@ def server(version=None):
         require.postgres.server()
 
     """
+    family = distrib_family()
+    if family == 'debian':
+        _server_debian(version)
+    else:
+        raise UnsupportedFamily(supported=['debian'])
+
+
+def _server_debian(version):
+
+    from fabtools.require.deb import package as require_deb_package
+
     if version:
         pkg_name = 'postgresql-%s' % version
     else:
         pkg_name = 'postgresql'
-    package(pkg_name)
+
+    require_deb_package(pkg_name)
 
     started(_service_name(version))
 

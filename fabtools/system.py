@@ -6,7 +6,7 @@ System settings
 from fabric.api import hide, run, settings
 
 from fabtools.files import is_file
-from fabtools.utils import run_as_root
+from fabtools.utils import read_lines, run_as_root
 
 
 class UnsupportedFamily(Exception):
@@ -30,7 +30,8 @@ class UnsupportedFamily(Exception):
     def __init__(self, supported):
         self.supported = supported
         self.distrib = distrib_id()
-        msg = "Unsupported system %s (supported families: %s)" % (self.distrib, ', '.join(supported))
+        self.family = distrib_family()
+        msg = "Unsupported family %s (%s). Supported families: %s" % (self.family, self.distrib, ', '.join(supported))
         super(UnsupportedFamily, self).__init__(msg)
 
 
@@ -210,13 +211,37 @@ def supported_locales():
 
     Each locale is returned as a ``(locale, charset)`` tuple.
     """
-    with settings(hide('running', 'stdout')):
-        if distrib_family() == "arch":
-            res = run("cat /etc/locale.gen")
-        else:
-            res = run('cat /usr/share/i18n/SUPPORTED')
-    return [line.strip().split(' ') for line in res.splitlines()
-            if not line.startswith('#')]
+    family = distrib_family()
+    if family == 'debian':
+        return _parse_locales('/usr/share/i18n/SUPPORTED')
+    elif family == 'arch':
+        return _parse_locales('/etc/locale.gen')
+    elif family == 'redhat':
+        return _supported_locales_redhat()
+    else:
+        raise UnsupportedFamily(supported=['debian', 'arch', 'redhat'])
+
+
+def _parse_locales(path):
+    lines = read_lines(path)
+    return list(_split_on_spaces(_strip(_remove_comments(lines))))
+
+
+def _split_on_spaces(lines):
+    return (line.split(' ') for line in lines)
+
+
+def _strip(lines):
+    return (line.strip() for line in lines)
+
+
+def _remove_comments(lines):
+    return (line for line in lines if not line.startswith('#'))
+
+
+def _supported_locales_redhat():
+    res = run('/usr/bin/locale -a')
+    return [(locale, None) for locale in res.splitlines()]
 
 
 def get_arch():

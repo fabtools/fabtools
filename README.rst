@@ -77,17 +77,27 @@ Supported targets
 
 ``fabtools`` currently supports the following target operating systems:
 
-* Debian 6.0 (squeeze)
+- full support:
 
-* Ubuntu 10.04 (lucid)
-* Ubuntu 12.04 (precise)
+  - Debian family:
 
-* RHEL 5/6
-* CentOS 5/6
-* Scientific Linux 5/6
+    - Debian 6 (*squeeze*), 7 (*wheezy*), 8 (*jessie*)
+    - Ubuntu 10.04 (*lucid*), 12.04 (*precise*), 14.04 (*trusty*)
 
-* SmartOS (Joyent)
+- partial support:
 
-* Arch Linux
+  - RedHat family:
 
-Contributions to help support other Unix/Linux distributions are welcome!
+    - RHEL 5/6
+    - CentOS 5/6
+    - Scientific Linux 5/6
+    - Fedora
+
+  - Arch Linux, Manjaro Linux
+
+  - Gentoo
+
+  - SmartOS (Joyent)
+
+Contributions to help improve existing support and extend it to other
+Unix/Linux distributions are welcome!

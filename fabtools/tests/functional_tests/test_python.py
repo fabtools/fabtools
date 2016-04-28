@@ -41,13 +41,13 @@ def test_require_virtualenv():
         run('rm -rf /tmp/venv')
 
 
-@pytest.fixture
-def venv(request):
+@pytest.yield_fixture
+def venv():
     from fabtools.require.python import virtualenv
     path = '/tmp/venv'
     virtualenv(path)
-    request.addfinalizer(functools.partial(run, 'rm -rf %s' % quote(path)))
-    return path
+    yield path
+    run('rm -rf %s' % quote(path))
 
 
 def test_require_python_package(venv):

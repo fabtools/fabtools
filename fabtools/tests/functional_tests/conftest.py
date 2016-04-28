@@ -19,8 +19,8 @@ VAGRANT_VERSION = _vagrant_version()
 MIN_VAGRANT_VERSION = (1, 3)
 
 
-@pytest.fixture(scope='session', autouse=True)
-def setup_package(request):
+@pytest.yield_fixture(scope='session', autouse=True)
+def setup_package():
     _check_vagrant_version()
     vagrant_box = os.environ.get('FABTOOLS_TEST_BOX')
     if not vagrant_box:
@@ -36,8 +36,9 @@ def setup_package(request):
     _target_vagrant_machine()
     _set_optional_http_proxy()
     _update_package_index()
+    yield
     if not reuse_vm:
-        request.addfinalizer(_stop_vagrant_machine)
+        _stop_vagrant_machine()
 
 
 def _check_vagrant_version():
@@ -58,11 +59,25 @@ def _allow_fabric_to_access_the_real_stdin():
     mock_sys.stdin = sys.__stdin__
 
 
+_VAGRANTFILE_TEMPLATE = """\
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "%s"
+
+  # Speed up downloads using a shared cache across boxes
+  if Vagrant.has_plugin?("vagrant-cachier")
+    config.cache.scope = :box
+  end
+
+end
+"""
+
+
 def _init_vagrant_machine(base_box):
-    with lcd(HERE):
-        with settings(hide('stdout')):
-            local('rm -f Vagrantfile')
-            local('vagrant init %s' % quote(base_box))
+    path = os.path.join(HERE, 'Vagrantfile')
+    contents = _VAGRANTFILE_TEMPLATE % base_box
+    with open(path, 'w') as vagrantfile:
+        vagrantfile.write(contents)
 
 
 def _start_vagrant_machine(provider):
@@ -129,3 +144,21 @@ def _update_package_index():
     if family == 'debian':
         from fabtools.require.deb import uptodate_index
         uptodate_index()
+
+
+@pytest.fixture(scope='session', autouse=True)
+def allow_sudo_user(setup_package):
+    """
+    Fix sudo config if needed
+
+    Some Vagrant boxes come with a too restrictive sudoers config
+    and only allow the vagrant user to run commands as root.
+    """
+    from fabtools.require import file as require_file
+    require_file(
+        '/etc/sudoers.d/fabtools',
+        contents="vagrant ALL=(ALL) NOPASSWD:ALL\n",
+        owner='root',
+        mode='440',
+        use_sudo=True,
+    )
