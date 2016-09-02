@@ -68,12 +68,7 @@ def locales(names):
     family = distrib_family()
     if family == 'debian':
         command = 'dpkg-reconfigure --frontend=noninteractive locales'
-        if distrib_id() == 'Ubuntu':
-            config_file = '/var/lib/locales/supported.d/local'
-            if not is_file(config_file):
-                run_as_root('touch %s' % config_file)
-        else:
-            config_file = '/etc/locale.gen'
+        config_file = '/etc/locale.gen'
         _locales_generic(names, config_file=config_file, command=command)
     elif family in ['arch', 'gentoo']:
         _locales_generic(names, config_file='/etc/locale.gen', command='locale-gen')
