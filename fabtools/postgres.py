@@ -128,4 +128,5 @@ def create_schema(name, database, owner=None):
     if owner:
         _run_as_pg('''psql %(database)s -c "CREATE SCHEMA %(name)s AUTHORIZATION %(owner)s"''' % locals())
     else:
-        _run_as_pg('''psql %(database)s -c "CREATE SCHEMA %(name)s"''' % locals())
+        _run_as_pg(
+            '''psql %(database)s -c "CREATE SCHEMA %(name)s"''' % locals())

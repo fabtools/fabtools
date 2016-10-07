@@ -33,7 +33,8 @@ def is_pip_installed(version=None, pip_cmd='pip'):
 
     .. _pip: http://www.pip-installer.org/
     """
-    with settings(hide('running', 'warnings', 'stderr', 'stdout'), warn_only=True):
+    with settings(
+            hide('running', 'warnings', 'stderr', 'stdout'), warn_only=True):
         res = run('%(pip_cmd)s --version 2>/dev/null' % locals())
         if res.failed:
             return False
@@ -45,7 +46,8 @@ def is_pip_installed(version=None, pip_cmd='pip'):
                 return False
             installed = m.group('version')
             if V(installed) < V(version):
-                puts("pip %s found (version >= %s required)" % (installed, version))
+                puts("pip %s found (version >= %s required)" % (
+                    installed, version))
                 return False
             else:
                 return True
@@ -100,7 +102,8 @@ def is_installed(package, pip_cmd='pip'):
 
     .. _pip: http://www.pip-installer.org/
     """
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = run('%(pip_cmd)s freeze' % locals())
     packages = [line.split('==')[0].lower() for line in res.splitlines()]
     return (package.lower() in packages)
@@ -215,8 +218,8 @@ def install_requirements(filename, upgrade=False, download_cache=None,
 
 
 def create_virtualenv(directory, system_site_packages=False, venv_python=None,
-               use_sudo=False, user=None, clear=False, prompt=None,
-               virtualenv_cmd='virtualenv'):
+                      use_sudo=False, user=None, clear=False, prompt=None,
+                      virtualenv_cmd='virtualenv'):
     """
     Create a Python `virtual environment`_.
 

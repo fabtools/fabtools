@@ -52,7 +52,8 @@ def is_running(service):
         if fabtools.systemd.is_running('httpd'):
             print("Service httpd is running!")
     """
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         return action('status', service).succeeded
 
 

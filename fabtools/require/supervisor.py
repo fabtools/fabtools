@@ -11,7 +11,7 @@ processes using `supervisor`_.
 
 from fabtools.files import watch
 from fabtools.supervisor import update_config, process_status, start_process
-from fabtools.system import UnsupportedFamily, distrib_family, distrib_id
+from fabtools.system import UnsupportedFamily, distrib_family
 
 
 def process(name, **kwargs):

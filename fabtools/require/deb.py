@@ -24,7 +24,8 @@ from fabtools.utils import run_as_root
 from fabtools import system
 
 
-def key(keyid, filename=None, url=None, keyserver='subkeys.pgp.net', update=False):
+def key(keyid, filename=None, url=None, keyserver='subkeys.pgp.net',
+        update=False):
     """
     Require a PGP key for APT.
 
@@ -47,7 +48,8 @@ def key(keyid, filename=None, url=None, keyserver='subkeys.pgp.net', update=Fals
     """
 
     if not apt_key_exists(keyid):
-        add_apt_key(keyid=keyid, filename=filename, url=url, keyserver=keyserver, update=update)
+        add_apt_key(keyid=keyid, filename=filename, url=url,
+                    keyserver=keyserver, update=update)
 
 
 def source(name, uri, distribution, *components):

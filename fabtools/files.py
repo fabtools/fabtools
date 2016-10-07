@@ -295,7 +295,8 @@ def copy(source, destination, recursive=False, use_sudo=False):
     """
     func = use_sudo and run_as_root or run
     options = '-r ' if recursive else ''
-    func('/bin/cp {0}{1} {2}'.format(options, quote(source), quote(destination)))
+    func('/bin/cp {0}{1} {2}'.format(
+        options, quote(source), quote(destination)))
 
 
 def move(source, destination, use_sudo=False):

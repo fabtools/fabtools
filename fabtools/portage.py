@@ -53,8 +53,8 @@ def is_installed(pkg_name):
         pkg_name = pkg_name[1:]
 
     match = re.search(
-            r"\n\[ebuild +(?P<code>\w+) *\] .*%(pkg_name)s.*" % locals(),
-            res.stdout)
+        r"\n\[ebuild +(?P<code>\w+) *\] .*%(pkg_name)s.*" % locals(),
+        res.stdout)
     if match and match.groupdict()["code"] in ("U", "R"):
         return True
     else:
