@@ -78,7 +78,7 @@ def user(name, password, superuser=False, createdb=False,
         require.postgres.user('dbuser', password='somerandomstring')
 
         require.postgres.user('dbuser2', password='s3cr3t',
-            createdb=True, create_role=True, connection_limit=20)
+            createdb=True, createrole=True, connection_limit=20)
 
     """
     if not user_exists(name):
