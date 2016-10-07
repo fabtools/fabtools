@@ -213,7 +213,7 @@ class watch(object):
         from fabric.contrib.files import comment, uncomment
 
         from fabtools.files import watch
-        from fabtools.services import restart
+        from fabtools.service import restart
 
         # Edit configuration file
         with watch('/etc/daemon.conf') as config:
@@ -231,7 +231,7 @@ class watch(object):
         from fabric.contrib.files import comment, uncomment
 
         from fabtools.files import watch
-        from fabtools.services import restart
+        from fabtools.service import restart
 
         with watch('/etc/daemon.conf', callback=partial(restart, 'daemon')):
             uncomment('/etc/daemon.conf', 'someoption')
