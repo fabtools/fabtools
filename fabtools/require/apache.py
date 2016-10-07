@@ -138,7 +138,7 @@ def site(site_name, template_contents=None, template_source=None, enabled=True,
 
         CONFIG_TPL = '''
         <VirtualHost *:%(port)s>
-            ServerName %(hostname})s
+            ServerName %(hostname)s
 
             DocumentRoot %(document_root)s
 
