@@ -21,6 +21,7 @@ def query(query, use_sudo=True, **kwargs):
 
     user = kwargs.get('mysql_user') or env.get('mysql_user')
     password = kwargs.get('mysql_password') or env.get('mysql_password')
+    mysql_host = kwargs.get('mysql_host') or env.get('mysql_host')
 
     options = [
         '--batch',
@@ -31,6 +32,8 @@ def query(query, use_sudo=True, **kwargs):
         options.append('--user=%s' % quote(user))
     if password:
         options.append('--password=%s' % quote(password))
+    if mysql_host:
+        options.append('--host=%s' % quote(mysql_host))
     options = ' '.join(options)
 
     return func('mysql %(options)s --execute=%(query)s' % {
