@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Version 0.20.0 (unreleased)
----------------------------
+0.20.0 (2016-10-12)
+-------------------
 
 * Fix Apache support on Ubuntu 14.04 and Debian 8.0
 * Change maxsplit argument value to 1 for vagrant
