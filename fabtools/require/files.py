@@ -9,7 +9,7 @@ directories.
 
 from pipes import quote
 from tempfile import mkstemp
-from six.moves import urlparse
+from six.moves.urllib.parse import urlparse
 import hashlib
 import os
 
