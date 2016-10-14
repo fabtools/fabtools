@@ -28,6 +28,7 @@ import fabtools.supervisor
 import fabtools.system
 import fabtools.tomcat
 import fabtools.user
+import fabtools.python3_compat
 
 import fabtools.require
 icanhaz = require
