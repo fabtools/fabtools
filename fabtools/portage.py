@@ -13,6 +13,7 @@ using the Portage_ package manager.
 import re
 
 from fabric.api import hide, run, settings
+import six
 
 from fabtools.utils import run_as_root
 
@@ -92,7 +93,7 @@ def install(packages, update=False, options=None):
     options = options or []
     options = " ".join(options)
 
-    if not isinstance(packages, basestring):
+    if not isinstance(packages, six.string_types):
         packages = " ".join(packages)
 
     cmd = '%(manager)s %(options)s %(packages)s' % locals()
@@ -110,7 +111,7 @@ def uninstall(packages, options=None):
     options = options or []
     options = " ".join(options)
 
-    if not isinstance(packages, basestring):
+    if not isinstance(packages, six.string_types):
         packages = " ".join(packages)
 
     cmd = '%(manager)s --unmerge %(options)s %(packages)s' % locals()
