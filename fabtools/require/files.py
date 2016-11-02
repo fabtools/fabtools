@@ -144,7 +144,7 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
             path = os.path.basename(urlparse(url).path)
 
         if not is_file(path) or md5 and md5sum(path) != md5:
-            func('wget --progress=dot:mega %(url)s -O %(path)s' % locals())
+            func('wget --progress=dot:mega "%(url)s" -O "%(path)s"' % locals())
 
     # 3) A local filename, or a content string, is specified
     else:
