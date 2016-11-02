@@ -5,7 +5,7 @@ System settings
 
 from re import escape
 
-from fabric.api import settings, warn
+from fabric.api import settings
 from fabric.contrib.files import append, uncomment
 
 from fabtools.files import is_file, watch
@@ -68,19 +68,16 @@ def locales(names):
     family = distrib_family()
     if family == 'debian':
         command = 'dpkg-reconfigure --frontend=noninteractive locales'
-        if distrib_id() == 'Ubuntu':
-            config_file = '/var/lib/locales/supported.d/local'
-            if not is_file(config_file):
-                run_as_root('touch %s' % config_file)
-        else:
-            config_file = '/etc/locale.gen'
+        config_file = '/etc/locale.gen'
         _locales_generic(names, config_file=config_file, command=command)
     elif family in ['arch', 'gentoo']:
-        _locales_generic(names, config_file='/etc/locale.gen', command='locale-gen')
+        _locales_generic(names, config_file='/etc/locale.gen',
+                         command='locale-gen')
     elif distrib_family() == 'redhat':
         _locales_redhat(names)
     else:
-        raise UnsupportedFamily(supported=['debian', 'arch', 'gentoo', 'redhat'])
+        raise UnsupportedFamily(
+            supported=['debian', 'arch', 'gentoo', 'redhat'])
 
 
 def _locales_generic(names, config_file, command):
@@ -97,7 +94,8 @@ def _locales_generic(names, config_file, command):
             charset = charset_from_name[name]
             locale = "%s %s" % (name, charset)
             uncomment(config_file, escape(locale), use_sudo=True, shell=True)
-            append(config_file, locale, use_sudo=True, partial=True, shell=True)
+            append(config_file, locale, use_sudo=True,
+                   partial=True, shell=True)
 
     if config.changed:
         run_as_root(command)

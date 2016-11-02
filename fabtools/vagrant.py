@@ -7,6 +7,10 @@ import re
 
 from fabric.api import env, hide, local, settings, task
 
+# if name is specified, use that. otherwise try to use env.host_string
+# if it exists
+def _name_or_host_string(name):
+    return name or (env.host_string or name)
 
 def version():
     """
@@ -30,14 +34,19 @@ def _to_int(val):
 
 def ssh_config(name=''):
     """
-    Get the SSH parameters for connecting to a vagrant VM.
+    Get the SSH parameters for connecting to a vagrant VM named `name`. 
+
+    If `name` is empty, this tries to infer the correct name from
+    `env.host_string` so that you can retrieve the vagrant ssh
+    configuration on the currently specified `env.host_string`.
     """
+    name = _name_or_host_string(name)
     with settings(hide('running')):
         output = local('vagrant ssh-config %s' % name, capture=True)
 
     config = {}
     for line in output.splitlines()[1:]:
-        key, value = line.strip().split(' ', 2)
+        key, value = line.strip().split(' ', 1)
         config[key] = value
     return config
 
@@ -67,8 +76,7 @@ def _settings_dict(config):
 
 @task
 def vagrant(name=''):
-    """
-    Run the following tasks on a vagrant box.
+    """Run the following tasks on a vagrant box.
 
     First, you need to import this task in your ``fabfile.py``::
 
@@ -82,7 +90,6 @@ def vagrant(name=''):
     Then you can easily run tasks on your current Vagrant box::
 
         $ fab vagrant some_task
-
     """
     config = ssh_config(name)
 
@@ -92,7 +99,7 @@ def vagrant(name=''):
 
 def vagrant_settings(name='', *args, **kwargs):
     """
-    Context manager that sets a vagrant VM
+    Context manager that sets a vagrant VM named `name`
     as the remote host.
 
     Use this context manager inside a task to run commands
@@ -102,7 +109,12 @@ def vagrant_settings(name='', *args, **kwargs):
 
         with vagrant_settings():
             run('hostname')
+
+    If `name` is empty, this tries to infer the correct name from
+    `env.host_string` so that you can use this context manager on the
+    currently specified `host_string`.
     """
+    name = _name_or_host_string(name)
     config = ssh_config(name)
 
     extra_args = _settings_dict(config)

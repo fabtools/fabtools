@@ -25,7 +25,6 @@ from fabtools.files import (
     umask,
 )
 from fabtools.utils import run_as_root
-import fabtools.files
 
 
 BLOCKSIZE = 2 ** 20  # 1MB
@@ -196,7 +195,8 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
         func('chmod %(mode)s "%(path)s"' % locals())
 
 
-def template_file(path=None, template_contents=None, template_source=None, context=None, **kwargs):
+def template_file(path=None, template_contents=None, template_source=None,
+                  context=None, **kwargs):
     """
     Require a file whose contents is defined by a template.
     """

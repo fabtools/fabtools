@@ -15,7 +15,6 @@ from fabtools.mysql import (
     create_database,
     create_user,
     database_exists,
-    query,
     user_exists,
 )
 from fabtools.system import UnsupportedFamily, distrib_family
@@ -86,13 +85,15 @@ def _require_root_password(password):
 
 
 def _is_root_password_set(quoted_password):
-    cmd = 'mysql --user=root --password={password} --execute="select 1;"'.format(password=quoted_password)
+    cmd = 'mysql --user=root --password={password} --execute="select 1;"'\
+        .format(password=quoted_password)
     res = run(cmd, quiet=True)
     return res.succeeded
 
 
 def _set_root_password(quoted_password):
-    run('/usr/bin/mysqladmin --user=root password {password}'.format(password=quoted_password))
+    run('/usr/bin/mysqladmin --user=root password {password}'.format(
+        password=quoted_password))
     run('/usr/bin/mysqladmin --user=root --password={password} -h localhost.localdomain password {password}'.format(password=quoted_password))
 
 

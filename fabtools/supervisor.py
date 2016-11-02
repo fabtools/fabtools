@@ -35,7 +35,8 @@ def process_status(name):
     """
     Get the status of a supervisor process.
     """
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = run_as_root("supervisorctl status %(name)s" % locals())
         if res.startswith("No such process"):
             return None

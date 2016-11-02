@@ -45,7 +45,8 @@ def command():
         elif family == 'gentoo':
             require_portage_package('dev-vcs/git')
         else:
-            raise UnsupportedFamily(supported=['debian', 'redhat', 'sun', 'gentoo'])
+            raise UnsupportedFamily(
+                supported=['debian', 'redhat', 'sun', 'gentoo'])
 
 
 def working_copy(remote_url, path=None, branch="master", update=True,

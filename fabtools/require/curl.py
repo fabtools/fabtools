@@ -24,6 +24,7 @@ def command():
 
     from fabtools.require.deb import package as require_deb_package
     from fabtools.require.rpm import package as require_rpm_package
+    from fabtools.require.arch import package as require_arch_package
 
     family = distrib_family()
 
@@ -31,5 +32,7 @@ def command():
         require_deb_package('curl')
     elif family == 'redhat':
         require_rpm_package('curl')
+    elif family == 'arch':
+        require_arch_package('curl')
     else:
-        raise UnsupportedFamily(supported=['debian', 'redhat'])
+        raise UnsupportedFamily(supported=['arch', 'debian', 'redhat'])

@@ -1,10 +1,27 @@
 Changelog
 =========
 
-Version 0.20.0 (unreleased)
----------------------------
+0.21.0 (unreleased)
+-------------------
+
+- Nothing changed yet.
+
+
+0.20.0 (2016-10-12)
+-------------------
 
 * Fix Apache support on Ubuntu 14.04 and Debian 8.0
+* Change maxsplit argument value to 1 for vagrant
+* Fix nodejs fails to read json
+* Fix typo in PostgreSQL require documentation
+* Fix typo in files and nginx documentation
+* Clean the code and be pep8 compliant
+* In PostgreSQL put the username in double quotes
+* Use Python 3 compatible print statement when checking setuptools
+* In network add MAC address information
+* Add support for conda package manager
+* Add the support of host options for MySQL
+* Fix different sfdisk version
 
 
 Version 0.19.0 (2014-07-05)

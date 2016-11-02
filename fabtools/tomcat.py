@@ -55,7 +55,8 @@ def install_from_source(path=DEFAULT_INSTALLATION_PATH,
         # Make sure we have the tarball downloaded.
         if not is_file(os.path.join('/tmp/', file_name)):
             # Otherwise, download the tarball based on our mirror and version.
-            tomcat_url = '%s/dist/tomcat/tomcat-%s/v%s/bin/%s' % (mirror, version_major, version, file_name)
+            tomcat_url = '%s/dist/tomcat/tomcat-%s/v%s/bin/%s' % (
+                mirror, version_major, version, file_name)
 
             # Ensure the file has been downloaded
             require_file(url=tomcat_url)
@@ -67,7 +68,8 @@ def install_from_source(path=DEFAULT_INSTALLATION_PATH,
         if is_dir(path):
             if overwrite is False:
                 # Raise exception as we don't want to overwrite
-                raise OSError("Path %s already exists and overwrite not set." % path)
+                raise OSError(
+                    "Path %s already exists and overwrite not set." % path)
             else:
                 # Otherwise, backup the tomcat path
                 backup_installation_path = path + ".backup"
@@ -122,7 +124,8 @@ exit 0""" % {'path': path}
     # Check for existing files and overwrite.
     if is_file('/etc/init.d/tomcat'):
         if overwrite is False:
-            raise OSError("/etc/init.d/tomcat already exists and not overwriting.")
+            raise OSError(
+                "/etc/init.d/tomcat already exists and not overwriting.")
         else:
             run_as_root("rm -f /etc/init.d/tomcat")
 
@@ -186,4 +189,6 @@ def deploy_application(war_file, webapp_path=None):
         webapp_path = os.path.join(DEFAULT_INSTALLATION_PATH, 'webapps')
 
     # Now copy our WAR into the webapp path.
-    put(local_path=war_file, remote_path=os.path.join(webapp_path, war_file), use_sudo=True)
+    put(
+        local_path=war_file, remote_path=os.path.join(webapp_path, war_file),
+        use_sudo=True)

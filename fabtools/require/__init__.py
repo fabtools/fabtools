@@ -1,8 +1,10 @@
 # Keep imports sorted alphabetically
 import fabtools.require.arch
 import fabtools.require.apache
+import fabtools.require.conda
 import fabtools.require.curl
 import fabtools.require.deb
+import fabtools.require.docker
 import fabtools.require.files
 import fabtools.require.git
 import fabtools.require.mercurial

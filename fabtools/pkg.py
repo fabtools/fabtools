@@ -87,7 +87,9 @@ def install(packages, update=False, yes=None, options=None):
     options.append("-y")
     options = " ".join(options)
     if isinstance(yes, str):
-        run_as_root('yes %(yes)s | %(manager)s %(options)s install %(packages)s' % locals())
+        run_as_root(
+            'yes %(yes)s | %(manager)s %(options)s install %(packages)s'
+            % locals())
     else:
         run_as_root('%(manager)s %(options)s install %(packages)s' % locals())
 
