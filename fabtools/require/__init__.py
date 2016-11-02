@@ -9,6 +9,7 @@ import fabtools.require.files
 import fabtools.require.git
 import fabtools.require.mercurial
 import fabtools.require.mysql
+import fabtools.require.network
 import fabtools.require.nginx
 import fabtools.require.nodejs
 import fabtools.require.openvz
