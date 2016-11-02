@@ -68,7 +68,7 @@ def pip(version=MIN_PIP_VERSION, pip_cmd='pip', python_cmd='python'):
     .. _pip: http://www.pip-installer.org/
     """
     setuptools(python_cmd=python_cmd)
-    if not is_pip_installed(version, pip_cmd=pip_cmd):
+    if not is_pip_installed(version, python_cmd=python_cmd, pip_cmd=pip_cmd):
         install_pip(python_cmd=python_cmd)
 
 
@@ -102,8 +102,9 @@ def package(pkg_name, url=None, pip_cmd='pip', python_cmd='python',
     .. _pip installer: http://www.pip-installer.org/
     """
     pip(MIN_PIP_VERSION, python_cmd=python_cmd)
-    if not is_installed(pkg_name, pip_cmd=pip_cmd):
+    if not is_installed(pkg_name, python_cmd=python_cmd, pip_cmd=pip_cmd):
         install(url or pkg_name,
+                python_cmd=python_cmd,
                 pip_cmd=pip_cmd,
                 allow_external=[url or pkg_name] if allow_external else [],
                 allow_unverified=[url or pkg_name] if allow_unverified else [],
@@ -132,9 +133,10 @@ def packages(pkg_list, pip_cmd='pip', python_cmd='python',
     pip(MIN_PIP_VERSION, python_cmd=python_cmd)
 
     pkg_list = [
-        pkg for pkg in pkg_list if not is_installed(pkg, pip_cmd=pip_cmd)]
+        pkg for pkg in pkg_list if not is_installed(pkg, python_cmd=python_cmd, pip_cmd=pip_cmd)]
     if pkg_list:
         install(pkg_list,
+                python_cmd=python_cmd,
                 pip_cmd=pip_cmd,
                 allow_external=allow_external,
                 allow_unverified=allow_unverified,
@@ -164,7 +166,7 @@ def requirements(filename, pip_cmd='pip', python_cmd='python',
     .. _requirements file: http://www.pip-installer.org/en/latest/requirements.html
     """
     pip(MIN_PIP_VERSION, python_cmd=python_cmd)
-    install_requirements(filename, pip_cmd=pip_cmd,
+    install_requirements(filename, python_cmd=python_cmd, pip_cmd=pip_cmd,
                          allow_external=allow_external,
                          allow_unverified=allow_unverified, **kwargs)
 
