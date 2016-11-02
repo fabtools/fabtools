@@ -40,21 +40,7 @@ def setuptools(version=MIN_SETUPTOOLS_VERSION, python_cmd='python'):
     .. _setuptools: http://pythonhosted.org/setuptools/
     """
 
-    from fabtools.require.deb import package as require_deb_package
-    from fabtools.require.rpm import package as require_rpm_package
-
     if not is_setuptools_installed(python_cmd=python_cmd):
-        family = distrib_family()
-
-        if family == 'debian':
-            require_deb_package('python-dev')
-        elif family == 'redhat':
-            require_rpm_package('python-devel')
-        elif family == 'arch':
-            pass  # ArchLinux installs header with base package
-        else:
-            raise UnsupportedFamily(supported=['debian', 'redhat', 'arch'])
-
         install_setuptools(python_cmd=python_cmd)
 
 
