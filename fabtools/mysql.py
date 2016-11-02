@@ -5,11 +5,13 @@ MySQL users and databases
 This module provides tools for creating MySQL users and databases.
 
 """
+from __future__ import with_statement
 
 from pipes import quote
 
 from fabric.api import env, hide, puts, run, settings
 
+from fabtools.system import UnsupportedFamily, distrib_family
 from fabtools.utils import run_as_root
 
 
@@ -17,10 +19,19 @@ def query(query, use_sudo=True, **kwargs):
     """
     Run a MySQL query.
     """
+    family = distrib_family()
+    if family == 'debian':
+        from fabtools.deb import install, is_installed
+    elif family == 'redhat':
+        from fabtools.rpm import install, is_installed
+    else:
+        raise UnsupportedFamily(supported=['debian', 'redhat'])
+
     func = use_sudo and run_as_root or run
 
     user = kwargs.get('mysql_user') or env.get('mysql_user')
     password = kwargs.get('mysql_password') or env.get('mysql_password')
+    func_mysql = 'mysql'
     mysql_host = kwargs.get('mysql_host') or env.get('mysql_host')
 
     options = [
@@ -31,12 +42,17 @@ def query(query, use_sudo=True, **kwargs):
     if user:
         options.append('--user=%s' % quote(user))
     if password:
+        if not is_installed('sshpass'):
+            install('sshpass')
+        func_mysql = 'sshpass -p %(password)s mysql' % {'password': password}
+        options.append('--password')
         options.append('--password=%s' % quote(password))
     if mysql_host:
         options.append('--host=%s' % quote(mysql_host))
     options = ' '.join(options)
 
-    return func('mysql %(options)s --execute=%(query)s' % {
+    return func('%(cmd)s %(options)s --execute=%(query)s' % {
+        'cmd': func_mysql,
         'options': options,
         'query': quote(query),
     })
