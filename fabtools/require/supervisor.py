@@ -59,27 +59,32 @@ def process(name, use_pip=False, **kwargs):
     from fabtools.require.arch import package as require_arch_package
     from fabtools.require.service import started as require_started
 
+    # configure installation. override default package installation w/ use_pip
     family = distrib_family()
-
-    # make sure its installed
-    if use_pip:
-        require_python_package('supervisor')
-    elif family == 'debian':
-        require_deb_package('supervisor')
-    elif family == 'redhat':
-        require_rpm_package('supervisord')
-    elif family == 'arch':
-        require_arch_package('supervisor')
-
-    # make sure its started
     if family == 'debian':
-        require_started('supervisor')
+        require_package = require_deb_package
+        package_name = 'supervisor'
+        daemon_name = 'supervisor'
+        filename = '/etc/supervisor/conf.d/%(name)s.conf' % locals()
     elif family == 'redhat':
-        require_started('supervisord')
-    elif family is 'arch':
-        require_started('supervisord')
+        require_package = require_rpm_package
+        package_name = 'supervisord'
+        daemon_name = 'supervisord'
+        filename = '/etc/supervisord.d/%(name)s.ini' % locals()
+    elif family == 'arch':
+        require_package = require_arch_package
+        package_name = 'supervisor'
+        daemon_name = 'supervisord'
+        filename = '/etc/supervisor.d/%(name)s.ini' % locals()
     else:
         raise UnsupportedFamily(supported=['debian', 'redhat', 'arch'])
+    if use_pip:
+        require_package = require_python_package
+        package_name = 'supervisor'
+
+    # install supervisor and make sure its started
+    require_package(package_name)
+    require_started(daemon_name)
 
     # Set default parameters
     params = {}
@@ -94,13 +99,6 @@ def process(name, use_pip=False, **kwargs):
         lines.append("%s=%s" % (key, value))
 
     # Upload config file
-    if family == 'debian':
-        filename = '/etc/supervisor/conf.d/%(name)s.conf' % locals()
-    elif family == 'redhat':
-        filename = '/etc/supervisord.d/%(name)s.ini' % locals()
-    elif family == 'arch':
-        filename = '/etc/supervisor.d/%(name)s.ini' % locals()
-
     with watch(filename, callback=update_config, use_sudo=True):
         require_file(filename, contents='\n'.join(lines), use_sudo=True)
 
