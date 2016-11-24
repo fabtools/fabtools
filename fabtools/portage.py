@@ -9,7 +9,6 @@ using the Portage_ package manager.
 .. _Portage: http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=2&chap=1
 
 """
-from __future__ import with_statement
 
 import re
 
@@ -54,8 +53,8 @@ def is_installed(pkg_name):
         pkg_name = pkg_name[1:]
 
     match = re.search(
-            r"\n\[ebuild +(?P<code>\w+) *\] .*%(pkg_name)s.*" % locals(),
-            res.stdout)
+        r"\n\[ebuild +(?P<code>\w+) *\] .*%(pkg_name)s.*" % locals(),
+        res.stdout)
     if match and match.groupdict()["code"] in ("U", "R"):
         return True
     else:

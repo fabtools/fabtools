@@ -2,8 +2,8 @@
 Utilities
 =========
 """
-from __future__ import with_statement
 
+from pipes import quote
 import os
 import posixpath
 
@@ -44,3 +44,18 @@ def abspath(path, local=False):
         path = path_mod.join(cwd, path)
 
     return path_mod.normpath(path)
+
+
+def download(url, retry=10):
+    from fabtools.require.curl import command as require_curl
+    require_curl()
+    run('curl --silent --retry %s -O %s' % (retry, url))
+
+
+def read_file(path):
+    with hide('running', 'stdout'):
+        return run('cat {0}'.format(quote(path)))
+
+
+def read_lines(path):
+    return read_file(path).splitlines()

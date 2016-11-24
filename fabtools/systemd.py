@@ -7,14 +7,16 @@ This module provides low-level tools for managing `systemd`_ services.
 .. _systemd: http://www.freedesktop.org/wiki/Software/systemd
 
 """
-from __future__ import with_statement
 
 from fabric.api import hide, settings
 
 from fabtools.utils import run_as_root
 
+
 def action(action, service):
-	return run_as_root('systemctl %s %s.service' % (action, service,))
+    return run_as_root(
+        'systemctl %s %s.service --no-pager' % (action, service,)
+    )
 
 
 def enable(service):
@@ -52,7 +54,8 @@ def is_running(service):
         if fabtools.systemd.is_running('httpd'):
             print("Service httpd is running!")
     """
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         return action('status', service).succeeded
 
 
@@ -112,6 +115,7 @@ def reload(service):
     """
     action('reload', service)
 
+
 def start_and_enable(service):
     """
     Start and enable a service (convenience function).
@@ -120,6 +124,7 @@ def start_and_enable(service):
     """
     start(service)
     enable(service)
+
 
 def stop_and_disable(service):
     """

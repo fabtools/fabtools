@@ -8,13 +8,11 @@ This module provides high-level tools for managing `Mercurial`_ repositories.
 
 """
 
-from __future__ import with_statement
-
 from fabric.api import run
 
 from fabtools import mercurial
 from fabtools.files import is_dir
-from fabtools.system import UnsupportedFamily
+from fabtools.system import UnsupportedFamily, distrib_family
 
 
 def command():
@@ -33,7 +31,6 @@ def command():
     from fabtools.require.deb import package as require_deb_package
     from fabtools.require.rpm import package as require_rpm_package
     from fabtools.require.portage import package as require_portage_package
-    from fabtools.system import distrib_family
 
     res = run('hg --version', quiet=True)
     if res.failed:
@@ -109,6 +106,7 @@ def working_copy(remote_url, path=None, branch="default", update=True,
                              user=user)
     elif not is_dir(path, use_sudo=use_sudo):
         mercurial.clone(remote_url, path=path, use_sudo=use_sudo, user=user)
-        mercurial.update(path=path, branch=branch, use_sudo=use_sudo, user=user)
+        mercurial.update(
+            path=path, branch=branch, use_sudo=use_sudo, user=user)
     else:
         raise ValueError("Invalid combination of parameters.")

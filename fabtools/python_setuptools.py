@@ -8,14 +8,13 @@ the ``easy_install`` command provided by `setuptools`_.
 .. _setuptools: http://pythonhosted.org/setuptools/
 
 """
-from __future__ import with_statement
 
 from fabric.api import cd, run
 
-from fabtools.utils import run_as_root
+from fabtools.utils import download, run_as_root
 
 
-EZ_SETUP_URL = 'https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py'
+EZ_SETUP_URL = 'https://bootstrap.pypa.io/ez_setup.py'
 
 
 def package_version(name, python_cmd='python'):
@@ -27,7 +26,7 @@ def package_version(name, python_cmd='python'):
     cmd = '''%(python_cmd)s -c \
         "import pkg_resources;\
         dist = pkg_resources.get_distribution('%(name)s');\
-        print dist.version"
+        print(dist.version)"
         ''' % locals()
     res = run(cmd, quiet=True)
     if res.succeeded:
@@ -74,12 +73,9 @@ def _install_from_scratch(python_cmd, use_sudo):
     """
     Install setuptools from scratch using installer
     """
-    from fabtools.require.curl import command as require_curl
-
-    require_curl()
 
     with cd("/tmp"):
-        run('curl --silent -O %s' % EZ_SETUP_URL)
+        download(EZ_SETUP_URL)
 
         command = '%(python_cmd)s ez_setup.py' % locals()
         if use_sudo:

@@ -6,13 +6,11 @@ This module provides high-level tools for managing opkg packages
 and repositories.
 
 """
-from __future__ import with_statement
 
 from fabtools.opkg import (
     install,
     is_installed,
     uninstall,
-    update_index,
 )
 
 
@@ -82,4 +80,3 @@ def nopackages(pkg_list):
     pkg_list = [pkg for pkg in pkg_list if is_installed(pkg)]
     if pkg_list:
         uninstall(pkg_list)
-

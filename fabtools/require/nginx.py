@@ -8,7 +8,6 @@ web server and managing the configuration of web sites.
 .. _nginx: http://nginx.org/
 
 """
-from __future__ import with_statement
 
 from fabric.api import (
     abort,
@@ -20,11 +19,12 @@ from fabric.colors import red
 from fabtools.deb import is_installed
 from fabtools.files import is_link
 from fabtools.nginx import disable, enable
-from fabtools.require.deb import package
+from fabtools.service import reload as reload_service
+from fabtools.system import UnsupportedFamily, distrib_family
+from fabtools.utils import run_as_root
+
 from fabtools.require.files import template_file
 from fabtools.require.service import started as require_started
-from fabtools.service import reload as reload_service
-from fabtools.utils import run_as_root
 
 
 def server(package_name='nginx'):
@@ -41,7 +41,18 @@ def server(package_name='nginx'):
         require.nginx.server()
 
     """
-    package(package_name)
+    family = distrib_family()
+    if family == 'debian':
+        _server_debian(package_name)
+    else:
+        raise UnsupportedFamily(supported=['debian'])
+
+
+def _server_debian(package_name):
+
+    from fabtools.require.deb import package as require_deb_package
+
+    require_deb_package(package_name)
     require_started('nginx')
 
 
@@ -72,7 +83,7 @@ def disabled(config):
 
         from fabtools import require
 
-        require.nginx.site_disabled('default')
+        require.nginx.disabled('default')
 
     """
     disable(config)
@@ -121,12 +132,14 @@ def site(server_name, template_contents=None, template_source=None,
     context.update(kwargs)
     context['server_name'] = server_name
 
-    template_file(config_filename, template_contents, template_source, context, use_sudo=True)
+    template_file(config_filename, template_contents, template_source,
+                  context, use_sudo=True)
 
     link_filename = '/etc/nginx/sites-enabled/%s.conf' % server_name
     if enabled:
         if not is_link(link_filename):
-            run_as_root("ln -s %(config_filename)s %(link_filename)s" % locals())
+            run_as_root(
+                "ln -s %(config_filename)s %(link_filename)s" % locals())
 
         # Make sure we don't break the config
         if check_config:

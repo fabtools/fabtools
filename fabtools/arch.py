@@ -1,12 +1,11 @@
 """
-Archlinux packages
-==================
+Arch Linux packages
+===================
 
-This module provides tools to manage Archlinux packages
+This module provides tools to manage Arch Linux packages
 and repositories.
 
 """
-from __future__ import with_statement
 
 from fabric.api import hide, run, settings
 
@@ -14,7 +13,8 @@ from fabtools.utils import run_as_root
 
 
 def pkg_manager():
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         output = run('which yaourt', warn_only=True)
         if output.succeeded:
             manager = 'yaourt'
@@ -31,7 +31,9 @@ def update_index(quiet=True):
 
     manager = pkg_manager()
     if quiet:
-        with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+        with settings(
+                hide('running', 'stdout', 'stderr', 'warnings'),
+                warn_only=True):
             run_as_root("%(manager)s -Sy" % locals())
     else:
         run_as_root("%(manager)s -Sy" % locals())
@@ -47,17 +49,18 @@ def upgrade():
 
 def is_installed(pkg_name):
     """
-    Check if an Archlinux package is installed.
+    Check if an Arch Linux package is installed.
     """
 
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = run("pacman -Q %(pkg_name)s" % locals())
         return res.succeeded
 
 
 def install(packages, update=False, options=None):
     """
-    Install one or more Archlinux packages.
+    Install one or more Arch Linux packages.
 
     If *update* is ``True``, the package definitions will be updated
     first, using :py:func:`~fabtools.arch.update_index`.
@@ -92,7 +95,7 @@ def install(packages, update=False, options=None):
 
 def uninstall(packages, options=None):
     """
-    Remove one or more Archlinux packages.
+    Remove one or more Arch Linux packages.
 
     Extra *options* may be passed to ``pacman`` if necessary.
     """

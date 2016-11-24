@@ -1,10 +1,54 @@
 Changelog
 =========
 
-Version 0.18.0 (unreleased)
+0.21.0 (unreleased)
+-------------------
+
+- Nothing changed yet.
+
+
+0.20.0 (2016-10-12)
+-------------------
+
+* Fix Apache support on Ubuntu 14.04 and Debian 8.0
+* Change maxsplit argument value to 1 for vagrant
+* Fix nodejs fails to read json
+* Fix typo in PostgreSQL require documentation
+* Fix typo in files and nginx documentation
+* Clean the code and be pep8 compliant
+* In PostgreSQL put the username in double quotes
+* Use Python 3 compatible print statement when checking setuptools
+* In network add MAC address information
+* Add support for conda package manager
+* Add the support of host options for MySQL
+* Fix different sfdisk version
+
+
+Version 0.19.0 (2014-07-05)
 ---------------------------
 
-* Add drop_user and drop_database in ``postgres`` module
+* Python improvements:
+    * use new official download URLs for ``setuptools`` and ``pip`` (Arnaud Vazard)
+    * fix ``virtualenv`` when the ``local`` flag is passed (Troy J. Farrell)
+* Node.js improvements:
+    * fix ``package_version`` when no package is installed (Alexandre Patry)
+    * add a ``checkinstall`` flasg to build and install a distribution package
+      when installing from source (Fabien Meghazi)
+* Arch Linux improvements:
+    * add support for the ManjaroLinux variant (Gaëtan Lamothe)
+    * fixsupport for ``setuptools`` (Robin Lambertz)
+    * fix support for ``supervisor`` (Robin Lambertz)
+    * recognize all known distribution IDs and normalize them to ``Arch``
+* Debian/Ubuntu improvements:
+    * add support for the Elementary OS variant (Arnaud Vazard)
+
+
+Version 0.18.0 (2014-05-02)
+---------------------------
+
+This release requires Fabric >= 1.7.0 and drops support for Python 2.5.
+
+* Add ``drop_user`` and ``drop_database`` in ``postgres`` module
 * Add LinuxMint to the Debian family list (Frank Rousseau)
 * Add support for git remotes (Bryan Folliot)
 * Add support for Tomcat (Jan Kowalski)
@@ -13,12 +57,33 @@ Version 0.18.0 (unreleased)
 * Add support for GVM (Groovy environment manager) (Bryan Folliot)
 * Documentation fixes and updates
 * MySQL improvements:
-  * do not require a password when a specific user is specified
-  * expose ``mysql.query`` in the public API
-* Switch to pip 1.5 in ``python`` modules (**warning**: you will need
-  to use the ``allow_external`` and/or ``allow_unverified`` options
-  to install packages not hosted on PyPI)
-* Add require.files.temporary_directory()
+    * do not require a password when a specific user is specified
+    * expose ``mysql.query`` in the public API
+* Python improvements:
+    * Switch to pip 1.5 (**warning**: you will need to use the
+      ``allow_external`` and/or ``allow_unverified`` options to install
+      packages not hosted on PyPI)
+    * Update GitHub download URL for pip installer (Guillaume Andreu Sabater)
+    * Retry when trying to download pip/setuptools installers
+    * Add support for pip's ``--exists-action`` option
+* Improved OS support in ``distrib_family()`` and new
+  ``UnsupportedFamily`` exception
+* Make sure to install ``curl`` before using it (ponty)
+* Vagrant improvements:
+    * Add function to get the Vagrant version
+    * Add function to get the status of a Vagrant machine
+    * Add function to get the list of Vagrant machines
+    * Add function to get the list of Vagrant base boxes
+* Files improvements:
+    * Add ``temp_dir`` parameter to ``require.file`` (default is ``tmp``)
+    * Add ``require.files.temporary_directory``
+    * Add ``files.umask`` to get the user's umask
+    * Fix ``require.file`` ownership and permissions when using ``sudo``
+    * Add helpers to copy, move, symlink or remove files
+* Fix ``require.deb.uptodate_index``
+* Use ``rpm`` instead of ``yum`` to check if an RPM package is installed
+* Update JDK install to match changes to the Oracle web site
+* Fix ``cron.add_task`` (thanks to Dan Fairs and Ikuya Yamada)
 
 
 Version 0.17.0 (2013-12-06)

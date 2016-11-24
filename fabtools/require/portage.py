@@ -9,13 +9,11 @@ and repositories using the Portage_ package manager.
 .. _Portage: http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=2&chap=1
 
 """
-from __future__ import with_statement
 
 from fabtools.portage import (
     install,
     is_installed,
     uninstall,
-    update_index,
 )
 
 

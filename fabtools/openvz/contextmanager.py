@@ -2,7 +2,6 @@
 OpenVZ containers
 =================
 """
-from __future__ import with_statement
 
 from contextlib import contextmanager
 import hashlib
@@ -67,8 +66,8 @@ def guest(name_or_ctid):
     _orig_put = fabric.sftp.SFTP.put
 
     def run_guest_command(command, shell=True, pty=True, combine_stderr=True,
-        sudo=False, user=None, quiet=False, warn_only=False, stdout=None,
-        stderr=None, group=None, timeout=None):
+                          sudo=False, user=None, quiet=False, warn_only=False,
+                          stdout=None, stderr=None, group=None, timeout=None):
         """
         Run command inside a guest container
         """
@@ -183,7 +182,8 @@ def _noop():
 
 
 def _run_host_command(command, shell=True, pty=True, combine_stderr=True,
-    quiet=False, warn_only=False, stdout=None, stderr=None, timeout=None):
+                      quiet=False, warn_only=False, stdout=None, stderr=None,
+                      timeout=None):
     """
     Run host wrapper command as root
 

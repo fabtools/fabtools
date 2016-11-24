@@ -11,7 +11,6 @@ packages using `npm`_.
 .. _npm: http://npmjs.org/
 
 """
-from __future__ import with_statement
 
 try:
     import json
@@ -27,9 +26,11 @@ from fabtools.utils import run_as_root
 DEFAULT_VERSION = '0.10.13'
 
 
-def install_from_source(version=DEFAULT_VERSION):
+def install_from_source(version=DEFAULT_VERSION, checkinstall=False):
     """
     Install Node JS from source.
+
+    If *checkinstall* is ``True``, a distribution package will be built.
 
     ::
 
@@ -49,20 +50,26 @@ def install_from_source(version=DEFAULT_VERSION):
     family = distrib_family()
 
     if family == 'debian':
-        require_deb_packages([
+        packages = [
             'build-essential',
             'libssl-dev',
             'python',
-        ])
+        ]
+        if checkinstall:
+            packages.append('checkinstall')
+        require_deb_packages(packages)
 
     elif family == 'redhat':
-        require_rpm_packages([
+        packages = [
             'gcc',
             'gcc-c++',
             'make',
             'openssl-devel',
             'python',
-        ])
+        ]
+        if checkinstall:
+            packages.append('checkinstall')
+        require_rpm_packages(packages)
 
     filename = 'node-v%s.tar.gz' % version
     foldername = filename[0:-7]
@@ -75,7 +82,12 @@ def install_from_source(version=DEFAULT_VERSION):
     with cd(foldername):
         run('./configure')
         run('make -j%d' % (cpus() + 1))
-        run_as_root('make install')
+        if checkinstall:
+            run_as_root(
+                'checkinstall -y --pkgname=nodejs --pkgversion=%(version) '
+                '--showinstall=no make install' % locals())
+        else:
+            run_as_root('make install')
     run('rm -rf %(filename)s %(foldername)s' % locals())
 
 
@@ -154,9 +166,9 @@ def package_version(package, local=False, npm='npm'):
     options = ' '.join(options)
 
     with hide('running', 'stdout'):
-        res = run('%(npm)s list %(options)s' % locals())
+        res = run('%(npm)s list %(options)s' % locals(), pty=False)
 
-    dependencies = json.loads(res)['dependencies']
+    dependencies = json.loads(res).get('dependencies', {})
     pkg_data = dependencies.get(package)
     if pkg_data:
         return pkg_data['version']

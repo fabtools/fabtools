@@ -11,11 +11,12 @@ This module provides tools for installing `GVM`_ : the Groovy enVironment Manage
 from fabric.api import run
 from fabric.contrib.files import sed
 
+from fabtools.system import UnsupportedFamily, distrib_family
+
 from fabtools.require.deb import packages as require_deb_packages
 from fabtools.require.oracle_jdk import installed as java
 from fabtools.require.pkg import packages as require_pkg_packages
 from fabtools.require.rpm import packages as require_rpm_packages
-from fabtools.system import UnsupportedFamily, distrib_family
 
 
 def install(java_version=None):

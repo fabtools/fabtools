@@ -2,12 +2,11 @@
 System settings
 ===============
 """
-from __future__ import with_statement
 
 from fabric.api import hide, run, settings
 
 from fabtools.files import is_file
-from fabtools.utils import run_as_root
+from fabtools.utils import read_lines, run_as_root
 
 
 class UnsupportedFamily(Exception):
@@ -31,7 +30,8 @@ class UnsupportedFamily(Exception):
     def __init__(self, supported):
         self.supported = supported
         self.distrib = distrib_id()
-        msg = "Unsupported system %s (supported families: %s)" % (self.distrib, ', '.join(supported))
+        self.family = distrib_family()
+        msg = "Unsupported family %s (%s). Supported families: %s" % (self.family, self.distrib, ', '.join(supported))
         super(UnsupportedFamily, self).__init__(msg)
 
 
@@ -40,8 +40,8 @@ def distrib_id():
     Get the OS distribution ID.
 
     Returns a string such as ``"Debian"``, ``"Ubuntu"``, ``"RHEL"``,
-    ``"CentOS"``, ``"SLES"``, ``"Fedora"``, ``"Archlinux"``, ``"Gentoo"``,
-    ``"SunOS"``...
+    ``"CentOS"``, ``"SLES"``, ``"Fedora"``, ``"Arch"``, ``"Gentoo"``,
+    ``"SunOS"``, ``"SUSE"``...
 
     Example::
 
@@ -57,17 +57,21 @@ def distrib_id():
 
         if kernel == 'Linux':
             # lsb_release works on Ubuntu and Debian >= 6.0
-            # but is not always included in other distros such as:
-            # Gentoo
+            # but is not always included in other distros
             if is_file('/usr/bin/lsb_release'):
-                return run('lsb_release --id --short')
+                id_ = run('lsb_release --id --short')
+                if id in ['arch', 'Archlinux']:  # old IDs used before lsb-release 1.4-14
+                    id_ = 'Arch'
+                return id_
+                if id in ['SUSE LINUX', 'openSUSE project']:
+                    id_ = 'SUSE'
             else:
                 if is_file('/etc/debian_version'):
                     return "Debian"
                 elif is_file('/etc/fedora-release'):
                     return "Fedora"
                 elif is_file('/etc/arch-release'):
-                    return "Archlinux"
+                    return "Arch"
                 elif is_file('/etc/redhat-release'):
                     release = run('cat /etc/redhat-release')
                     if release.startswith('Red Hat Enterprise Linux'):
@@ -142,7 +146,7 @@ def distrib_family():
     ``sun``, ``other``.
     """
     distrib = distrib_id()
-    if distrib in ['Debian', 'Ubuntu', 'LinuxMint']:
+    if distrib in ['Debian', 'Ubuntu', 'LinuxMint', 'elementary OS']:
         return 'debian'
     elif distrib in ['RHEL', 'CentOS', 'SLES', 'Fedora']:
         return 'redhat'
@@ -150,8 +154,10 @@ def distrib_family():
         return 'sun'
     elif distrib in ['Gentoo']:
         return 'gentoo'
-    elif distrib in ['Archlinux']:
+    elif distrib in ['Arch', 'ManjaroLinux']:
         return 'arch'
+    elif distrib in ['SUSE']:
+        return 'suse'
     else:
         return 'other'
 
@@ -209,13 +215,37 @@ def supported_locales():
 
     Each locale is returned as a ``(locale, charset)`` tuple.
     """
-    with settings(hide('running', 'stdout')):
-        if distrib_id() == "Archlinux":
-            res = run("cat /etc/locale.gen")
-        else:
-            res = run('cat /usr/share/i18n/SUPPORTED')
-    return [line.strip().split(' ') for line in res.splitlines()
-            if not line.startswith('#')]
+    family = distrib_family()
+    if family == 'debian':
+        return _parse_locales('/usr/share/i18n/SUPPORTED')
+    elif family == 'arch':
+        return _parse_locales('/etc/locale.gen')
+    elif family == 'redhat':
+        return _supported_locales_redhat()
+    else:
+        raise UnsupportedFamily(supported=['debian', 'arch', 'redhat'])
+
+
+def _parse_locales(path):
+    lines = read_lines(path)
+    return list(_split_on_spaces(_strip(_remove_comments(lines))))
+
+
+def _split_on_spaces(lines):
+    return (line.split(' ') for line in lines)
+
+
+def _strip(lines):
+    return (line.strip() for line in lines)
+
+
+def _remove_comments(lines):
+    return (line for line in lines if not line.startswith('#'))
+
+
+def _supported_locales_redhat():
+    res = run('/usr/bin/locale -a')
+    return [(locale, None) for locale in res.splitlines()]
 
 
 def get_arch():

@@ -9,15 +9,12 @@ and traditional SysV-style ``/etc/init.d/`` scripts.
 .. _upstart: http://upstart.ubuntu.com/
 
 """
-from __future__ import with_statement
 
 from fabric.api import hide, settings
 
-from fabtools.utils import run_as_root
-
 from fabtools import systemd
-
 from fabtools.system import using_systemd, distrib_family
+from fabtools.utils import run_as_root
 
 
 def is_running(service):

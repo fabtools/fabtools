@@ -4,13 +4,8 @@ python:
   - "2.7"
 # command to install dependencies
 install:
-  - "if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install mock unittest2 --use-mirrors ; fi"
-  - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then pip install mock --use-mirrors ; fi"
-  - "pip install -e . --use-mirrors"
-# disable vagrant-based integration tests
-env:
-  - FABTOOLS_TEST_BOXES=""
+  - "pip install mock pytest"
+  - "pip install -e ."
 # command to run tests
 script:
-  - "if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then unit2 discover ; fi"
-  - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then python -m unittest discover ; fi"
+  - "py.test -rxs -rf"

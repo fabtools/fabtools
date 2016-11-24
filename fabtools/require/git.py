@@ -8,12 +8,11 @@ This module provides high-level tools for managing `Git`_ repositories.
 
 """
 
-from __future__ import with_statement
-
 from fabric.api import run
 
 from fabtools import git
 from fabtools.files import is_dir
+from fabtools.system import UnsupportedFamily, distrib_family
 
 
 def command():
@@ -33,7 +32,6 @@ def command():
     from fabtools.require.pkg import package as require_pkg_package
     from fabtools.require.rpm import package as require_rpm_package
     from fabtools.require.portage import package as require_portage_package
-    from fabtools.system import distrib_family
 
     res = run('git --version', quiet=True)
     if res.failed:
@@ -47,7 +45,8 @@ def command():
         elif family == 'gentoo':
             require_portage_package('dev-vcs/git')
         else:
-            raise NotImplementedError()
+            raise UnsupportedFamily(
+                supported=['debian', 'redhat', 'sun', 'gentoo'])
 
 
 def working_copy(remote_url, path=None, branch="master", update=True,

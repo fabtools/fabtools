@@ -2,7 +2,6 @@
 Shorewall firewall
 ==================
 """
-from __future__ import with_statement
 
 from fabric.api import hide, puts, settings, shell_env
 from fabric.contrib.files import sed
@@ -18,8 +17,9 @@ from fabtools.shorewall import (
     is_started,
     is_stopped,
 )
+from fabtools.system import UnsupportedFamily, distrib_family
 
-from fabtools.require.deb import package
+from fabtools.require.deb import package as require_deb_package
 from fabtools.require.files import file
 
 
@@ -276,7 +276,12 @@ def firewall(zones=None, interfaces=None, policy=None, rules=None,
         )
 
     """
-    package('shorewall')
+
+    family = distrib_family()
+    if family != 'debian':
+        raise UnsupportedFamily(supported=['debian'])
+
+    require_deb_package('shorewall')
 
     with watch(CONFIG_FILES) as config:
         _zone_config(zones)
