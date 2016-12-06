@@ -7,7 +7,6 @@ This module provides tools for installing `Tomcat`_.
 .. _Tomcat: http://tomcat.apache.org/
 
 """
-from __future__ import with_statement
 
 import os
 import re
@@ -16,8 +15,8 @@ from fabric.api import cd, hide, run, settings
 from fabric.operations import put
 
 from fabtools.files import is_file, is_link, is_dir
-from fabtools.service import start, stop
 from fabtools.utils import run_as_root
+
 
 # Default parameters
 DEFAULT_VERSION = '7.0.47'
@@ -56,7 +55,8 @@ def install_from_source(path=DEFAULT_INSTALLATION_PATH,
         # Make sure we have the tarball downloaded.
         if not is_file(os.path.join('/tmp/', file_name)):
             # Otherwise, download the tarball based on our mirror and version.
-            tomcat_url = '%s/dist/tomcat/tomcat-%s/v%s/bin/%s' % (mirror, version_major, version, file_name)
+            tomcat_url = '%s/dist/tomcat/tomcat-%s/v%s/bin/%s' % (
+                mirror, version_major, version, file_name)
 
             # Ensure the file has been downloaded
             require_file(url=tomcat_url)
@@ -68,7 +68,8 @@ def install_from_source(path=DEFAULT_INSTALLATION_PATH,
         if is_dir(path):
             if overwrite is False:
                 # Raise exception as we don't want to overwrite
-                raise OSError("Path %s already exists and overwrite not set." % path)
+                raise OSError(
+                    "Path %s already exists and overwrite not set." % path)
             else:
                 # Otherwise, backup the tomcat path
                 backup_installation_path = path + ".backup"
@@ -94,11 +95,17 @@ def install_from_source(path=DEFAULT_INSTALLATION_PATH,
 def configure_tomcat(path, overwrite=False):
     from fabric.contrib.files import append
     startup_script = """
-# Tomcat auto-start
-#
-# description: Auto-starts tomcat
-# processname: tomcat
-# pidfile: /var/run/tomcat.pid
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          tomcat
+# Required-Start:    $local_fs $remote_fs $network $syslog $named
+# Required-Stop:     $local_fs $remote_fs $network $syslog $named
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# X-Interactive:     true
+# Short-Description: Tomcat
+# Description:       Start Tomcat
+### END INIT INFO
 
 case $1 in
 start)
@@ -117,7 +124,8 @@ exit 0""" % {'path': path}
     # Check for existing files and overwrite.
     if is_file('/etc/init.d/tomcat'):
         if overwrite is False:
-            raise OSError("/etc/init.d/tomcat already exists and not overwriting.")
+            raise OSError(
+                "/etc/init.d/tomcat already exists and not overwriting.")
         else:
             run_as_root("rm -f /etc/init.d/tomcat")
 
@@ -136,14 +144,14 @@ def start_tomcat():
     """
     Start the Tomcat service.
     """
-    start('tomcat')
+    run_as_root('/etc/init.d/tomcat start')
 
 
 def stop_tomcat():
     """
     Stop the Tomcat service.
     """
-    stop('tomcat')
+    run_as_root('/etc/init.d/tomcat stop')
 
 
 def version(path):
@@ -181,4 +189,6 @@ def deploy_application(war_file, webapp_path=None):
         webapp_path = os.path.join(DEFAULT_INSTALLATION_PATH, 'webapps')
 
     # Now copy our WAR into the webapp path.
-    put(local_path=war_file, remote_path=os.path.join(webapp_path, war_file), use_sudo=True)
+    put(
+        local_path=war_file, remote_path=os.path.join(webapp_path, war_file),
+        use_sudo=True)

@@ -5,7 +5,6 @@ PostgreSQL users and databases
 This module provides tools for creating PostgreSQL users and databases.
 
 """
-from __future__ import with_statement
 
 from fabric.api import cd, hide, sudo, settings
 
@@ -59,7 +58,7 @@ def create_user(name, password, superuser=False, createdb=False,
     password_type = 'ENCRYPTED' if encrypted_password else 'UNENCRYPTED'
     options.append("%s PASSWORD '%s'" % (password_type, password))
     options = ' '.join(options)
-    _run_as_pg('''psql -c "CREATE USER %(name)s %(options)s;"''' % locals())
+    _run_as_pg('''psql -c "CREATE USER "'"%(name)s"'" %(options)s;"''' % locals())
 
 
 def drop_user(name):
@@ -129,4 +128,5 @@ def create_schema(name, database, owner=None):
     if owner:
         _run_as_pg('''psql %(database)s -c "CREATE SCHEMA %(name)s AUTHORIZATION %(owner)s"''' % locals())
     else:
-        _run_as_pg('''psql %(database)s -c "CREATE SCHEMA %(name)s"''' % locals())
+        _run_as_pg(
+            '''psql %(database)s -c "CREATE SCHEMA %(name)s"''' % locals())

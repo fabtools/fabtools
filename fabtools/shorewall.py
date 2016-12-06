@@ -2,7 +2,6 @@
 Shorewall firewall
 ==================
 """
-from __future__ import with_statement
 
 from socket import gethostbyname
 import re

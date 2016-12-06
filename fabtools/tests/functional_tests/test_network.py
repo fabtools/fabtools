@@ -1,7 +1,5 @@
 import socket
 
-from fabric.api import task
-
 
 def is_valid_ipv4_address(address):
     try:
@@ -29,25 +27,27 @@ def is_valid_address(address):
     return is_valid_ipv4_address(address) or is_valid_ipv6_address()
 
 
-@task
-def network():
-    """
-    Test network interfaces
-    """
+def test_interfaces_ipv4_addresses():
 
-    import fabtools
+    from fabtools.network import interfaces
+    from fabtools.network import address
 
-    interfaces = fabtools.network.interfaces()
+    for interface in interfaces():
+        ipv4_address = address(interface)
+        assert is_valid_ipv4_address(ipv4_address)
 
-    # Check IPv4 addresses
-    for interface in interfaces:
-        ipv4_address = fabtools.network.address(interface)
-        assert is_valid_ipv4_address(ipv4_address), ipv4_address
 
-    # Check loopback interface
-    assert 'lo' in interfaces, interfaces
-    assert fabtools.network.address('lo') == '127.0.0.1'
+def test_loopback_interface_exists():
+    from fabtools.network import interfaces
+    assert 'lo' in interfaces()
 
-    # Check name servers
-    for address in fabtools.network.nameservers():
-        assert is_valid_address(address), address
+
+def test_loopback_interface_address():
+    from fabtools.network import address
+    assert address('lo') == '127.0.0.1'
+
+
+def test_name_servers():
+    from fabtools.network import nameservers
+    for address in nameservers():
+        assert is_valid_address(address)

@@ -8,11 +8,10 @@ processes using `supervisor`_.
 .. _supervisor: http://supervisord.org/
 
 """
-from __future__ import with_statement
 
 from fabtools.files import watch
 from fabtools.supervisor import update_config, process_status, start_process
-from fabtools.system import UnsupportedFamily, distrib_family, distrib_id
+from fabtools.system import UnsupportedFamily, distrib_family
 
 
 def process(name, **kwargs):
@@ -62,7 +61,7 @@ def process(name, **kwargs):
         require_deb_package('supervisor')
         require_started('supervisor')
     elif family == 'redhat':
-        require_rpm_package('supervisor')
+        require_rpm_package('supervisord')
         require_started('supervisord')
     elif family == 'arch':
         require_arch_package('supervisor')

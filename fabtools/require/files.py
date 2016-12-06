@@ -6,7 +6,6 @@ This module provides high-level tools for managing files and
 directories.
 
 """
-from __future__ import with_statement
 
 from pipes import quote
 from tempfile import mkstemp
@@ -26,7 +25,6 @@ from fabtools.files import (
     umask,
 )
 from fabtools.utils import run_as_root
-import fabtools.files
 
 
 BLOCKSIZE = 2 ** 20  # 1MB
@@ -146,7 +144,7 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
             path = os.path.basename(urlparse(url).path)
 
         if not is_file(path) or md5 and md5sum(path) != md5:
-            func('wget --progress=dot:mega %(url)s -O %(path)s' % locals())
+            func('wget --progress=dot:mega "%(url)s" -O "%(path)s"' % locals())
 
     # 3) A local filename, or a content string, is specified
     else:
@@ -197,7 +195,8 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
         func('chmod %(mode)s "%(path)s"' % locals())
 
 
-def template_file(path=None, template_contents=None, template_source=None, context=None, **kwargs):
+def template_file(path=None, template_contents=None, template_source=None,
+                  context=None, **kwargs):
     """
     Require a file whose contents is defined by a template.
     """

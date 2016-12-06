@@ -2,7 +2,6 @@
 PostgreSQL users and databases
 ==============================
 """
-from __future__ import with_statement
 
 from fabric.api import cd, hide, run, settings
 from fabtools.files import is_file
@@ -12,7 +11,8 @@ from fabtools.postgres import (
     database_exists,
     user_exists,
 )
-from fabtools.require.deb import package
+from fabtools.system import UnsupportedFamily, distrib_family
+
 from fabtools.require.service import started, restarted
 from fabtools.require.system import locale as require_locale
 
@@ -41,11 +41,23 @@ def server(version=None):
         require.postgres.server()
 
     """
+    family = distrib_family()
+    if family == 'debian':
+        _server_debian(version)
+    else:
+        raise UnsupportedFamily(supported=['debian'])
+
+
+def _server_debian(version):
+
+    from fabtools.require.deb import package as require_deb_package
+
     if version:
         pkg_name = 'postgresql-%s' % version
     else:
         pkg_name = 'postgresql'
-    package(pkg_name)
+
+    require_deb_package(pkg_name)
 
     started(_service_name(version))
 
@@ -66,7 +78,7 @@ def user(name, password, superuser=False, createdb=False,
         require.postgres.user('dbuser', password='somerandomstring')
 
         require.postgres.user('dbuser2', password='s3cr3t',
-            createdb=True, create_role=True, connection_limit=20)
+            createdb=True, createrole=True, connection_limit=20)
 
     """
     if not user_exists(name):

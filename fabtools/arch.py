@@ -6,7 +6,6 @@ This module provides tools to manage Arch Linux packages
 and repositories.
 
 """
-from __future__ import with_statement
 
 from fabric.api import hide, run, settings
 
@@ -14,7 +13,8 @@ from fabtools.utils import run_as_root
 
 
 def pkg_manager():
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         output = run('which yaourt', warn_only=True)
         if output.succeeded:
             manager = 'yaourt'
@@ -31,7 +31,9 @@ def update_index(quiet=True):
 
     manager = pkg_manager()
     if quiet:
-        with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+        with settings(
+                hide('running', 'stdout', 'stderr', 'warnings'),
+                warn_only=True):
             run_as_root("%(manager)s -Sy" % locals())
     else:
         run_as_root("%(manager)s -Sy" % locals())
@@ -50,7 +52,8 @@ def is_installed(pkg_name):
     Check if an Arch Linux package is installed.
     """
 
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = run("pacman -Q %(pkg_name)s" % locals())
         return res.succeeded
 

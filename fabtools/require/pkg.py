@@ -7,7 +7,6 @@ This module provides high-level tools to manage `SmartOS`_ packages.
 .. _SmartOS: http://smartos.org/
 
 """
-from __future__ import with_statement
 
 from fabtools.pkg import (
     install,

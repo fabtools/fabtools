@@ -2,9 +2,9 @@
 Network
 =======
 """
-from __future__ import with_statement
 
 from fabric.api import hide, run, settings, sudo
+
 from fabtools.files import is_file
 
 
@@ -40,6 +40,22 @@ def address(interface):
     else:
         return res.split()[1]
 
+def mac(interface):
+    """
+    Get the MAC address assigned to an interface.
+
+    Example::
+
+        import fabtools
+
+        # Print all configured MAC addresses
+        for interface in fabtools.network.interfaces():
+            print(fabtools.network.mac(interface))
+
+    """
+    with settings(hide('running', 'stdout')):
+        res = sudo("/sbin/ifconfig %(interface)s | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}'" % locals())
+    return res
 
 def nameservers():
     """

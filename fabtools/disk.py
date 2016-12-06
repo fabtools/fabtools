@@ -2,7 +2,6 @@
 Disk Tools
 ==========
 """
-from __future__ import with_statement
 
 import re
 
@@ -31,11 +30,21 @@ def partitions(device=""):
     with settings(hide('running', 'stdout')):
         res = run_as_root('sfdisk -d %(device)s' % locals())
 
-        spart = re.compile(r'(?P<pname>^/.*) : .* Id=(?P<ptypeid>[0-9a-z]+)')
+        # Old SFIDSK
+        spartid = re.compile(r'(?P<pname>^/.*) : .* Id=(?P<ptypeid>[0-9a-z]+)')
+        # New SFDISK
+        sparttype = re.compile(r'(?P<pname>^/.*) : .* type=(?P<ptypeid>[0-9a-z]+)')
         for line in res.splitlines():
-            m = spart.search(line)
+
+            # Old SFIDSK
+            m = spartid.search(line)
             if m:
                 partitions_list[m.group('pname')] = int(m.group('ptypeid'), 16)
+            else:
+                # New SFDISK
+                m = sparttype.search(line)
+                if m:
+                    partitions_list[m.group('pname')] = int(m.group('ptypeid'), 16)
 
     return partitions_list
 
@@ -46,7 +55,7 @@ def getdevice_by_uuid(uuid):
 
     Example::
 
-        from fabtools.disk import getdevice_by_uuid 
+        from fabtools.disk import getdevice_by_uuid
 
         device = getdevice_by_uuid("356fafdc-21d5-408e-a3e9-2b3f32cb2a8c")
         if device:

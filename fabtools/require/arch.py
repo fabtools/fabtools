@@ -6,7 +6,6 @@ This module provides high-level tools for managing Arch Linux packages
 and repositories.
 
 """
-from __future__ import with_statement
 
 from fabtools.arch import (
     install,

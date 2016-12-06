@@ -6,7 +6,6 @@ This module provides tools to manage opkg packages
 and repositories.
 
 """
-from __future__ import with_statement
 
 from fabric.api import hide, run, settings
 
@@ -38,7 +37,8 @@ def is_installed(pkg_name):
     Check if a package is installed.
     """
     manager = MANAGER
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = run("%(manager)s  status %(pkg_name)s" % locals())
         return len(res) > 0
 

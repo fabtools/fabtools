@@ -13,6 +13,7 @@ from fabtools.deb import (
     is_installed,
     preseed_package,
 )
+
 from fabtools.require.service import started
 
 
@@ -36,7 +37,8 @@ def server(mailname):
         preseed_package('postfix', {
             'postfix/main_mailer_type': ('select', 'Internet Site'),
             'postfix/mailname': ('string', mailname),
-            'postfix/destinations': ('string', '%s, localhost.localdomain, localhost ' % mailname),
+            'postfix/destinations': (
+                'string', '%s, localhost.localdomain, localhost ' % mailname),
         })
         install('postfix')
 

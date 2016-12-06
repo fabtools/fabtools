@@ -10,6 +10,7 @@ and containers.
 .. warning:: The remote host needs a patched kernel with OpenVZ support.
 
 """
+
 import os
 
 from fabtools import openvz

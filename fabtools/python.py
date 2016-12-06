@@ -9,7 +9,6 @@ and installing Python packages using the `pip`_ installer.
 .. _pip: http://www.pip-installer.org/
 
 """
-from __future__ import with_statement
 
 from contextlib import contextmanager
 from distutils.version import StrictVersion as V
@@ -25,17 +24,18 @@ from fabtools.files import is_file
 from fabtools.utils import abspath, download, run_as_root
 
 
-GET_PIP_URL = 'https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py'
+GET_PIP_URL = 'https://bootstrap.pypa.io/get-pip.py'
 
 
-def is_pip_installed(version=None, pip_cmd='pip'):
+def is_pip_installed(version=None, python_cmd='python', pip_cmd='pip'):
     """
     Check if `pip`_ is installed.
 
     .. _pip: http://www.pip-installer.org/
     """
-    with settings(hide('running', 'warnings', 'stderr', 'stdout'), warn_only=True):
-        res = run('%(pip_cmd)s --version 2>/dev/null' % locals())
+    with settings(
+            hide('running', 'warnings', 'stderr', 'stdout'), warn_only=True):
+        res = run('%(python_cmd)s %(pip_cmd)s --version 2>/dev/null' % locals())
         if res.failed:
             return False
         if version is None:
@@ -46,7 +46,8 @@ def is_pip_installed(version=None, pip_cmd='pip'):
                 return False
             installed = m.group('version')
             if V(installed) < V(version):
-                puts("pip %s found (version >= %s required)" % (installed, version))
+                puts("pip %s found (version >= %s required)" % (
+                    installed, version))
                 return False
             else:
                 return True
@@ -84,7 +85,7 @@ def install_pip(python_cmd='python', use_sudo=True):
         run('rm -f get-pip.py')
 
 
-def is_installed(package, pip_cmd='pip'):
+def is_installed(package, python_cmd='python', pip_cmd='pip'):
     """
     Check if a Python package is installed (using pip).
 
@@ -101,14 +102,15 @@ def is_installed(package, pip_cmd='pip'):
 
     .. _pip: http://www.pip-installer.org/
     """
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        res = run('%(pip_cmd)s freeze' % locals())
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+        res = run('%(python_cmd)s %(pip_cmd)s freeze' % locals())
     packages = [line.split('==')[0].lower() for line in res.splitlines()]
     return (package.lower() in packages)
 
 
 def install(packages, upgrade=False, download_cache=None, allow_external=None,
-            allow_unverified=None, quiet=False, pip_cmd='pip', use_sudo=False,
+            allow_unverified=None, quiet=False, python_cmd='python', pip_cmd='pip', use_sudo=False,
             user=None, exists_action=None):
     """
     Install Python package(s) using `pip`_.
@@ -138,12 +140,12 @@ def install(packages, upgrade=False, download_cache=None, allow_external=None,
 
     if allow_external in (None, False):
         allow_external = []
-    elif allow_external == True:
+    elif allow_external is True:
         allow_external = packages
 
     if allow_unverified in (None, False):
         allow_unverified = []
-    elif allow_unverified == True:
+    elif allow_unverified is True:
         allow_unverified = packages
 
     options = []
@@ -163,7 +165,7 @@ def install(packages, upgrade=False, download_cache=None, allow_external=None,
 
     packages = ' '.join(packages)
 
-    command = '%(pip_cmd)s install %(options)s %(packages)s' % locals()
+    command = '%(python_cmd)s -m %(pip_cmd)s install %(options)s %(packages)s' % locals()
 
     if use_sudo:
         sudo(command, user=user, pty=False)
@@ -173,7 +175,7 @@ def install(packages, upgrade=False, download_cache=None, allow_external=None,
 
 def install_requirements(filename, upgrade=False, download_cache=None,
                          allow_external=None, allow_unverified=None,
-                         quiet=False, pip_cmd='pip', use_sudo=False,
+                         quiet=False, python_cmd='python', pip_cmd='pip', use_sudo=False,
                          user=None, exists_action=None):
     """
     Install Python packages from a pip `requirements file`_.
@@ -207,7 +209,7 @@ def install_requirements(filename, upgrade=False, download_cache=None,
         options.append('--exists-action=%s' % exists_action)
     options = ' '.join(options)
 
-    command = '%(pip_cmd)s install %(options)s -r %(filename)s' % locals()
+    command = '%(python_cmd)s -m %(pip_cmd)s install %(options)s -r %(filename)s' % locals()
 
     if use_sudo:
         sudo(command, user=user, pty=False)
@@ -216,8 +218,8 @@ def install_requirements(filename, upgrade=False, download_cache=None,
 
 
 def create_virtualenv(directory, system_site_packages=False, venv_python=None,
-               use_sudo=False, user=None, clear=False, prompt=None,
-               virtualenv_cmd='virtualenv'):
+                      use_sudo=False, user=None, clear=False, prompt=None,
+                      virtualenv_cmd='virtualenv'):
     """
     Create a Python `virtual environment`_.
 
