@@ -46,7 +46,6 @@ def query(query, use_sudo=True, **kwargs):
             install('sshpass')
         func_mysql = 'sshpass -p %(password)s mysql' % {'password': password}
         options.append('--password')
-        options.append('--password=%s' % quote(password))
     if mysql_host:
         options.append('--host=%s' % quote(mysql_host))
     options = ' '.join(options)
