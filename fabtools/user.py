@@ -268,12 +268,13 @@ def add_ssh_public_keys(name, filenames):
     for filename in filenames:
 
         with open(filename) as public_key_file:
-            public_key = public_key_file.read().strip()
+            public_keys = public_key_file.read().strip().split("\n")
 
         # we don't use fabric.contrib.files.append() as it's buggy
-        if public_key not in authorized_keys(name):
-            sudo('echo %s >>%s' % (quote(public_key),
-                                   quote(authorized_keys_filename)))
+        for public_key in public_keys:
+            if public_key not in authorized_keys(name):
+                sudo('echo %s >>%s' % (quote(public_key),
+                                    quote(authorized_keys_filename)))
 
 
 def add_host_keys(name, hostname):
