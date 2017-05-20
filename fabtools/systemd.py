@@ -25,7 +25,7 @@ def enable(service):
 
     ::
 
-        fabtools.enable('httpd')
+        fabtools.systemd.enable('httpd')
 
     .. note:: This function is idempotent.
     """
