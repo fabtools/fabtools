@@ -15,9 +15,12 @@ def interfaces():
     with settings(hide('running', 'stdout')):
         if is_file('/usr/sbin/dladm'):
             res = run('/usr/sbin/dladm show-link')
-        else:
+            result = map(lambda line: line.split(' ')[0], res.splitlines()[1:])
+        else is_file('/sbin/ifconfig'):
             res = sudo('/sbin/ifconfig -s')
-    return map(lambda line: line.split(' ')[0], res.splitlines()[1:])
+            result = map(lambda line: line.split(' ')[0], res.splitlines()[1:])
+            result.remove('Iface')
+    return result
 
 
 def address(interface):
@@ -34,12 +37,20 @@ def address(interface):
 
     """
     with settings(hide('running', 'stdout')):
-        res = sudo("/sbin/ifconfig %(interface)s | grep 'inet '" % locals())
-    if 'addr' in res:
-        return res.split()[1].split(':')[1]
-    else:
-        return res.split()[1]
-
+        if is_file('/sbin/ifconfig'):
+            res = sudo("/sbin/ifconfig %(interface)s | grep 'inet '" % locals())
+        elif is_file('/sbin/ip'):
+            res = run("/sbin/ip a show %(interface)s | grep 'inet '" % locals())
+    if interface != "lo":
+        if 'addr' in res:
+            if 'sudo' in res:
+                res = map(lambda line: line.split('addr:')[1], res.splitlines()[1:])
+                res = map(lambda line: line.split(' '), res)
+                return res[0]
+            else:
+                return res.split()[1].split(':')[1]
+        else:
+            return res.split()[1]
 
 def ipv6_addresses(interface):
     """
