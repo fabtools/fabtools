@@ -11,9 +11,9 @@ def now():
         """
         Example::
             import fabtools
-            fabtools.shutdown('now')
+            fabtools.poweroff.now()
             OR
-            fabtools.shutdown('-r')
+            fabtools.poweroff.reboot()
         """
 
         run_as_root('/sbin/shutdown --poweroff')
