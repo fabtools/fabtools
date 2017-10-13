@@ -13,6 +13,11 @@ from six.moves.urllib.parse import urlparse
 import hashlib
 import os
 
+import six
+
+if six.PY2:
+    from future_builtins import oct  # NOQA isort:skip
+
 from fabric.api import hide, put, run, settings
 
 from fabtools.files import (
@@ -190,9 +195,10 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
 
     # Ensure correct mode
     if use_sudo and mode is None:
-        mode = oct(0o666 & ~int(umask(use_sudo=True), base=8))
+        mode = 0o666 & ~int(umask(use_sudo=True), base=8)
+
     if mode and _mode(path, use_sudo) != mode:
-        func('chmod %(mode)s "%(path)s"' % locals())
+        func('chmod %(mode)o "%(path)s"' % locals())
 
 
 def template_file(path=None, template_contents=None, template_source=None,
