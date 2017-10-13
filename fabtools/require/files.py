@@ -9,7 +9,7 @@ directories.
 
 from pipes import quote
 from tempfile import mkstemp
-from urlparse import urlparse
+from six.moves.urllib.parse import urlparse
 import hashlib
 import os
 
@@ -190,7 +190,7 @@ def file(path=None, contents=None, source=None, url=None, md5=None,
 
     # Ensure correct mode
     if use_sudo and mode is None:
-        mode = oct(0666 & ~int(umask(use_sudo=True), base=8))
+        mode = oct(0o666 & ~int(umask(use_sudo=True), base=8))
     if mode and _mode(path, use_sudo) != mode:
         func('chmod %(mode)s "%(path)s"' % locals())
 

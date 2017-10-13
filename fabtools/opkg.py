@@ -8,6 +8,7 @@ and repositories.
 """
 
 from fabric.api import hide, run, settings
+import six
 
 from fabtools.utils import run_as_root
 
@@ -72,7 +73,7 @@ def install(packages, update=False, options=None):
         update_index()
     if options is None:
         options = []
-    if not isinstance(packages, basestring):
+    if not isinstance(packages, six.string_types):
         packages = " ".join(packages)
     options.append("--verbosity=0")
     options = " ".join(options)
@@ -90,7 +91,7 @@ def uninstall(packages, options=None):
     command = "remove"
     if options is None:
         options = []
-    if not isinstance(packages, basestring):
+    if not isinstance(packages, six.string_types):
         packages = " ".join(packages)
     options = " ".join(options)
     cmd = '%(manager)s %(command)s %(options)s %(packages)s' % locals()

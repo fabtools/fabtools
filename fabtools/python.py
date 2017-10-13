@@ -19,6 +19,7 @@ import re
 
 from fabric.api import cd, hide, prefix, run, settings, sudo
 from fabric.utils import puts
+import six
 
 from fabtools.files import is_file
 from fabtools.utils import abspath, download, run_as_root
@@ -135,7 +136,7 @@ def install(packages, upgrade=False, download_cache=None, allow_external=None,
 
     .. _pip: http://www.pip-installer.org/
     """
-    if isinstance(packages, basestring):
+    if isinstance(packages, six.string_types):
         packages = [packages]
 
     if allow_external in (None, False):

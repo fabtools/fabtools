@@ -17,6 +17,7 @@ from fabric.api import (
 )
 from fabric.contrib.files import upload_template as _upload_template
 from fabric.contrib.files import exists
+import six
 
 from fabtools.utils import run_as_root
 
@@ -240,7 +241,7 @@ class watch(object):
     """
 
     def __init__(self, filenames, callback=None, use_sudo=False):
-        if isinstance(filenames, basestring):
+        if isinstance(filenames, six.string_types):
             self.filenames = [filenames]
         else:
             self.filenames = filenames
