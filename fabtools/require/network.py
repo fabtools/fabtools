@@ -37,8 +37,8 @@ def host(ipaddress, hostnames, use_sudo=False):
                     toadd.append(h)
 
             if len(toadd) > 0:
-                print "ADD: %s" % toadd
-                print res
+                print("ADD: %s" % toadd)
+                print(res)
                 hostline = "%s %s" % (res, ' '.join(toadd))
 
                 with hide('stdout', 'warnings'):
