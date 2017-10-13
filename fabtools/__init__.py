@@ -20,6 +20,7 @@ import fabtools.portage
 import fabtools.postgres
 import fabtools.python
 import fabtools.python_setuptools
+import fabtools.poweroff
 import fabtools.rpm
 import fabtools.service
 import fabtools.shorewall
