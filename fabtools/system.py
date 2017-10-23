@@ -60,11 +60,14 @@ def distrib_id():
             # but is not always included in other distros
             if is_file('/usr/bin/lsb_release'):
                 id_ = run('lsb_release --id --short')
-                if id in ['arch', 'Archlinux']:  # old IDs used before lsb-release 1.4-14
+                if id_ in ['arch', 'Archlinux']:  # old IDs used before lsb-release 1.4-14
                     id_ = 'Arch'
-                return id_
-                if id in ['SUSE LINUX', 'openSUSE project']:
+                if id_ in ['SUSE LINUX', 'openSUSE project']:
                     id_ = 'SUSE'
+                if id_ in ['Raspbian']:
+                    id_ = 'Debian'
+                return id_
+
             else:
                 if is_file('/etc/debian_version'):
                     return "Debian"
