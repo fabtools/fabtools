@@ -56,7 +56,7 @@ def is_running(service):
     """
     with settings(
             hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        return action('status', service).succeeded
+        return action('is-active', service).succeeded
 
 
 def start(service):
