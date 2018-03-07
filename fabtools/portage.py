@@ -79,7 +79,7 @@ def install(packages, update=False, options=None):
         fabtools.portage.install('mongodb', update=True)
 
         # Install multiple packages
-        fabtools.arch.install([
+        fabtools.portage.install([
             'dev-db/mongodb',
             'pymongo',
         ])
