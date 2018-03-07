@@ -10,6 +10,7 @@ the ``easy_install`` command provided by `setuptools`_.
 """
 
 from fabric.api import cd, run
+import six
 
 from fabtools.utils import download, run_as_root
 
@@ -124,7 +125,7 @@ def install(packages, upgrade=False, use_sudo=False, python_cmd='python'):
     argv = []
     if upgrade:
         argv.append("-U")
-    if isinstance(packages, basestring):
+    if isinstance(packages, six.string_types):
         argv.append(packages)
     else:
         argv.extend(packages)

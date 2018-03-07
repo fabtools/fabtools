@@ -158,8 +158,8 @@ def guest(name_or_ctid):
         # Handle modes if necessary
         if (local_is_path and mirror_local_mode) or (mode is not None):
             lmode = os.stat(local_path).st_mode if mirror_local_mode else mode
-            lmode = lmode & 07777
-            rmode = rattrs.st_mode & 07777
+            lmode = lmode & 0o7777
+            rmode = rattrs.st_mode & 0o7777
             if lmode != rmode:
                 with hide('everything'):
                     sudo('chmod %o \"%s\"' % (lmode, remote_path))
