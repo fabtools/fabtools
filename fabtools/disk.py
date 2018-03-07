@@ -69,6 +69,16 @@ def getdevice_by_uuid(uuid):
 
         return res
 
+def getdevice_size(device):
+     """
+     Show the Size of disk
+     Example::
+         from fabtools.disk import getdevice_size
+         getdevice_size('sdb')
+     """
+     size = run_as_root('cat /sys/block/%(device)s/size' % locals())
+     size = int(size) * 512 / 1024 / 1024 / 1024
+     return size
 
 def mount(device, mountpoint):
     """
