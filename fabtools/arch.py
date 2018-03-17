@@ -8,12 +8,14 @@ and repositories.
 """
 
 from fabric.api import hide, run, settings
+import six
 
 from fabtools.utils import run_as_root
 
 
 def pkg_manager():
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         output = run('which yaourt', warn_only=True)
         if output.succeeded:
             manager = 'yaourt'
@@ -30,7 +32,9 @@ def update_index(quiet=True):
 
     manager = pkg_manager()
     if quiet:
-        with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+        with settings(
+                hide('running', 'stdout', 'stderr', 'warnings'),
+                warn_only=True):
             run_as_root("%(manager)s -Sy" % locals())
     else:
         run_as_root("%(manager)s -Sy" % locals())
@@ -49,7 +53,8 @@ def is_installed(pkg_name):
     Check if an Arch Linux package is installed.
     """
 
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = run("pacman -Q %(pkg_name)s" % locals())
         return res.succeeded
 
@@ -82,7 +87,7 @@ def install(packages, update=False, options=None):
         update_index()
     if options is None:
         options = []
-    if not isinstance(packages, basestring):
+    if not isinstance(packages, six.string_types):
         packages = " ".join(packages)
     options = " ".join(options)
     cmd = '%(manager)s -S %(options)s %(packages)s' % locals()
@@ -98,7 +103,7 @@ def uninstall(packages, options=None):
     manager = pkg_manager()
     if options is None:
         options = []
-    if not isinstance(packages, basestring):
+    if not isinstance(packages, six.string_types):
         packages = " ".join(packages)
     options = " ".join(options)
     cmd = '%(manager)s -R %(options)s %(packages)s' % locals()

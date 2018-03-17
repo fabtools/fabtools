@@ -8,6 +8,7 @@ and repositories.
 """
 
 from fabric.utils import puts
+import six
 
 from fabtools.deb import (
     add_apt_key,
@@ -24,7 +25,8 @@ from fabtools.utils import run_as_root
 from fabtools import system
 
 
-def key(keyid, filename=None, url=None, keyserver='subkeys.pgp.net', update=False):
+def key(keyid, filename=None, url=None, keyserver='subkeys.pgp.net',
+        update=False):
     """
     Require a PGP key for APT.
 
@@ -47,7 +49,8 @@ def key(keyid, filename=None, url=None, keyserver='subkeys.pgp.net', update=Fals
     """
 
     if not apt_key_exists(keyid):
-        add_apt_key(keyid=keyid, filename=filename, url=url, keyserver=keyserver, update=update)
+        add_apt_key(keyid=keyid, filename=filename, url=url,
+                    keyserver=keyserver, update=update)
 
 
 def source(name, uri, distribution, *components):
@@ -99,7 +102,7 @@ def ppa(name, auto_accept=True, keyserver=None):
     else:
         auto_accept = ''
 
-    if not isinstance(keyserver, basestring) and keyserver:
+    if not isinstance(keyserver, six.string_types) and keyserver:
         keyserver = keyserver[0]
     if keyserver:
         keyserver = '--keyserver ' + keyserver
@@ -110,12 +113,16 @@ def ppa(name, auto_accept=True, keyserver=None):
     source = '/etc/apt/sources.list.d/%(user)s-%(repo)s-%(distrib)s.list' % locals()
 
     if not is_file(source):
-        package('python-software-properties')
+        if release >= 14.04:
+            # add-apt-repository moved to software-properties-common in 14.04
+            package('software-properties-common')
+        else:
+            package('python-software-properties')
         run_as_root('add-apt-repository %(auto_accept)s %(keyserver)s %(name)s' % locals(), pty=False)
         update_index()
 
 
-def package(pkg_name, update=False, version=None):
+def package(pkg_name, update=False, options=None, version=None):
     """
     Require a deb package to be installed.
 
@@ -131,10 +138,10 @@ def package(pkg_name, update=False, version=None):
 
     """
     if not is_installed(pkg_name):
-        install(pkg_name, update=update, version=version)
+        install(pkg_name, update=update, options=options, version=version)
 
 
-def packages(pkg_list, update=False):
+def packages(pkg_list, update=False, options=None):
     """
     Require several deb packages to be installed.
 
@@ -150,7 +157,7 @@ def packages(pkg_list, update=False):
     """
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg)]
     if pkg_list:
-        install(pkg_list, update)
+        install(pkg_list, update=update, options=options)
 
 
 def nopackage(pkg_name):

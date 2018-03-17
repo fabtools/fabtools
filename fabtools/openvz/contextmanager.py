@@ -66,8 +66,8 @@ def guest(name_or_ctid):
     _orig_put = fabric.sftp.SFTP.put
 
     def run_guest_command(command, shell=True, pty=True, combine_stderr=True,
-        sudo=False, user=None, quiet=False, warn_only=False, stdout=None,
-        stderr=None, group=None, timeout=None):
+                          sudo=False, user=None, quiet=False, warn_only=False,
+                          stdout=None, stderr=None, group=None, timeout=None):
         """
         Run command inside a guest container
         """
@@ -158,8 +158,8 @@ def guest(name_or_ctid):
         # Handle modes if necessary
         if (local_is_path and mirror_local_mode) or (mode is not None):
             lmode = os.stat(local_path).st_mode if mirror_local_mode else mode
-            lmode = lmode & 07777
-            rmode = rattrs.st_mode & 07777
+            lmode = lmode & 0o7777
+            rmode = rattrs.st_mode & 0o7777
             if lmode != rmode:
                 with hide('everything'):
                     sudo('chmod %o \"%s\"' % (lmode, remote_path))
@@ -182,7 +182,8 @@ def _noop():
 
 
 def _run_host_command(command, shell=True, pty=True, combine_stderr=True,
-    quiet=False, warn_only=False, stdout=None, stderr=None, timeout=None):
+                      quiet=False, warn_only=False, stdout=None, stderr=None,
+                      timeout=None):
     """
     Run host wrapper command as root
 

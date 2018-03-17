@@ -8,6 +8,7 @@ and repositories.
 """
 
 from fabric.api import hide, run, settings
+import six
 
 from fabtools.utils import run_as_root
 from fabtools.files import getmtime, is_file
@@ -40,7 +41,8 @@ def is_installed(pkg_name):
     """
     Check if a package is installed.
     """
-    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+    with settings(
+            hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = run("dpkg -s %(pkg_name)s" % locals())
         for line in res.splitlines():
             if line.startswith("Status: "):
@@ -85,7 +87,7 @@ def install(packages, update=False, options=None, version=None):
         version = ''
     if version and not isinstance(packages, list):
         version = '=' + version
-    if not isinstance(packages, basestring):
+    if not isinstance(packages, six.string_types):
         packages = " ".join(packages)
     options.append("--quiet")
     options.append("--assume-yes")
@@ -107,7 +109,7 @@ def uninstall(packages, purge=False, options=None):
     command = "purge" if purge else "remove"
     if options is None:
         options = []
-    if not isinstance(packages, basestring):
+    if not isinstance(packages, six.string_types):
         packages = " ".join(packages)
     options.append("--assume-yes")
     options = " ".join(options)
@@ -153,10 +155,20 @@ def get_selections():
     return selections
 
 
+def _validate_apt_key(keyid):
+    instructions = (
+        "\nTo find the keyid for a apt key, try running the following command:\n\n"
+        r"    gpg --with-colons /path/to/file.key | cut -d: -f5 | sed 's/.*\(.\{8\}\)$/\1/'"
+    )
+    if len(keyid) != 8:
+        raise ValueError('keyid should be an 8-character string, not "%(keyid)s" %(instructions)s"' % locals())
+
+
 def apt_key_exists(keyid):
     """
     Check if the given key id exists in apt keyring.
     """
+    _validate_apt_key(keyid)
 
     # Command extracted from apt-key source
     gpg_cmd = 'gpg --ignore-time-conflict --no-options --no-default-keyring --keyring /etc/apt/trusted.gpg'
@@ -199,8 +211,10 @@ def add_apt_key(filename=None, url=None, keyid=None, keyserver='subkeys.pgp.net'
         elif url is not None:
             run_as_root('wget %(url)s -O - | apt-key add -' % locals())
         else:
-            raise ValueError('Either filename, url or keyid must be provided as argument')
+            raise ValueError(
+                'Either filename, url or keyid must be provided as argument')
     else:
+        _validate_apt_key(keyid)
         if filename is not None:
             _check_pgp_key(filename, keyid)
             run_as_root('apt-key add %(filename)s' % locals())

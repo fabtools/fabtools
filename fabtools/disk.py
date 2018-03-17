@@ -30,11 +30,21 @@ def partitions(device=""):
     with settings(hide('running', 'stdout')):
         res = run_as_root('sfdisk -d %(device)s' % locals())
 
-        spart = re.compile(r'(?P<pname>^/.*) : .* Id=(?P<ptypeid>[0-9a-z]+)')
+        # Old SFIDSK
+        spartid = re.compile(r'(?P<pname>^/.*) : .* Id=(?P<ptypeid>[0-9a-z]+)')
+        # New SFDISK
+        sparttype = re.compile(r'(?P<pname>^/.*) : .* type=(?P<ptypeid>[0-9a-z]+)')
         for line in res.splitlines():
-            m = spart.search(line)
+
+            # Old SFIDSK
+            m = spartid.search(line)
             if m:
                 partitions_list[m.group('pname')] = int(m.group('ptypeid'), 16)
+            else:
+                # New SFDISK
+                m = sparttype.search(line)
+                if m:
+                    partitions_list[m.group('pname')] = int(m.group('ptypeid'), 16)
 
     return partitions_list
 
@@ -59,6 +69,16 @@ def getdevice_by_uuid(uuid):
 
         return res
 
+def getdevice_size(device):
+     """
+     Show the Size of disk
+     Example::
+         from fabtools.disk import getdevice_size
+         getdevice_size('sdb')
+     """
+     size = run_as_root('cat /sys/block/%(device)s/size' % locals())
+     size = int(size) * 512 / 1024 / 1024 / 1024
+     return size
 
 def mount(device, mountpoint):
     """

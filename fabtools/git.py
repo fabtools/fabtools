@@ -17,7 +17,7 @@ from fabric.context_managers import cd
 from fabtools.utils import run_as_root
 
 
-def clone(remote_url, path=None, use_sudo=False, user=None):
+def clone(remote_url, path=None, use_sudo=False, user=None, branch=None):
     """
     Clone a remote Git repository into a new directory.
 
@@ -36,9 +36,16 @@ def clone(remote_url, path=None, use_sudo=False, user=None):
                  with the given user.  If ``use_sudo is False`` this parameter
                  has no effect.
     :type user: str
+
+    :param branch: Instead of pointing the newly created HEAD to the branch
+                   pointed to by the cloned repository's HEAD, point to
+                   branch ``branch`` instead.
+    :type branch: str
     """
 
     cmd = 'git clone --quiet %s' % remote_url
+    if branch is not None:
+        cmd = cmd + ' -b %s' % branch
     if path is not None:
         cmd = cmd + ' %s' % path
 

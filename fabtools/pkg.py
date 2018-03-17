@@ -9,6 +9,7 @@ This module provides tools to manage `SmartOS`_ packages.
 """
 
 from fabric.api import hide, quiet, run, settings
+import six
 
 from fabtools.files import is_file
 from fabtools.utils import run_as_root
@@ -82,12 +83,14 @@ def install(packages, update=False, yes=None, options=None):
         options = []
     elif isinstance(options, str):
         options = [options]
-    if not isinstance(packages, basestring):
+    if not isinstance(packages, six.string_types):
         packages = " ".join(packages)
     options.append("-y")
     options = " ".join(options)
     if isinstance(yes, str):
-        run_as_root('yes %(yes)s | %(manager)s %(options)s install %(packages)s' % locals())
+        run_as_root(
+            'yes %(yes)s | %(manager)s %(options)s install %(packages)s'
+            % locals())
     else:
         run_as_root('%(manager)s %(options)s install %(packages)s' % locals())
 
@@ -106,7 +109,7 @@ def uninstall(packages, orphan=False, options=None):
         options = []
     elif isinstance(options, str):
         options = [options]
-    if not isinstance(packages, basestring):
+    if not isinstance(packages, six.string_types):
         packages = " ".join(packages)
     options.append("-y")
     options = " ".join(options)

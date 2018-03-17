@@ -40,8 +40,8 @@ def distrib_id():
     Get the OS distribution ID.
 
     Returns a string such as ``"Debian"``, ``"Ubuntu"``, ``"RHEL"``,
-    ``"CentOS"``, ``"SLES"``, ``"Fedora"``, ``"Archlinux"``, ``"Gentoo"``,
-    ``"SunOS"``, ``"CRUX"``, ...
+    ``"CentOS"``, ``"SLES"``, ``"Fedora"``, ``"Arch"``, ``"Gentoo"``,
+    ``"SunOS"``, ``"CRUX"``, ``"SUSE"``...
 
     Example::
 
@@ -60,9 +60,14 @@ def distrib_id():
             # but is not always included in other distros
             if is_file('/usr/bin/lsb_release'):
                 id_ = run('lsb_release --id --short')
-                if id in ['arch', 'Archlinux']:  # old IDs used before lsb-release 1.4-14
+                if id_ in ['arch', 'Archlinux']:  # old IDs used before lsb-release 1.4-14
                     id_ = 'Arch'
+                if id_ in ['SUSE LINUX', 'openSUSE project']:
+                    id_ = 'SUSE'
+                if id_ in ['Raspbian']:
+                    id_ = 'Debian'
                 return id_
+
             else:
                 if is_file('/etc/debian_version'):
                     return "Debian"
@@ -158,6 +163,8 @@ def distrib_family():
         return 'arch'
     elif distrib in ["CRUX"]:
         return "crux"
+    elif distrib in ['SUSE']:
+        return 'suse'
     else:
         return 'other'
 

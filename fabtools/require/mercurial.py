@@ -106,6 +106,7 @@ def working_copy(remote_url, path=None, branch="default", update=True,
                              user=user)
     elif not is_dir(path, use_sudo=use_sudo):
         mercurial.clone(remote_url, path=path, use_sudo=use_sudo, user=user)
-        mercurial.update(path=path, branch=branch, use_sudo=use_sudo, user=user)
+        mercurial.update(
+            path=path, branch=branch, use_sudo=use_sudo, user=user)
     else:
         raise ValueError("Invalid combination of parameters.")

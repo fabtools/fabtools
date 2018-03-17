@@ -83,7 +83,7 @@ def disabled(config):
 
         from fabtools import require
 
-        require.nginx.site_disabled('default')
+        require.nginx.disabled('default')
 
     """
     disable(config)
@@ -132,12 +132,14 @@ def site(server_name, template_contents=None, template_source=None,
     context.update(kwargs)
     context['server_name'] = server_name
 
-    template_file(config_filename, template_contents, template_source, context, use_sudo=True)
+    template_file(config_filename, template_contents, template_source,
+                  context, use_sudo=True)
 
     link_filename = '/etc/nginx/sites-enabled/%s.conf' % server_name
     if enabled:
         if not is_link(link_filename):
-            run_as_root("ln -s %(config_filename)s %(link_filename)s" % locals())
+            run_as_root(
+                "ln -s %(config_filename)s %(link_filename)s" % locals())
 
         # Make sure we don't break the config
         if check_config:

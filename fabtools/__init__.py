@@ -1,7 +1,8 @@
 # Keep imports sorted alphabetically
 import fabtools.arch
-import fabtools.crux
+import fabtools.conda
 import fabtools.cron
+import fabtools.crux
 import fabtools.deb
 import fabtools.disk
 import fabtools.files
@@ -20,6 +21,7 @@ import fabtools.portage
 import fabtools.postgres
 import fabtools.python
 import fabtools.python_setuptools
+import fabtools.poweroff
 import fabtools.rpm
 import fabtools.service
 import fabtools.shorewall
@@ -28,6 +30,7 @@ import fabtools.supervisor
 import fabtools.system
 import fabtools.tomcat
 import fabtools.user
+import fabtools.python3_compat
 
 import fabtools.require  # noqa
 icanhaz = require  # noqa

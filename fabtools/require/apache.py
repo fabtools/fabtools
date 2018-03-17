@@ -123,7 +123,8 @@ def site_disabled(config):
     reload_service('apache2')
 
 
-def site(site_name, template_contents=None, template_source=None, enabled=True, check_config=True, **kwargs):
+def site(site_name, template_contents=None, template_source=None, enabled=True,
+         check_config=True, **kwargs):
     """
     Require an Apache site.
 
@@ -137,7 +138,7 @@ def site(site_name, template_contents=None, template_source=None, enabled=True, 
 
         CONFIG_TPL = '''
         <VirtualHost *:%(port)s>
-            ServerName %(hostname})s
+            ServerName %(hostname)s
 
             DocumentRoot %(document_root)s
 
@@ -172,7 +173,8 @@ def site(site_name, template_contents=None, template_source=None, enabled=True, 
     context.update(kwargs)
     context['config_name'] = site_name
 
-    template_file(config_path, template_contents, template_source, context, use_sudo=True)
+    template_file(config_path, template_contents, template_source, context,
+                  use_sudo=True)
 
     if enabled:
         enable_site(site_name)

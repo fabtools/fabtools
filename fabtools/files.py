@@ -17,6 +17,7 @@ from fabric.api import (
 )
 from fabric.contrib.files import upload_template as _upload_template
 from fabric.contrib.files import exists
+import six
 
 from fabtools.utils import run_as_root
 
@@ -213,7 +214,7 @@ class watch(object):
         from fabric.contrib.files import comment, uncomment
 
         from fabtools.files import watch
-        from fabtools.services import restart
+        from fabtools.service import restart
 
         # Edit configuration file
         with watch('/etc/daemon.conf') as config:
@@ -231,7 +232,7 @@ class watch(object):
         from fabric.contrib.files import comment, uncomment
 
         from fabtools.files import watch
-        from fabtools.services import restart
+        from fabtools.service import restart
 
         with watch('/etc/daemon.conf', callback=partial(restart, 'daemon')):
             uncomment('/etc/daemon.conf', 'someoption')
@@ -240,7 +241,7 @@ class watch(object):
     """
 
     def __init__(self, filenames, callback=None, use_sudo=False):
-        if isinstance(filenames, basestring):
+        if isinstance(filenames, six.string_types):
             self.filenames = [filenames]
         else:
             self.filenames = filenames
@@ -295,7 +296,8 @@ def copy(source, destination, recursive=False, use_sudo=False):
     """
     func = use_sudo and run_as_root or run
     options = '-r ' if recursive else ''
-    func('/bin/cp {0}{1} {2}'.format(options, quote(source), quote(destination)))
+    func('/bin/cp {0}{1} {2}'.format(
+        options, quote(source), quote(destination)))
 
 
 def move(source, destination, use_sudo=False):
