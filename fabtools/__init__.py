@@ -2,6 +2,7 @@
 import fabtools.arch
 import fabtools.conda
 import fabtools.cron
+import fabtools.crux
 import fabtools.deb
 import fabtools.disk
 import fabtools.files
@@ -31,5 +32,5 @@ import fabtools.tomcat
 import fabtools.user
 import fabtools.python3_compat
 
-import fabtools.require
-icanhaz = require
+import fabtools.require  # noqa
+icanhaz = require  # noqa
