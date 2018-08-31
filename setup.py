@@ -29,7 +29,7 @@ class Tox(TestCommand):
         sys.exit(errno)
 
 
-fabric_package = 'fabric>=1.7.0'
+fabric_package = 'fabric<2.0'
 if sys.version_info >= (3, 0):  # substitute fabric3 for python 3 environments
     fabric_package = 'fabric3>=1.13.1.post1'
 
