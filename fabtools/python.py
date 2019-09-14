@@ -36,7 +36,7 @@ def is_pip_installed(version=None, python_cmd='python', pip_cmd='pip'):
     """
     with settings(
             hide('running', 'warnings', 'stderr', 'stdout'), warn_only=True):
-        res = run('%(python_cmd)s %(pip_cmd)s --version 2>/dev/null' % locals())
+        res = run('%(python_cmd)s -m %(pip_cmd)s --version 2>/dev/null' % locals())
         if res.failed:
             return False
         if version is None:
@@ -105,7 +105,7 @@ def is_installed(package, python_cmd='python', pip_cmd='pip'):
     """
     with settings(
             hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        res = run('%(python_cmd)s %(pip_cmd)s freeze' % locals())
+        res = run('%(python_cmd)s -m %(pip_cmd)s freeze' % locals())
     packages = [line.split('==')[0].lower() for line in res.splitlines()]
     return (package.lower() in packages)
 
